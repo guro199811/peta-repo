@@ -17,15 +17,21 @@ def owner():
     action = None
     return render_template("login/owner.html", user=current_user, action = action)
 
-@views.route('/staff')
+@views.route('/admin')
 @login_required
-def staff():
+def admin():
     action = None
-    return render_template("login/staff.html", user=current_user, action = action)
+    return render_template("login/admin.html", user=current_user, action = action)
 
 @views.route('/vet')
 @login_required
 def vet():
     action = None
     return render_template("login/vet.html", user=current_user, action = action)
+
+@views.route('/editor')
+@login_required
+def editor():
+    action = None
+    return render_template("login/editor.html", user=current_user, action = action)
 

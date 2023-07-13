@@ -8,13 +8,10 @@ session = Session(engine)
 
 try:
     type_fixture = [
-        (1, 'Owner'),
-        (2, 'Staff'),
-        (4, 'Vet'),
-        (3, 'Owner/Staff'),
-        (5, 'Owner/Vet'),
-        (6, 'Staff/Vet'),
-        (7, 'Owner/Staff/Vet')
+        (1, 'User'),
+        (2, 'Admin'),
+        (3, 'Vet'),
+        (4, 'Editor')
     ]
 
     if not session.query(Type).first():

@@ -47,7 +47,7 @@ class Vet(db.Model):
     person = db.relationship(Person)
     spec_id = db.Column(db.Integer, db.ForeignKey('specialities.spec_id'))
     speciality = db.relationship(Speciality)
-
+    type = db.Column(db.Integer, db.ForeignKey('types.type'))
 
 class Pet(db.Model):
     __tablename__ = 'pets'
@@ -63,14 +63,24 @@ class Pet(db.Model):
     owner_id = db.Column(db.Integer, db.ForeignKey('owners.owner_id'))
     owner = db.relationship(Owner)
 
+#testing section for new models
 
-class Staff(db.Model):
-    __tablename__ = 'help_centre'
-    staff_id = db.Column(db.Integer, primary_key=True)
+class Admin(db.Model):
+    __tablename__ = 'admins'
+    admin_id = db.Column(db.Integer, primary_key=True)
     person_id = db.Column(db.Integer, db.ForeignKey('persons.id'))
     person = db.relationship(Person)
     type = db.Column(db.Integer, db.ForeignKey('types.type'))
 
+
+class Editor(db.Model):
+    __tablename__ = 'editors'
+    editor_id = db.Column(db.Integer, primary_key=True)
+    person_id = db.Column(db.Integer, db.ForeignKey('persons.id'))
+    person = db.relationship(Person)
+    type = db.Column(db.Integer, db.ForeignKey('types.type'))
+
+#testing section end
 
 class Visit(db.Model):
     __tablename__ = 'visits'

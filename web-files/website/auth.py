@@ -31,9 +31,11 @@ def login():
                 if type == 1:
                     return redirect(url_for('views.owner'))
                 elif type == 2:
-                    return redirect(url_for('views.staff'))
+                    return redirect(url_for('views.admin'))
                 elif type == 3:
                     return redirect(url_for('views.vet'))
+                elif type == 4:
+                    return redirect(url_for('views.editor'))
             else:
                 flash('პაროლი არასწორია, გთხოვთ სცადოთ ხელახლა.', category='error')
         else:
