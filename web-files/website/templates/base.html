@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="geo">
+<head>
+  <title>{% block title %} Petta {% endblock %}</title>
+  <link rel="stylesheet" href="../static/css/main.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <link rel = "icon" href = "../static/images/favicon.ico" type = "image/x-icon">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" 
+  integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" 
+  crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <style class="bg"></style>
+  {% block style %}
+  {% endblock %}
+</head>
+<body>
+  {% block bg %}<body background="../static/images/main-bg.jpg">{% endblock %}
+  <!-- Navbar -->
+  <nav class="navbar">
+    <ul class="navbar-menu">
+      <a href="/">
+        <img src="{{ url_for('static', filename='../static/images/logo.png') }}" alt="Logo" class='logo'>
+      </a>
+      {% if current_user.is_authenticated %}
+        {%if current_user.type == 1 %}
+          <li class="navbar-item"><a href="/owner">ჩემი გვერდი</a></li>
+        {% elif current_user.type == 2 %}
+          <li class="navbar-item"><a href="/staff">ჩემი გვერდი</a></li>
+        {% elif current_user.type == 3 %}
+          <li class="navbar-item"><a href="/vet">ჩემი გვერდი</a></li>
+        {% endif %}
+      <li class="navbar-item"><a href="/logout">გამოსვლა</a></li>
+      {% else %}
+      <li class="navbar-item"><a href="/login">ანგარიშზე შესვლა</a></li>
+      <li class="navbar-item"><a href="/register">რეგისტრაცია</a></li>
+      {% endif %}
+    </ul>
+  </nav>
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+    {% if category == 'error' %}
+      <div class="alert alert-danger alert-dismissable fade show" role="alert">
+        {{ message }}
+        <button type="button" class="close" onclick="this.parentElement.style.display='none';">
+          &times;
+        </button>
+      </div>
+    {% else %}
+      <div class="alert alert-success alter-dismissable fade show" role="alert">
+        {{ message }}
+        <button type="button" class="close" onclick="this.parentElement.style.display='none';">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    {% endif %}
+    {% endfor %}
+  {% endif %}
+  {% endwith %}
+  
+    {% block content%}
+
+    {% endblock%}
+  <!-- Footer -->
+  <div class="push"></div>
+  <footer class="footer">
+
+    <p>დამატებითი ინფორმაციისთვის დაგვიკავშირდით <a href="mailto:Gurosivs@gmail.com"><br>Gurosivs@gmail.com</br></a></p>
+  </footer>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+  {% block script %}
+  {% endblock %}
+  <script src="../static/js/main.js"></script>
+</body>
+</html>
