@@ -8,6 +8,29 @@ from .models import *
 
 general_logic = Blueprint('general_logic', __name__)
 
+
+
+def register_pet(pet_name, pet_species, pet_breed, recent_vaccination, gender, birth_date):
+    try:
+        owner = db.session.query(Owner).filter_by(person_id = current_user.id).one_or_none()
+        if owner is None:
+            owner = Owner(person_id=current_user.id)
+            db.session.add(owner)
+            db.session.commit() 
+        else:
+            print(Owner.owner_id)
+            owner = db.session.query(Owner).filter_by(person_id = current_user.id).one()
+            pet = Pet(owner_id=owner.owner_id, name=pet_name,
+                    species=pet_species, breed=pet_breed,
+                    recent_vaccination=recent_vaccination if recent_vaccination else None,
+                    gender = gender, birth_date = birth_date)
+            db.session.add(pet)
+            db.session.commit()
+            return True
+    except Exception as e:
+        flash(f"{e}")
+
+
 @general_logic.route('/<int:action>', methods=['GET', 'POST'])
 @login_required
 def owner_login(action):
@@ -20,20 +43,9 @@ def owner_login(action):
             gender = request.form.get('gender')
             birth_date = request.form.get('bdate')
 
-
-            owner = db.session.query(Owner).filter_by(person_id = current_user.id).one_or_none()
-            if owner is None:
-                owner = Owner(person_id=current_user.id)
-                db.session.add(owner)
-                db.session.commit() 
-            else:
-                print(Owner.owner_id)
-                owner = db.session.query(Owner).filter_by(person_id = current_user.id).one()
-                pet = Pet(owner_id=owner.owner_id, name=pet_name,
-                        species=pet_species, breed=pet_breed,
-                        recent_vaccination=recent_vaccination if recent_vaccination else None)
-                db.session.add(pet)
-                db.session.commit()
+            confirmation = register_pet(pet_name, pet_species, pet_breed, 
+                                        recent_vaccination, gender, birth_date)
+            if confirmation:
                 flash('ცხოველი დარეგისტრირდა წარმატებით', category='success')
                 
 
@@ -149,10 +161,21 @@ def edit_pet(action, pet_id):
 @general_logic.route('delete/<int:action>/<int:pet_id>', methods=['GET', 'DELETE'])
 @login_required
 def remove_pet(action, pet_id):
-    pet = db.session.query(Pet).filter_by(pet_id = pet_id).one_or_none()
-    if pet:
-        db.session.delete(pet)
-        db.session.commit()
+    pet = db.session.query(Pet).filter_by(pet_id=pet_id).one_or_none()
+    if pet is not None:
+        owner = db.session.query(Owner).filter_by(person_id=current_user.id).one_or_none()
+        if owner is not None:
+            try:
+                db.session.delete(pet)
+                db.session.commit()
+                
+                remaining_pets = db.session.query(Pet).filter_by(owner_id=owner.owner_id).all()
+                if not remaining_pets:
+                    db.session.delete(owner)
+                    db.session.commit()
+                
+            except Exception as e:
+                flash(e)
         return redirect(url_for('general_logic.owner_login', action=2))
     else:
         flash("UNEXPECTED ERROR")
