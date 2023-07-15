@@ -38,6 +38,7 @@ html, body {
   max-width:625px;
   margin: 0 auto;
   padding: 0 20px;
+  
 }
 /* logo */
 .logo{
@@ -52,7 +53,7 @@ html, body {
   align-items: center;
   background-color: #ffffff;
   padding: 25px 0;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  box-shadow:0px 0px 10px 0px #020202
 }
 
 .navbar-brand {
@@ -82,7 +83,7 @@ html, body {
   color: #000000;
   text-decoration: none;
   border-radius: 20px;
-  transition: background-color 0.3s ease, color 0.3s;
+  transition: background-color 0.5s ease, color 0.3s;
 }
 
 .navbar-item a:hover {
@@ -106,11 +107,13 @@ nav{
 
 /* Main content */
 .main-section {
-  background-color: #fff;
+  background-color: #ffffff9d;
   padding: 50px;
   margin: 50px 0;
   border-radius: 20px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(20px);
+  box-shadow:0px 0px 10px 0px #020202
 }
 
 .welcome-text {
@@ -256,7 +259,7 @@ nav{
   margin-top: auto;
   text-align: center;
   border-radius: 20px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  box-shadow:0px 0px 10px 0px #020202
 }
 
 footer {
@@ -293,13 +296,14 @@ footer {
   margin-bottom: 10px;
   margin-left:30px;
   border-radius: 10px;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-  transition: background-color 0.3s ease;
+  box-shadow:0px 2px 13px 0px rgba(0,0,0,0.75);
+  transition: background-color 0.5s ease;
+  transition: color 0.3s ease;
 }
 
 .square-button:hover {
-  background-color: #FF9800;
-  color:#000000;
+  background-color: #fc7f19;
+  color:#ffffff;
   text-decoration:none
 }
 
@@ -309,7 +313,7 @@ footer {
   padding: 20px;
   background-color: #F5F5F5;
   border-radius: 10px;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow:0px 2px 50px 0px rgba(0,0,0,0.75);
 }
 
 .owner-container .buttons .square-button a{
@@ -707,6 +711,16 @@ footer {
   width:50% !important;
  }
 
+ .pets-list ul li{
+  box-shadow:0px 2px 24px 0px rgba(0,0,0,0.25);
+ }
+ 
+ .pets-list ul li:hover{
+  box-shadow:0px 2px 24px 0px rgba(0,0,0,0.50);
+ }
+ 
+ 
+
 /* Form Division */
 .newpetbox form{
   background-image:url("../images/10.jpg");
@@ -722,4 +736,41 @@ footer {
   background-image:linear-gradient(to right, #e65c00 0%, #f9d423 100%);
   background-repeat:repeat;
  }*/
+ 
+
+ /* Box menu */
+.owner-container .box-menu{
+  background-color:rgba(248,248,248,0.56);
+  backdrop-filter:blur(10px);
+ }
+ 
+ /* Firstname */
+ #firstname{
+  box-shadow:0px 0px 10px 0px #333333;
+ }
+ 
+ /* Change button */
+ .box-menu form .change-button{
+  border-color:#000000;
+  border-width:1px;
+  border-style:solid;
+  box-shadow:0px 0px 10px 0px #333333;
+ }
+
+ 
+ /* Lastname */
+ #lastname{
+  box-shadow:0px 0px 10px 0px #333333;
+ }
+ 
+ /* Address */
+ #address{
+  box-shadow:0px 0px 10px 0px #333333;
+ }
+ 
+ /* Font Icon */
+.box-menu form i{
+  color:#000000;
+ }
+ 
  

@@ -28,15 +28,15 @@
       <form action="{{ url_for('general_logic.change_user_data') }}" method="POST">
         <label for="firstname">სახელი:</label>
         <input type="text" id="firstname" name="firstname" value="{{ current_user.name }}" disabled>
-        <button type="button" class="change-button" onclick="enableInput('firstname')"><i class="fa-regular fa-pen-to-square"></i></button><br>
+        <button type="button" class="change-button" onclick="enableInput('firstname')"><i class="fa-solid fa-pen-to-square"></i></button><br>
         
         <label for="lastname">გვარი:</label>
         <input type="text" id="lastname" name="lastname" value="{{ current_user.lastname }}" disabled>
-        <button type="button" class="change-button" onclick="enableInput('lastname')"><i class="fa-regular fa-pen-to-square"></i></button><br>
+        <button type="button" class="change-button" onclick="enableInput('lastname')"><i class="fa-solid fa-pen-to-square"></i></button><br>
 
         <label for="address">მისამართი:</label>
         <input type="text" id="address" name="address" value="{{ current_user.address }}" disabled>
-        <button type="button" class="change-button" onclick="enableInput('address')"><i class="fa-regular fa-pen-to-square"></i></button><br>
+        <button type="button" class="change-button" onclick="enableInput('address')"><i class="fa-solid fa-pen-to-square"></i></button><br>
 
         <input type="submit" value="Save Changes" class="save-button" id="save-button" style="display: none;">
 
@@ -187,6 +187,5 @@
 
 {% block script %}
 <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js" integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="crossorigin=""></script>
-
 
 {% endblock %}

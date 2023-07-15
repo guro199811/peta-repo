@@ -54,17 +54,7 @@ def owner_login(action):
         # მფლობელის მონაცემების მიღება და მფლობელის ID-ის მიხედვით
         owner = db.session.query(Owner).filter_by(person_id=current_user.id).one_or_none()
         if owner is None:
-            try:
-                result = db.session.query(Owner).filter_by(person_id=current_user.id).one_or_none()
-                if result is None:
-                    owner = Owner(person_id=current_user.id)
-                    db.session.add(owner)
-                    db.session.commit()
-                else:
-                    pass
-            except:
-                db.session.rollback()
-                raise
+            return render_template('login/owner.html', action=action, pets=None)
         else:
             owner_id = owner.owner_id
 
