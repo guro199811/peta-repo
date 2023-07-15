@@ -63,7 +63,6 @@ class Pet(db.Model):
     owner_id = db.Column(db.Integer, db.ForeignKey('owners.owner_id'))
     owner = db.relationship(Owner)
 
-#testing section for new models
 
 class Admin(db.Model):
     __tablename__ = 'admins'
@@ -80,7 +79,6 @@ class Editor(db.Model):
     person = db.relationship(Person)
     type = db.Column(db.Integer, db.ForeignKey('types.type'))
 
-#testing section end
 
 class Visit(db.Model):
     __tablename__ = 'visits'
