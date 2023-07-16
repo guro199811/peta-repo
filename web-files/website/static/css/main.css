@@ -53,7 +53,7 @@ html, body {
   align-items: center;
   background-color: #ffffff;
   padding: 25px 0;
-  box-shadow:0px 0px 10px 0px #020202
+  box-shadow:0px 0px 10px 0px #02020281
 }
 
 .navbar-brand {
@@ -113,7 +113,7 @@ nav{
   border-radius: 20px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(20px);
-  box-shadow:0px 0px 10px 0px #020202
+  box-shadow:0px 0px 10px 0px #02020279
 }
 
 .welcome-text {
@@ -259,7 +259,7 @@ nav{
   margin-top: auto;
   text-align: center;
   border-radius: 20px;
-  box-shadow:0px 0px 10px 0px #020202
+  box-shadow:0px 0px 10px 0px #0202027e
 }
 
 footer {
@@ -313,7 +313,7 @@ footer {
   padding: 20px;
   background-color: #F5F5F5;
   border-radius: 10px;
-  box-shadow:0px 2px 50px 0px rgba(0,0,0,0.75);
+  box-shadow:0px 2px 50px 0px rgba(0, 0, 0, 0.5);
 }
 
 .owner-container .buttons .square-button a{
@@ -746,7 +746,7 @@ footer {
  
  /* Firstname */
  #firstname{
-  box-shadow:0px 0px 10px 0px #333333;
+  box-shadow:0px 0px 10px 0px #33333385;
  }
  
  /* Change button */
@@ -754,23 +754,23 @@ footer {
   border-color:#000000;
   border-width:1px;
   border-style:solid;
-  box-shadow:0px 0px 10px 0px #333333;
+  box-shadow:0px 0px 10px 0px #33333383;
  }
 
  
  /* Lastname */
  #lastname{
-  box-shadow:0px 0px 10px 0px #333333;
+  box-shadow:0px 0px 10px 0px #3333337c;
  }
  
  /* Address */
  #address{
-  box-shadow:0px 0px 10px 0px #333333;
+  box-shadow:0px 0px 10px 0px #3333337e;
  }
  
  /* Font Icon */
 .box-menu form i{
-  color:#000000;
+  color:#00000081;
  }
  
  
