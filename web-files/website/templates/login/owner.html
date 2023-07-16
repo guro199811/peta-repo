@@ -12,9 +12,9 @@
 <div class="owner-container">
   <div class="buttons">
     <!-- ბმული 1: ცხოველის დამატება -->
-    <a href="{{ url_for('general_logic.owner_login', action=1) }}" class="square-button">ცხოველის დამატება</a>
+    <a href="{{ url_for('general_logic.owner_login', action=1) }}" class="square-button">შინაური ცხოველის დამატება</a>
     <!-- ბმული 2: ჩემი ცხოველების ჩამონათვალი -->
-    <a href="{{ url_for('general_logic.owner_login', action=2) }}" class="square-button">ჩემი ცხოველების ჩამონათვალი</a>
+    <a href="{{ url_for('general_logic.owner_login', action=2) }}" class="square-button">ჩემი შინაური ცხოველები</a>
     <!-- ბმული 3: ვეტერინარული კლინიკები ჩემს ახლოს -->
     <a href="{{ url_for('general_logic.owner_login', action=3) }}" class="square-button">ვეტ.კლინიკები ჩემს ახლოს</a>
     <!-- ბმული 4: ვეტერინარების ტელეფონის ნომრები -->
@@ -44,10 +44,10 @@
     {% elif action == 1 %}
     <div class="newpetbox">
     <form action="{{ url_for('general_logic.owner_login', action=1) }}" method="POST">
-      <label for="pet_name">ცხოველის სახელი: </label>
+      <label for="pet_name">შინაური ცხოველის სახელი: </label>
       <input type="text" id="pet_name" name="pet_name" required>
 
-      <label for="gender">ცხოველის სქესი: </label>
+      <label for="gender">შინაური ცხოველის სქესი: </label>
       <select id="gender" name="gender" required>
         <option value="M">ხვადი (მამალი)</option>
         <option value="F">ძუ (დედალი)</option>
@@ -58,7 +58,7 @@
 
 
       
-      <label for="pet_species" >ცხოველის ტიპი: </label>
+      <label for="pet_species" >შინაური ცხოველის ტიპი: </label>
       <select id="pet_species" name="pet_species" required>
         <option value="dog">ძაღლი</option>
         <option value="cat">კატა</option>
@@ -72,7 +72,7 @@
         <option value="horse">ცხენი</option>
       </select>
     
-      <label for="pet_breed">ცხოველის ჯიში: </label>
+      <label for="pet_breed">შინაური ცხოველის ჯიში: </label>
       <select id="pet_breed" name="pet_breed">
         <!-- Options for Dog Breeds -->
         <optgroup label="Dog Breeds">

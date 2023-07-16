@@ -28,12 +28,12 @@
         {% elif current_user.type == 3 %}
           <li class="navbar-item"><a href="/vet">ჩემი გვერდი</a></li>
         {% elif current_user.type == 4 %}
-        <li class="navbar-item"><a href="/editor">ჩემი გვერდი</a></li>
+          <li class="navbar-item"><a href="/editor">ჩემი გვერდი</a></li>
           {% endif %}
-      <li class="navbar-item"><a href="/logout">გამოსვლა</a></li>
+          <li class="navbar-item"><a href="/logout">ანგარიშიდან გამოსვლა</a></li>
       {% else %}
-      <li class="navbar-item"><a href="/login">ანგარიშზე შესვლა</a></li>
-      <li class="navbar-item"><a href="/register">რეგისტრაცია</a></li>
+          <li class="navbar-item"><a href="/login">ანგარიშზე შესვლა</a></li>
+          <li class="navbar-item"><a href="/register">რეგისტრაცია</a></li>
       {% endif %}
     </ul>
   </nav>
