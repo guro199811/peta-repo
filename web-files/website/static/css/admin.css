@@ -28,8 +28,9 @@ body{
   background-color: var(--color-default);
   transition: all .5s ease;
   position: fixed;
-  top:0;
+  top: 93px;
   left: 0;
+  z-index: 10;
 }
 
 .sidebar.open{
@@ -302,5 +303,5 @@ body{
 }
 
 nav{
-    left:57px;
+    left:0px;
    }
