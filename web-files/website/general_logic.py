@@ -8,7 +8,7 @@ from .models import *
 
 general_logic = Blueprint('general_logic', __name__)
 
-
+#owner_login
 
 def register_pet(pet_name, pet_species, pet_breed, recent_vaccination, gender, birth_date):
     try:
@@ -170,3 +170,10 @@ def remove_pet(action, pet_id):
     else:
         flash("UNEXPECTED ERROR")
         return redirect(url_for('general_logic.owner_login', action=action))
+
+#admin_login
+
+@general_logic.route('/<int:choice>', methods=['GET', 'POST'])
+@login_required
+def admin_login(choice):
+    return render_template('login/admin.html', choice = choice)
