@@ -57,6 +57,7 @@ body{
   font-weight: 600;
   opacity: 0;
   transition: all .5s ease;
+  color:#000000
 }
 
 .sidebar.open .logo_details .icon,
@@ -73,6 +74,7 @@ body{
   text-align: center;
   cursor: pointer;
   transition: all .5s ease;
+  color:#000000
 }
 
 .sidebar.open .logo_details #btn{
@@ -129,14 +131,14 @@ body{
 
 .sidebar input{
   font-size: 15px;
-  color: var(--color-white);
+  color: #000;
   font-weight: 400;
   outline: none;
   height: 35px;
   width: 35px;
   border:none;
   border-radius: 5px;
-  background-color: var(--color-second);
+  background-color: #ff8100;
   transition: all .5s ease;
 }
 
@@ -190,7 +192,7 @@ body{
 }
 
 .sidebar li a .link_name{
-  color:var(--color-white);
+  color: #343a40;
   font-size: 15px;
   font-weight: 400;
   white-space: nowrap;
@@ -305,3 +307,66 @@ body{
 nav{
     left:0px;
    }
+
+
+
+   /* Sidebar */
+.sidebar{
+  background-color:rgba(132,64,0,0.18);
+  transform:translatex(0px) translatey(0px);
+ }
+ 
+ /* Clinic */
+ .nav-list a .bx-clinic{
+  background-color:rgba(0,0,0,0);
+  color:#000000;
+ }
+ 
+ /* Link */
+ .nav-list li a{
+  background-color:rgba(0,79,131,0);
+ }
+ 
+ /* List Item */
+ .sidebar .nav-list li{
+  color:#000000;
+ }
+ 
+ /* Devices */
+ .nav-list a .bxs-devices{
+  color:#000000;
+ }
+ 
+ /* Dog */
+ .nav-list a .bxs-dog{
+  color:#000000;
+ }
+ 
+ /* Plus medical */
+ .nav-list a .bx-plus-medical{
+  color:#000000;
+ }
+ 
+ /* User */
+ .nav-list a .bx-user{
+  color:#000000;
+ }
+ 
+ /* Grid alt */
+ .nav-list a .bx-grid-alt{
+  color:#000000;
+ }
+ 
+ /* Home */
+ .nav-list a .bx-home{
+  color:#000000;
+ }
+ 
+ /* Search */
+ .nav-list li .bx-search{
+  background-color:#545454;
+ }
+
+ #btn{
+  color:#000000;
+ }

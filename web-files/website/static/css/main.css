@@ -108,6 +108,10 @@ nav{
   z-index: 100;
  }
 
+ .navbar .navbar-menu li{
+  height:53px;
+ }
+
 /* Main content */
 .main-section {
   background-color: #ffffff9d;

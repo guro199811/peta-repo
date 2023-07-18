@@ -23,7 +23,7 @@ def login():
         user = Person.query.filter_by(mail=mail).first()
         if user:
             if check_password_hash(user.password, password):
-                flash('წარმატება!', category='success')
+                #flash('წარმატება!', category='success')
                 #flask_login-ს ვიყენებთ რომ დავიმახსოვროთ მომხმარებელი რომ შესულია
                 login_user(user, remember=True)
                 #ვიგებთ რა ტიპის მომხმარებელია
