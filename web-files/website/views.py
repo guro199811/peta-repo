@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, flash
+from flask import Blueprint, render_template, abort
 from flask_login import (
     login_required,
     current_user)
@@ -14,24 +14,34 @@ def home():
 @views.route('/owner')
 @login_required
 def owner():
-    action = None
-    return render_template("login/owner.html", user=current_user, action = action)
+    if current_user.type == 1:
+        action = None
+        return render_template("login/owner.html", user=current_user, action = action)
+    else:
+        abort(404)
 
 @views.route('/admin')
 @login_required
 def admin():
-    action = None
-    return render_template("login/admin.html", user=current_user, action = action)
-
+    if current_user.type == 2:        
+        action = None
+        return render_template("login/admin.html", user=current_user, action = action)
+    else:
+        abort(404)
 @views.route('/vet')
 @login_required
 def vet():
-    action = None
-    return render_template("login/vet.html", user=current_user, action = action)
+    if current_user.type == 3:
+        action = None
+        return render_template("login/vet.html", user=current_user, action = action)
+    else:
+        abort(404)
 
 @views.route('/editor')
 @login_required
 def editor():
-    action = None
-    return render_template("login/editor.html", user=current_user, action = action)
-
+    if current_user.type == 4:
+        action = None
+        return render_template("login/editor.html", user=current_user, action = action)
+    else:
+        abort(404)

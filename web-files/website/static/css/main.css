@@ -473,27 +473,6 @@ footer {
 }
 
 
-.change-button {
-  display: inline-block;
-  width: 30px;
-  height: 30px;
-  margin-left: 5px;
-  vertical-align: middle;
-  background-color: #ccc;
-  border: none;
-  border-radius: 5px;
-  color: #fff;
-  text-align: center;
-  cursor: pointer;
-  transition: background-color 0.3s ease-in-out;
-}
-.change-button:hover {
-  background-color: #45a049;
-}
-
-.change-button:active {
-  transform: scale(0.95);
-}
 
 
 .save-button{
@@ -783,7 +762,30 @@ footer {
  
  /* Font Icon */
 .box-menu form i{
-  color:#00000081;
+  color:#000000;
  }
  
+
+ .change-button {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  margin-left: 5px;
+  vertical-align: middle;
+  background-color: #ccc;
+  border: none;
+  border-radius: 5px;
+  color: #fff;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+}
+.change-button:hover {
+  background-color: #ff8800;
+}
+
+.change-button:active {
+  transform: scale(0.95);
+}
+
  

@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, flash, redirect, url_for
+from flask import Blueprint, render_template, request, flash, redirect, url_for, abort
 from flask_login import login_required, current_user
 from sqlalchemy import or_
 
@@ -9,6 +9,24 @@ from .models import *
 general_logic = Blueprint('general_logic', __name__)
 
 #owner_login
+
+
+#user allowence decorator (does not work as intended)
+'''
+def allow_users(user_types):
+    def decorator(fun):
+        def wrapper(*args, **kwargs):
+            # check usertype here 
+            if current_user.type in user_types:
+                return fun(*args, **kwargs)
+            else:
+                raise PermissionError("Access not allowed for this user type.")
+            
+        return wrapper
+    return decorator
+'''
+
+
 
 def register_pet(pet_name, pet_species, pet_breed, recent_vaccination, gender, birth_date):
     try:
@@ -31,51 +49,57 @@ def register_pet(pet_name, pet_species, pet_breed, recent_vaccination, gender, b
         flash(f"{e}")
 
 
-@general_logic.route('/<int:action>', methods=['GET', 'POST'])
+
+
+
+@general_logic.route('/owner/<int:action>', methods=['GET', 'POST'])
 @login_required
 def owner_login(action):
-    if action == 1:
-        if request.method =="POST":
-            pet_name = request.form.get('pet_name')
-            pet_species = request.form.get('pet_species')
-            pet_breed = request.form.get('pet_breed')
-            recent_vaccination = request.form.get('recent_vaccination')
-            gender = request.form.get('gender')
-            birth_date = request.form.get('bdate')
+        if current_user.type != 1:
+            abort(404)
+        if action == 1:
+            if request.method =="POST":
+                pet_name = request.form.get('pet_name')
+                pet_species = request.form.get('pet_species')
+                pet_breed = request.form.get('pet_breed')
+                recent_vaccination = request.form.get('recent_vaccination')
+                gender = request.form.get('gender')
+                birth_date = request.form.get('bdate')
 
-            confirmation = register_pet(pet_name, pet_species, pet_breed, 
-                                        recent_vaccination, gender, birth_date)
-            if confirmation:
-                flash('ცხოველი დარეგისტრირდა წარმატებით', category='success')
-                
+                confirmation = register_pet(pet_name, pet_species, pet_breed, 
+                                            recent_vaccination, gender, birth_date)
+                if confirmation:
+                    flash('ცხოველი დარეგისტრირდა წარმატებით', category='success')
+                    
 
-        return render_template('login/owner.html', action=action)
-    elif action == 2:
-        # მფლობელის მონაცემების მიღება და მფლობელის ID-ის მიხედვით
-        owner = db.session.query(Owner).filter_by(person_id=current_user.id).one_or_none()
-        if owner is None:
-            return render_template('login/owner.html', action=action, pets=None)
-        else:
-            owner_id = owner.owner_id
-
-            # მფლობელის იდენტიფიკატორით ცხოვლის მფლობლების მიღება
-            pets = db.session.query(Pet).filter_by(owner_id=owner_id).order_by(Pet.pet_id.asc()).all()
-            if len(pets) == 0:
-                #flash('თქვენ ცხოველები არ გყავთ.')
+            return render_template('login/owner.html', action=action)
+        elif action == 2:
+            # მფლობელის მონაცემების მიღება და მფლობელის ID-ის მიხედვით
+            owner = db.session.query(Owner).filter_by(person_id=current_user.id).one_or_none()
+            if owner is None:
                 return render_template('login/owner.html', action=action, pets=None)
             else:
-                return render_template('login/owner.html', action=action, pets=pets)
-            # შაბლონის გამოტანა 'owner_login.html'-ში, action-ის მიხედვით
-        
+                owner_id = owner.owner_id
 
-    elif action == 3:
-        return render_template('login/owner.html', action=action)
-    elif action == 4:
-        Vets = Person.query.filter(or_(Person.type == 4, Person.type == 5)).all()
-        return render_template('login/owner.html', action=action, vets = Vets)
-    else:
-        pass
+                # მფლობელის იდენტიფიკატორით ცხოვლის მფლობლების მიღება
+                pets = db.session.query(Pet).filter_by(owner_id=owner_id).order_by(Pet.pet_id.asc()).all()
+                if len(pets) == 0:
+                    #flash('თქვენ ცხოველები არ გყავთ.')
+                    return render_template('login/owner.html', action=action, pets=None)
+                else:
+                    return render_template('login/owner.html', action=action, pets=pets)
+                # შაბლონის გამოტანა 'owner_login.html'-ში, action-ის მიხედვით
             
+
+        elif action == 3:
+            return render_template('login/owner.html', action=action)
+        elif action == 4:
+            vets = db.session.query(Vet).filter_by(type = 3).all()
+            return render_template('login/owner.html', action=action, vets = vets)
+        else:
+            abort(404)
+                
+
 @general_logic.route('/owner', methods=['GET', 'POST'])
 @login_required
 def change_user_data():
@@ -173,7 +197,24 @@ def remove_pet(action, pet_id):
 
 #admin_login
 
-@general_logic.route('/<int:choice>', methods=['GET', 'POST'])
+@general_logic.route('/admin/<int:choice>', methods=['GET', 'POST'])
 @login_required
 def admin_login(choice):
+    if current_user.type != 2:
+        abort(404)
+    if choice == 1:
+        pass
+    if choice == 2:
+        pass
+    if choice == 3:
+        pass
+    if choice == 4:
+        pass
+    if choice == 5:
+        pass
+    if choice == 6:
+        pass
+    if choice == 7:
+        pass
+
     return render_template('login/admin.html', choice = choice)

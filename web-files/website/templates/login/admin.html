@@ -6,6 +6,7 @@
 {% endblock %}
 
 {% block style %}
+  <link rel="stylesheet" href="../static/css/main.css">
   <link rel="stylesheet" href="../static/css/admin.css">
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 {% endblock %}
@@ -71,6 +72,13 @@
       </a>
       <span class="tooltip">Visits</span>
     </li>
+    <li>
+      <a href="{{ url_for('general_logic.admin_login', choice=1) }}">
+        <i class='bx bx-user-circle'></i>
+        <span class="link_name">My data</span>
+      </a>
+      <span class="tooltip">My data</span>
+    </li>
   </ul>
   </div>
   
@@ -83,6 +91,7 @@
     {% elif choice == 5 %}
     {% elif choice == 6 %}
     {% elif choice == 7 %}
+    {% elif choice == 8 %}
     {% else %}
     {% endif %}
   </div>

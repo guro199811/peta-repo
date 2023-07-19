@@ -368,6 +368,10 @@ nav{
   background-color:#545454;
  }
 
+ .nav-list a .bx-user-circle{
+  color:#000000;
+ }
+
  #btn{
   color:#000000;
  }

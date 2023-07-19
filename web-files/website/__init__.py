@@ -6,6 +6,8 @@ from flask_login import LoginManager
 db = SQLAlchemy()
 
 
+
+
 def create_app(migrate):
     app = Flask(__name__, static_url_path='/static', static_folder='static')
     app.config['SECRET_KEY'] = 'uwdhujiwakopdwu9faoijskpdwuahpfoijasidowiano'
