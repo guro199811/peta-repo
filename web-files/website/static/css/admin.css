@@ -292,13 +292,7 @@ body{
   transform: translatey(-10px);
 }
 
-.home-section .text{
-  display: inline-block;
-  color:var(--color-default);
-  font-size: 25px;
-  font-weight: 500;
-  margin: 18px;
-}
+
 
 .sidebar.open ~ .home-section{
   left:250px;
@@ -375,3 +369,9 @@ nav{
  #btn{
   color:#000000;
  }
+
+ /* Heading */
+.text .box-menu h1{
+  transform:translatex(0px) translatey(276px);
+ }
+ 

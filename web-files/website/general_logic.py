@@ -8,7 +8,7 @@ from .models import *
 
 general_logic = Blueprint('general_logic', __name__)
 
-#owner_login
+#owner_logic
 
 
 #user allowence decorator (does not work as intended)
@@ -35,8 +35,7 @@ def register_pet(pet_name, pet_species, pet_breed, recent_vaccination, gender, b
             owner = Owner(person_id=current_user.id)
             db.session.add(owner)
             db.session.commit() 
-        else:
-            print(Owner.owner_id)
+        if owner is not None:
             owner = db.session.query(Owner).filter_by(person_id = current_user.id).one()
             pet = Pet(owner_id=owner.owner_id, name=pet_name,
                     species=pet_species, breed=pet_breed,
@@ -54,7 +53,7 @@ def register_pet(pet_name, pet_species, pet_breed, recent_vaccination, gender, b
 
 @general_logic.route('/owner/<int:action>', methods=['GET', 'POST'])
 @login_required
-def owner_login(action):
+def owner_logic(action):
         if current_user.type != 1:
             abort(404)
         if action == 1:
@@ -88,7 +87,7 @@ def owner_login(action):
                     return render_template('login/owner.html', action=action, pets=None)
                 else:
                     return render_template('login/owner.html', action=action, pets=pets)
-                # შაბლონის გამოტანა 'owner_login.html'-ში, action-ის მიხედვით
+                # შაბლონის გამოტანა 'owner_logic.html'-ში, action-ის მიხედვით
             
 
         elif action == 3:
@@ -127,7 +126,10 @@ def change_user_data():
         action = None
         if changed:
             flash('Changes saved successfully.', category='success')
-    return render_template('login/owner.html', action = action)
+    if current_user.type == 1:
+        return render_template('login/owner.html', action = action)
+    elif current_user.type == 2:
+        return render_template('login/admin.html', choice = 8, action = action)
 
 
 @general_logic.route('edit/<int:action>/<int:pet_id>', methods=['GET', 'POST'])
@@ -164,13 +166,15 @@ def edit_pet(action, pet_id):
                 changed = True
             if changed:
                 flash('მონაცემები წარმატებით შეიცვალა', category='success')
-
-            return redirect(url_for('general_logic.owner_login', action=action))
-
+            if current_user.type == 1:
+                return redirect(url_for('general_logic.owner_logic', action=action))
+            elif current_user.type == 2:
+                return redirect(url_for('general_logic.admin_logic',choice = 1, action=action))
+                return 
         #return render_template('owner.html', action=action, pet=pet, changed=changed)
 
     #flash('Pet not found.')
-    return redirect(url_for('general_logic.owner_login', action=action))
+    return redirect(url_for('general_logic.owner_logic', action=action))
 
 @general_logic.route('delete/<int:action>/<int:pet_id>', methods=['GET', 'DELETE'])
 @login_required
@@ -190,20 +194,65 @@ def remove_pet(action, pet_id):
                 
             except Exception as e:
                 flash(e)
-        return redirect(url_for('general_logic.owner_login', action=2))
+        if current_user.type == 1:
+            return redirect(url_for('general_logic.owner_logic', action=2))
+        if current_user.type == 2:
+            return redirect(url_for('general_logic.admin_logic',choice = 1, action=2))
     else:
-        flash("UNEXPECTED ERROR")
-        return redirect(url_for('general_logic.owner_login', action=action))
+        abort(404)
 
-#admin_login
+#admin_logic
 
-@general_logic.route('/admin/<int:choice>', methods=['GET', 'POST'])
+@general_logic.route('/admin/<int:choice>/<int:action>', methods=['GET', 'POST'])
 @login_required
-def admin_login(choice):
+def admin_logic(choice, action):
     if current_user.type != 2:
         abort(404)
     if choice == 1:
-        pass
+        if action == 1:
+            if request.method =="POST":
+                pet_name = request.form.get('pet_name')
+                pet_species = request.form.get('pet_species')
+                pet_breed = request.form.get('pet_breed')
+                recent_vaccination = request.form.get('recent_vaccination')
+                gender = request.form.get('gender')
+                birth_date = request.form.get('bdate')
+
+                confirmation = register_pet(pet_name, pet_species, pet_breed, 
+                                            recent_vaccination, gender, birth_date)
+                if confirmation:
+                    flash('ცხოველი დარეგისტრირდა წარმატებით', category='success')
+                else:
+                    flash('თქვენი ცხოველი ვერ დარეგისტრირდა', category='error')    
+
+            return render_template('login/admin.html',choice = choice, action=action)
+        elif action == 2:
+            # მფლობელის მონაცემების მიღება და მფლობელის ID-ის მიხედვით
+            owner = db.session.query(Owner).filter_by(person_id=current_user.id).one_or_none()
+            if owner is None:
+                return render_template('login/admin.html',choice = choice, action=action, pets=None)
+            else:
+                owner_id = owner.owner_id
+
+                # მფლობელის იდენტიფიკატორით ცხოვლის მფლობლების მიღება
+                pets = db.session.query(Pet).filter_by(owner_id=owner_id).order_by(Pet.pet_id.asc()).all()
+                if len(pets) == 0:
+                    #flash('თქვენ ცხოველები არ გყავთ.')
+                    return render_template('login/admin.html', choice = choice ,action=action, pets=None)
+                else:
+                    return render_template('login/admin.html',choice = choice, action=action, pets=pets)
+                
+            
+
+        elif action == 3:
+            return render_template('login/admin.html',choice  = choice, action=action)
+        elif action == 4:
+            vets = db.session.query(Vet).filter_by(type = 3).all()
+            return render_template('login/admin.html',choice = choice, action=action, vets = vets)
+        else:
+            return render_template('login/admin.html',choice = choice, action = None)
+                
+
     if choice == 2:
         pass
     if choice == 3:

@@ -6,19 +6,20 @@
 
 {% block style %}
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI="crossorigin=""/>
+<link rel="stylesheet" href="../../static/css/main.css">
 {% endblock %}
  
 {% block content %}
 <div class="owner-container">
   <div class="buttons">
     <!-- ბმული 1: ცხოველის დამატება -->
-    <a href="{{ url_for('general_logic.owner_login', action=1) }}" class="square-button">შინაური ცხოველის დამატება</a>
+    <a href="{{ url_for('general_logic.owner_logic', action=1) }}" class="square-button">შინაური ცხოველის დამატება</a>
     <!-- ბმული 2: ჩემი ცხოველების ჩამონათვალი -->
-    <a href="{{ url_for('general_logic.owner_login', action=2) }}" class="square-button">ჩემი შინაური ცხოველები</a>
+    <a href="{{ url_for('general_logic.owner_logic', action=2) }}" class="square-button">ჩემი შინაური ცხოველები</a>
     <!-- ბმული 3: ვეტერინარული კლინიკები ჩემს ახლოს -->
-    <a href="{{ url_for('general_logic.owner_login', action=3) }}" class="square-button">ვეტ.კლინიკები ჩემს ახლოს</a>
+    <a href="{{ url_for('general_logic.owner_logic', action=3) }}" class="square-button">ვეტ.კლინიკები ჩემს ახლოს</a>
     <!-- ბმული 4: ვეტერინარების ტელეფონის ნომრები -->
-    <a href="{{ url_for('general_logic.owner_login', action=4) }}" class="square-button">ვეტ.ექიმების ტელ.ნომრები</a>
+    <a href="{{ url_for('general_logic.owner_logic', action=4) }}" class="square-button">ვეტ.ექიმების ტელ.ნომრები</a>
   </div>    
   <!-- აქ არის box-menu ლოგიკა -->
   <div class="box-menu">
@@ -43,7 +44,7 @@
       </form>
     {% elif action == 1 %}
     <div class="newpetbox">
-    <form action="{{ url_for('general_logic.owner_login', action=1) }}" method="POST">
+    <form action="{{ url_for('general_logic.owner_logic', action=1) }}" method="POST">
       <label for="pet_name">შინაური ცხოველის სახელი: </label>
       <input type="text" id="pet_name" name="pet_name" required>
 
@@ -54,7 +55,7 @@
       </select>
 
       <label for="bdate">დაბადებულია: </label>
-      <input type="date" id="bdate" name="bdate">
+      <input type="date" id="bdate" name="bdate" required>
 
 
       
@@ -187,6 +188,5 @@
 
 {% block script %}
 <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js" integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="crossorigin=""></script>
-
-
+<script src="../static/js/main.js"></script>
 {% endblock %}

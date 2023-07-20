@@ -788,4 +788,11 @@ footer {
   transform: scale(0.95);
 }
 
+/* Box menu */
+.text .box-menu{
+  width:1250px !important;
+  max-width:1500px;
+ }
+ 
+ 
  

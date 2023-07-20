@@ -2,7 +2,6 @@
 <html lang="geo">
 <head>
   <title>{% block title %} Petta {% endblock %}</title>
-  <link rel="stylesheet" href="../static/css/main.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
   <link rel = "icon" href = "../static/images/favicon.ico" type = "image/x-icon">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" 
@@ -10,6 +9,7 @@
   crossorigin="anonymous" referrerpolicy="no-referrer" />
   <style class="bg"></style>
   {% block style %}
+  <link rel="stylesheet" href="../static/css/main.css">
   {% endblock %}
 </head>
 <body>
@@ -70,7 +70,8 @@
   </footer>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
   {% block script %}
-  {% endblock %}
   <script src="../static/js/main.js"></script>
+  {% endblock %}
+  
 </body>
 </html>
