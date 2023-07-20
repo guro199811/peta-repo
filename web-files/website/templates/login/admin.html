@@ -102,21 +102,7 @@
       
           {% if action == None %}
             <h1>{{ current_user.name }}, ეს არის თქვენი შინაური ცხოველების მენიუ,<br> გთხოვთ აირჩიოთ მოქმედება.</h1><br><br>
-            <!--<form action="{{ url_for('general_logic.change_user_data') }}" method="POST">
-              <label for="firstname">სახელი:</label>
-              <input type="text" id="firstname" name="firstname" value="{{ current_user.name }}" disabled>
-              <button type="button" class="change-button" onclick="enableInput('firstname')"><i class="fa-solid fa-pen-to-square"></i></button><br>
-              
-              <label for="lastname">გვარი:</label>
-              <input type="text" id="lastname" name="lastname" value="{{ current_user.lastname }}" disabled>
-              <button type="button" class="change-button" onclick="enableInput('lastname')"><i class="fa-solid fa-pen-to-square"></i></button><br>
-      
-              <label for="address">მისამართი:</label>
-              <input type="text" id="address" name="address" value="{{ current_user.address }}" disabled>
-              <button type="button" class="change-button" onclick="enableInput('address')"><i class="fa-solid fa-pen-to-square"></i></button><br>
-      
-              <input type="submit" value="Save Changes" class="save-button" id="save-button" style="display: none;">
-            -->
+
             </form>
           {% elif action == 1 %}
           <div class="newpetbox">
@@ -265,8 +251,25 @@
     {% elif choice == 6 %}
     {% elif choice == 7 %}
     {% elif choice == 8 %}
+    
+    <div class="user-menu">
+      <form action="{{ url_for('general_logic.admin_logic', choice = 8, action = 0) }}" method="POST">
+        <label for="firstname">სახელი:</label>
+        <input type="text" id="firstname" name="firstname" value="{{ current_user.name }}" disabled>
+        <button type="button" class="change-button" onclick="enableInput('firstname')"><i class="fa-solid fa-pen-to-square"></i></button><br>
+        
+        <label for="lastname">გვარი:</label>
+        <input type="text" id="lastname" name="lastname" value="{{ current_user.lastname }}" disabled>
+        <button type="button" class="change-button" onclick="enableInput('lastname')"><i class="fa-solid fa-pen-to-square"></i></button><br>
+
+        <label for="address">მისამართი:</label>
+        <input type="text" id="address" name="address" value="{{ current_user.address }}" disabled>
+        <button type="button" class="change-button" onclick="enableInput('address')"><i class="fa-solid fa-pen-to-square"></i></button><br>
+
+        <input type="submit" value="Save Changes" class="save-button" id="save-button" style="display: none;">
     {% else %}
     {% endif %}
+  </div>
   </div>
   </section>
 {% endblock %}

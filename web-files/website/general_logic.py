@@ -56,7 +56,16 @@ def register_pet(pet_name, pet_species, pet_breed, recent_vaccination, gender, b
 def owner_logic(action):
         if current_user.type != 1:
             abort(404)
-        if action == 1:
+        if action == 0:
+            if request.method =="POST":
+                firstname = request.form.get('firstname')
+                lastname = request.form.get('lastname')
+                address = request.form.get('address')
+                changed = change_user_data(firstname, lastname, address)
+                if changed:
+                    flash('Changes saved successfully.', category='success')
+                return render_template('login/owner.html', action = action)
+        elif action == 1:
             if request.method =="POST":
                 pet_name = request.form.get('pet_name')
                 pet_species = request.form.get('pet_species')
@@ -99,37 +108,26 @@ def owner_logic(action):
             abort(404)
                 
 
-@general_logic.route('/owner', methods=['GET', 'POST'])
-@login_required
-def change_user_data():
+
+def change_user_data(firstname, lastname, address):
     changed = False
-    if request.method =="POST":
-        firstname = request.form.get('firstname')
-        lastname = request.form.get('lastname')
-        address = request.form.get('address')
-        if firstname is not None:
-            current_user.name = firstname
-            db.session.commit()
-            changed = True
-            
-        if lastname is not None:
-            current_user.lastname = lastname
-            db.session.commit()
-            changed = True
-            
-        if address is not None:
-            current_user.address = address
-            db.session.commit()
-            changed = True
-            
+    if firstname is not None:
+        current_user.name = firstname
         db.session.commit()
-        action = None
-        if changed:
-            flash('Changes saved successfully.', category='success')
-    if current_user.type == 1:
-        return render_template('login/owner.html', action = action)
-    elif current_user.type == 2:
-        return render_template('login/admin.html', choice = 8, action = action)
+        changed = True
+        
+    if lastname is not None:
+        current_user.lastname = lastname
+        db.session.commit()
+        changed = True
+        
+    if address is not None:
+        current_user.address = address
+        db.session.commit()
+        changed = True
+        
+    db.session.commit()
+    return changed
 
 
 @general_logic.route('edit/<int:action>/<int:pet_id>', methods=['GET', 'POST'])
@@ -265,5 +263,14 @@ def admin_logic(choice, action):
         pass
     if choice == 7:
         pass
+    if choice == 8:
+        if request.method =="POST":
+            firstname = request.form.get('firstname')
+            lastname = request.form.get('lastname')
+            address = request.form.get('address')
+            changed = change_user_data(firstname, lastname, address)
+            if changed:
+                flash('Changes saved successfully.', category='success')
+            return render_template('login/admin.html',choice = choice, action = action)
 
     return render_template('login/admin.html', choice = choice)

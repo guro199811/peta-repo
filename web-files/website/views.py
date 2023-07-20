@@ -15,7 +15,7 @@ def home():
 @login_required
 def owner():
     if current_user.type == 1:
-        action = None
+        action = 0
         return render_template("login/owner.html", user=current_user, action = action)
     else:
         abort(404)
@@ -24,8 +24,9 @@ def owner():
 @login_required
 def admin():
     if current_user.type == 2:        
-        action = None
-        return render_template("login/admin.html", user=current_user, action = action)
+        action = 0
+        choice = 8
+        return render_template("login/admin.html", user=current_user, action = action, choice = choice)
     else:
         abort(404)
 @views.route('/vet')

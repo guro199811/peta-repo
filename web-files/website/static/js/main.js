@@ -2,15 +2,16 @@
 function enableInput(inputId) {
     var inputField = document.getElementById(inputId);
     
-    if (inputField.disabled) {
+    if (inputField.disabled == false) {
+      inputField.disabled = true;
+      inputField.select();
+      document.getElementById('save-button').style.display = 'none';
+    }
+    else {
       inputField.disabled = false;
       inputField.focus();
       document.getElementById('save-button').style.display = 'block';
-    } else {
-      inputField.disabled = true;
-      inputField.select();
-      document.getElementById('save-button').style.display = 'block';
-    }
+    } 
 }
 
 //editing pet script

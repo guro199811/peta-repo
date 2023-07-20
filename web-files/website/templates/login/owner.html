@@ -24,9 +24,9 @@
   <!-- აქ არის box-menu ლოგიკა -->
   <div class="box-menu">
 
-    {% if action == None %}
+    {% if action == 0 %}
       <h1>მოგესალმებით, {{ current_user.name }}</h1><br><br>
-      <form action="{{ url_for('general_logic.change_user_data') }}" method="POST">
+      <form action="{{ url_for('general_logic.owner_logic', action = 0) }}" method="POST">
         <label for="firstname">სახელი:</label>
         <input type="text" id="firstname" name="firstname" value="{{ current_user.name }}" disabled>
         <button type="button" class="change-button" onclick="enableInput('firstname')"><i class="fa-solid fa-pen-to-square"></i></button><br>

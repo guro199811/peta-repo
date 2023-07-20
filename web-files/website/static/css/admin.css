@@ -371,7 +371,104 @@ nav{
  }
 
  /* Heading */
-.text .box-menu h1{
+.text .user-menu h1{
   transform:translatex(0px) translatey(276px);
  }
- 
+
+ .home-section .text .user-menu{
+  width:100% !important;
+  max-width:none;
+  min-height:796px;
+ }
+
+ .user-menu{
+  width: auto !important;
+  flex: 1;
+  padding: 20px;
+  background-color: #F5F5F5;
+  border-radius: 10px;
+  box-shadow:0px 2px 50px 0px rgba(0, 0, 0, 0.5);
+  background-color: #f8f8f8;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  text-align: center;
+  overflow: auto;
+  padding-left:0px;
+  padding-right:0px;
+  padding-top:0px;
+  padding-bottom:0px;
+ }
+
+ .user-menu form {
+  margin-bottom: 20px;
+}
+
+.user-menu label {
+  margin-top: 4px;
+  display: block;
+  margin-bottom: 10px;
+  font-weight: bold;
+  color: #555;
+}
+
+.user-menu input[type="text"],
+.user-menu select,
+.user-menu input[type="date"] {
+  width: 400px;
+  height: 45px;
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  background-color: #fff;
+  color: #333;
+  transition: border-color 0.3s ease-in-out;
+}
+
+.user-menu input[type="text"]:focus,
+.user-menu select:focus,
+.user-menu input[type="date"]:focus {
+  outline: none;
+  border-color: #ffa500;
+}
+
+.user-menu button[type="submit"] {
+  display: block;
+  width: 400px;
+  height: 45px;
+  margin: 0 auto;
+  padding: 10px 20px;
+  background-color: #58c03d;
+  color: #fff;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.user-menu button[type="submit"]:hover {
+  background-color: #3dce38;
+}
+
+.user-menu select option {
+  color: #333;
+}
+
+.user-menu .error {
+  color: #ff6347;
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+.user-menu .success {
+  color: #32cd32;
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+.text .user-menu form{
+  position:relative;
+  bottom:-85px;
+ }
+
