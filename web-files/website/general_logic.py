@@ -1,10 +1,15 @@
-from flask import Blueprint, render_template, request, flash, redirect, url_for, abort
+from flask import (Blueprint, render_template,
+                request, flash, redirect, url_for,
+                jsonify, abort)
 from flask_login import login_required, current_user
-from sqlalchemy import or_
+from sqlalchemy import join, select, or_, func
+from sqlalchemy.orm import contains_eager
 
 
 from . import db
 from .models import *
+import logging
+import json
 
 general_logic = Blueprint('general_logic', __name__)
 
@@ -236,25 +241,63 @@ def admin_logic(choice, action):
                 pets = db.session.query(Pet).filter_by(owner_id=owner_id).order_by(Pet.pet_id.asc()).all()
                 if len(pets) == 0:
                     #flash('თქვენ ცხოველები არ გყავთ.')
-                    return render_template('login/admin.html', choice = choice ,action=action, pets=None)
+                    return render_template('login/admin.html',
+                                           choice = choice ,action=action, pets=None)
                 else:
-                    return render_template('login/admin.html',choice = choice, action=action, pets=pets)
+                    return render_template('login/admin.html',
+                                           choice = choice, action=action, pets=pets)
                 
             
 
         elif action == 3:
-            return render_template('login/admin.html',choice  = choice, action=action)
+            return render_template('login/admin.html',
+                                   choice  = choice, action=action)
         elif action == 4:
             vets = db.session.query(Vet).filter_by(type = 3).all()
-            return render_template('login/admin.html',choice = choice, action=action, vets = vets)
+            return render_template('login/admin.html',
+                                    choice = choice, action=action,
+                                    vets = vets)
         else:
-            return render_template('login/admin.html',choice = choice, action = None)
+            return render_template('login/admin.html',
+                                   choice = choice, action = None)
                 
 
     if choice == 2:
-        pass
+        owner_count = db.session.query(Owner).count()
+        vet_count = db.session.query(Vet).count()
+        editor_count = db.session.query(Editor).count()
+        visit_count = db.session.query(Visit).count()
+        # Add counts for other user types as needed
+
+        data = [
+            ['Users', 'User count chart'],
+            ['Owners', owner_count],
+            ['Vets', vet_count],
+            ['Editors', editor_count],
+            ['Visits', visit_count]
+            # Add other user types and their respective counts here
+        ]
+        return render_template('login/admin.html',
+                                    choice = choice, action=action,
+                                    data = data)
+
     if choice == 3:
-        pass
+        owners = db.session.query(
+            Owner,
+            Person.name,
+            Person.created,
+            Person.address,
+            Person.phone,
+            func.count(Pet.pet_id)
+        ).join(Person, Owner.person_id == Person.id). \
+            outerjoin(Pet, Owner.owner_id == Pet.owner_id). \
+            group_by(Owner.owner_id, Person.name, Person.created,
+                      Person.address, Person.phone).all()
+        
+        return render_template('login/admin.html',
+                               choice=choice,
+                               action=action,
+                               owners=owners)
     if choice == 4:
         pass
     if choice == 5:

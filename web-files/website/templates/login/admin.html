@@ -12,6 +12,93 @@
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 {% endblock %}
 
+{% block headscript %}
+{% if data %}
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <script type="text/javascript">
+    google.charts.load('current', {'packages':['corechart', 'bar']});
+    google.charts.setOnLoadCallback(drawChart);
+    google.charts.setOnLoadCallback(drawTrendlines);
+    google.charts.setOnLoadCallback(drawTable);
+
+    function drawChart() {
+      const data = JSON.parse('{{data|tojson}}');
+      console.log(data);
+      var chartData = google.visualization.arrayToDataTable(data);
+
+      var options = {
+        title: 'ზოგადი შეჯამება'
+      };
+
+      var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+
+      chart.draw(chartData, options);
+    }
+
+    function drawTrendlines() {
+      var data = new google.visualization.DataTable();
+      data.addColumn('timeofday', 'Time of Day');
+      data.addColumn('number', 'Motivation Level');
+      data.addColumn('number', 'Energy Level');
+
+      data.addRows([
+        [{v: [8, 0, 0], f: '8 am'}, 1, .25],
+        [{v: [9, 0, 0], f: '9 am'}, 2, .5],
+        [{v: [10, 0, 0], f:'10 am'}, 3, 1],
+        [{v: [11, 0, 0], f: '11 am'}, 4, 2.25],
+        [{v: [12, 0, 0], f: '12 pm'}, 5, 2.25],
+        [{v: [13, 0, 0], f: '1 pm'}, 6, 3],
+        [{v: [14, 0, 0], f: '2 pm'}, 7, 4],
+        [{v: [15, 0, 0], f: '3 pm'}, 8, 5.25],
+        [{v: [16, 0, 0], f: '4 pm'}, 9, 7.5],
+        [{v: [17, 0, 0], f: '5 pm'}, 10, 10],
+      ]);
+
+      var options = {
+        title: 'Motivation and Energy Level Throughout the Day',
+        trendlines: {
+          0: {type: 'linear', lineWidth: 5, opacity: .3},
+          1: {type: 'exponential', lineWidth: 10, opacity: .3}
+        },
+        hAxis: {
+          title: 'Time of Day',
+          format: 'h:mm a',
+          viewWindow: {
+            min: [7, 30, 0],
+            max: [17, 30, 0]
+          }
+        },
+        vAxis: {
+          title: 'Rating (scale of 1-10)'
+        }
+      };
+
+      var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
+      chart.draw(data, options);
+    }
+    google.charts.load('current', {'packages':['table']});
+    function drawTable() {
+      var data = new google.visualization.DataTable();
+      data.addColumn('string', 'Name');
+      data.addColumn('number', 'Salary');
+      data.addColumn('boolean', 'Full Time Employee');
+      data.addRows([
+        ['Mike',  {v: 10000, f: '$10,000'}, true],
+        ['Jim',   {v:8000,   f: '$8,000'},  false],
+        ['Alice', {v: 12500, f: '$12,500'}, true],
+        ['Bob',   {v: 7000,  f: '$7,000'},  true]
+      ]);
+
+      var table = new google.visualization.Table(document.getElementById('table_div'));
+
+      table.draw(data, {showRowNumber: true, width: '100%', height: '100%'});
+    }
+  </script>
+
+
+{% endif %}
+{% endblock %}
+
 {% block content%}
   <div class="sidebar">
   <div class="logo_details">
@@ -245,7 +332,53 @@
       </div>
     </div>
     {% elif choice == 2 %}
+      <div class="dashboard">
+        <div class='box1' id="piechart">
+        </div>
+        <div class="box2" id="chart_div">
+        </div>
+        <div class="box3" id="table_div">
+        </div>
+        <div class="box4">
+          <h1>Admin notes go here</h1>
+        </div>
+      </div>
     {% elif choice == 3 %}
+      <h2>List of Owners</h2>
+        {% if owners %}
+        <table class="table table-sortable">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Created</th>
+              <th>Address</th>
+              <th>Phone</th>
+              <th>Pet Count</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for owner, owner_name, created, address, phone, pet_count in owners %}
+          <tr>
+            <td>{{ owner.owner_id }}</td> {# Owner ID #}
+            <td>{{ owner_name }}</td> {# Owner Name from Person table #}
+            <td>{{ created }}</td> {# Created from Person table #}
+            <td>{{ address }}</td> {# Address from Person table #}
+            <td>{{ phone }}</td> {# Phone from Person table #}
+            <td>
+              {% if pet_count %}
+                {{ pet_count }}
+              {% else %}
+                0
+              {% endif %}
+            </td> {# Pet Count #}
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>No owners found.</p>
+      {% endif %}
     {% elif choice == 4 %}
     {% elif choice == 5 %}
     {% elif choice == 6 %}
