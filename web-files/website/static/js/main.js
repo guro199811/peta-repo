@@ -73,10 +73,10 @@ function sortTableByColumn(table, column, asc = true) {
 		tBody.removeChild(tBody.firstChild);
 	}
 
-	// Re-add the newly sorted rows
+
 	tBody.append(...sortedRows);
 
-	// Remember how the column is currently sorted
+
 	table.querySelectorAll("th").forEach(th => th.classList.remove("th-sort-asc", "th-sort-desc"));
 	table.querySelector(`th:nth-child(${column + 1})`).classList.toggle("th-sort-asc", asc);
 	table.querySelector(`th:nth-child(${column + 1})`).classList.toggle("th-sort-desc", !asc);
@@ -91,3 +91,9 @@ document.querySelectorAll(".table-sortable th").forEach(headerCell => {
 		sortTableByColumn(tableElement, headerIndex, !currentIsAscending);
 	});
 });
+
+
+
+
+
+

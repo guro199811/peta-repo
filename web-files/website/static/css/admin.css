@@ -503,5 +503,20 @@ nav{
 .home-section{
   background-color:#ffffff;
  }
+
+ .welcome-text{
+  text-align: center;
+ }
+
+
+ .saveOwner {
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  background-color: #20e00f;
+  cursor: pointer;
+  border-radius: 3px;
+  display: none;
+}
  
+
  

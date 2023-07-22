@@ -114,96 +114,6 @@ def owner_logic(action):
                 
 
 
-def change_user_data(firstname, lastname, address):
-    changed = False
-    if firstname is not None:
-        current_user.name = firstname
-        db.session.commit()
-        changed = True
-        
-    if lastname is not None:
-        current_user.lastname = lastname
-        db.session.commit()
-        changed = True
-        
-    if address is not None:
-        current_user.address = address
-        db.session.commit()
-        changed = True
-        
-    db.session.commit()
-    return changed
-
-
-@general_logic.route('edit/<int:action>/<int:pet_id>', methods=['GET', 'POST'])
-@login_required
-def edit_pet(action, pet_id):
-    print(pet_id)
-    pet = db.session.query(Pet).filter_by(pet_id = pet_id).one_or_none()
-    changed = False
-    if pet:
-        print(pet.pet_id)
-        if request.method == 'POST':
-            name = request.form.get('name')
-            #species = request.form.get('species')
-            breed = request.form.get('breed')
-            recent_vaccination = request.form.get('recent_vaccination')
-            if name is not None and name != '':
-                pet.name = name
-                db.session.commit()
-                changed = True
-                
-            '''if species is not None:
-                pet.species = species
-                db.session.commit()
-                changed = True'''
-                
-            if breed is not None and breed != '':
-                pet.breed = breed
-                db.session.commit()
-                changed = True
-
-            if recent_vaccination is not None and recent_vaccination != '':
-                pet.recent_vaccination = recent_vaccination
-                db.session.commit()
-                changed = True
-            if changed:
-                flash('მონაცემები წარმატებით შეიცვალა', category='success')
-            if current_user.type == 1:
-                return redirect(url_for('general_logic.owner_logic', action=action))
-            elif current_user.type == 2:
-                return redirect(url_for('general_logic.admin_logic',choice = 1, action=action))
-                return 
-        #return render_template('owner.html', action=action, pet=pet, changed=changed)
-
-    #flash('Pet not found.')
-    return redirect(url_for('general_logic.owner_logic', action=action))
-
-@general_logic.route('delete/<int:action>/<int:pet_id>', methods=['GET', 'DELETE'])
-@login_required
-def remove_pet(action, pet_id):
-    pet = db.session.query(Pet).filter_by(pet_id=pet_id).one_or_none()
-    if pet is not None:
-        owner = db.session.query(Owner).filter_by(person_id=current_user.id).one_or_none()
-        if owner is not None:
-            try:
-                db.session.delete(pet)
-                db.session.commit()
-                
-                remaining_pets = db.session.query(Pet).filter_by(owner_id=owner.owner_id).all()
-                if not remaining_pets:
-                    db.session.delete(owner)
-                    db.session.commit()
-                
-            except Exception as e:
-                flash(e)
-        if current_user.type == 1:
-            return redirect(url_for('general_logic.owner_logic', action=2))
-        if current_user.type == 2:
-            return redirect(url_for('general_logic.admin_logic',choice = 1, action=2))
-    else:
-        abort(404)
-
 #admin_logic
 
 @general_logic.route('/admin/<int:choice>/<int:action>', methods=['GET', 'POST'])
@@ -294,10 +204,12 @@ def admin_logic(choice, action):
             group_by(Owner.owner_id, Person.name, Person.created,
                       Person.address, Person.phone).all()
         
+        
+
         return render_template('login/admin.html',
                                choice=choice,
                                action=action,
-                               owners=owners)
+                               owners=owners) 
     if choice == 4:
         pass
     if choice == 5:
@@ -317,3 +229,121 @@ def admin_logic(choice, action):
             return render_template('login/admin.html',choice = choice, action = action)
 
     return render_template('login/admin.html', choice = choice)
+
+
+def change_user_data(firstname, lastname, address):
+    changed = False
+    if firstname is not None:
+        current_user.name = firstname
+        db.session.commit()
+        changed = True
+        
+    if lastname is not None:
+        current_user.lastname = lastname
+        db.session.commit()
+        changed = True
+        
+    if address is not None:
+        current_user.address = address
+        db.session.commit()
+        changed = True
+        
+    db.session.commit()
+    return changed
+
+
+@general_logic.route('/admin/edit_owner/<int:owner_id>', methods=['GET', 'POST'])
+@login_required
+def edit_owner(owner_id):
+    if request.method == 'POST':
+        name = request.form.get('name')
+        created = request.form.get('created')
+        address = request.form.get('address')
+        phone = request.form.get('phone')
+
+        owner = db.session.query(Owner).filter_by(owner_id = owner_id).one_or_none()
+        person = db.session.query(Person).filter_by(id = owner.person_id).one_or_none()
+        person.name = name
+        person.created = created
+        person.address = address
+        person.phone = phone
+        if int(person.phone) > 9:
+            flash("გთხოვთ შეიყვანოთ 9 ციფრიანი ტელ.ნომერი", category = "error")
+            return redirect(url_for('general_logic.admin_logic',choice = 3, action=0))
+        db.session.commit()
+
+
+        flash("successfull change", category='success')
+    return redirect(url_for('general_logic.admin_logic',choice = 3, action=0))
+    
+
+
+@general_logic.route('edit/<int:action>/<int:pet_id>', methods=['GET', 'POST'])
+@login_required
+def edit_pet(action, pet_id):
+    print(pet_id)
+    pet = db.session.query(Pet).filter_by(pet_id = pet_id).one_or_none()
+    changed = False
+    if pet:
+        print(pet.pet_id)
+        if request.method == 'POST':
+            name = request.form.get('name')
+            #species = request.form.get('species')
+            breed = request.form.get('breed')
+            recent_vaccination = request.form.get('recent_vaccination')
+            if name is not None and name != '':
+                pet.name = name
+                db.session.commit()
+                changed = True
+                
+            '''if species is not None:
+                pet.species = species
+                db.session.commit()
+                changed = True'''
+                
+            if breed is not None and breed != '':
+                pet.breed = breed
+                db.session.commit()
+                changed = True
+
+            if recent_vaccination is not None and recent_vaccination != '':
+                pet.recent_vaccination = recent_vaccination
+                db.session.commit()
+                changed = True
+            if changed:
+                flash('მონაცემები წარმატებით შეიცვალა', category='success')
+            if current_user.type == 1:
+                return redirect(url_for('general_logic.owner_logic', action=action))
+            elif current_user.type == 2:
+                return redirect(url_for('general_logic.admin_logic',choice = 1, action=action))
+                return 
+        #return render_template('owner.html', action=action, pet=pet, changed=changed)
+
+    #flash('Pet not found.')
+    return redirect(url_for('general_logic.owner_logic', action=action))
+
+
+@general_logic.route('delete/<int:action>/<int:pet_id>', methods=['GET', 'DELETE'])
+@login_required
+def remove_pet(action, pet_id):
+    pet = db.session.query(Pet).filter_by(pet_id=pet_id).one_or_none()
+    if pet is not None:
+        owner = db.session.query(Owner).filter_by(person_id=current_user.id).one_or_none()
+        if owner is not None:
+            try:
+                db.session.delete(pet)
+                db.session.commit()
+                
+                remaining_pets = db.session.query(Pet).filter_by(owner_id=owner.owner_id).all()
+                if not remaining_pets:
+                    db.session.delete(owner)
+                    db.session.commit()
+                
+            except Exception as e:
+                flash(e)
+        if current_user.type == 1:
+            return redirect(url_for('general_logic.owner_logic', action=2))
+        if current_user.type == 2:
+            return redirect(url_for('general_logic.admin_logic',choice = 1, action=2))
+    else:
+        abort(404)
