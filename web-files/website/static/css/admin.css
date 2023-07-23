@@ -509,14 +509,43 @@ nav{
  }
 
 
- .saveOwner {
-  padding: 5px 10px;
-  border: 1px solid #ccc;
-  background-color: #20e00f;
-  cursor: pointer;
-  border-radius: 3px;
+/* Inherit most traits from .change-button */
+.saveOwner {
   display: none;
+  width: 30px;
+  height: 30px;
+  background-color: transparent;
+  border: 1px solid #00000000;
+  border-radius: 5px;
+  color: #000;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  background-color: #d1d1d1;
 }
- 
 
+/* Override background color for .saveOwner */
+
+/* Hover styles for .saveOwner */
+.saveOwner:hover {
+  background-color: #1aad07; /* New hover background color for .saveOwner */
+}
+
+/* Active styles for .saveOwner */
+.saveOwner:active {
+  transform: scale(0.95);
+}
+
+.table-sortable tr .saveOwner{
+  transform: translatex(2px) translatey(-2px);
+ }
  
+ /* Change button */
+ .table-sortable tr .change-button{
+  transform: translatey(-3px);
+ }
+
+
+.home-section .text table tbody tr td input[type=text]{
+  width:100% !important;
+ }

@@ -192,28 +192,35 @@ def admin_logic(choice, action):
                                     data = data)
 
     if choice == 3:
-        owners = db.session.query(
-            Owner,
-            Person.name,
-            Person.created,
-            Person.address,
-            Person.phone,
-            func.count(Pet.pet_id)
+        users = db.session.query(Owner, Person, func.count(Pet.pet_id)  # Adding the pet counter
         ).join(Person, Owner.person_id == Person.id). \
             outerjoin(Pet, Owner.owner_id == Pet.owner_id). \
-            group_by(Owner.owner_id, Person.name, Person.created,
-                      Person.address, Person.phone).all()
+            group_by(Owner, Person).all()
         
+        return render_template('login/admin.html',
+                               choice=choice,
+                               action=action,
+                               users=users) 
+    if choice == 4:
+        users = db.session.query(Vet, Person, func.count(Visit.visit_id)  # Adding the pet counter
+        ).join(Person, Vet.person_id == Person.id). \
+            outerjoin(Visit, Visit.vet_id == Vet.vet_id). \
+            group_by(Vet, Person).all()
         
+        return render_template('login/admin.html',
+                               choice=choice,
+                               action=action,
+                               users=users) 
+    if choice == 5:
+        users = db.session.query(Editor, Person, func.count(Post.post_id)  # Adding the pet counter
+        ).join(Person, Editor.person_id == Person.id). \
+            outerjoin(Post, Post.editor_id == Editor.editor_id). \
+            group_by(Editor, Person).all()
 
         return render_template('login/admin.html',
                                choice=choice,
                                action=action,
-                               owners=owners) 
-    if choice == 4:
-        pass
-    if choice == 5:
-        pass
+                               users=users) 
     if choice == 6:
         pass
     if choice == 7:
@@ -252,29 +259,31 @@ def change_user_data(firstname, lastname, address):
     return changed
 
 
-@general_logic.route('/admin/edit_owner/<int:owner_id>', methods=['GET', 'POST'])
+
+@general_logic.route('/admin/edit_user/<int:person_id>', methods=['GET', 'POST'])
 @login_required
-def edit_owner(owner_id):
+def edit_user(person_id):
     if request.method == 'POST':
         name = request.form.get('name')
-        created = request.form.get('created')
+        lastname = request.form.get('lastname')
+        mail = request.form.get('mail')
+        type = request.form.get('type')
         address = request.form.get('address')
         phone = request.form.get('phone')
-
-        owner = db.session.query(Owner).filter_by(owner_id = owner_id).one_or_none()
-        person = db.session.query(Person).filter_by(id = owner.person_id).one_or_none()
+        
+        person = db.session.query(Person).filter_by(id = person_id).one()
         person.name = name
-        person.created = created
+        person.lastname = lastname
+        person.mail = mail
+        person.type = type
+        flash(f"{person.type}, {type}")
         person.address = address
         person.phone = phone
-        if int(person.phone) > 9:
-            flash("გთხოვთ შეიყვანოთ 9 ციფრიანი ტელ.ნომერი", category = "error")
-            return redirect(url_for('general_logic.admin_logic',choice = 3, action=0))
-        db.session.commit()
-
-
-        flash("successfull change", category='success')
-    return redirect(url_for('general_logic.admin_logic',choice = 3, action=0))
+        if len(phone) == 9:
+            db.session.commit()
+        else:
+            flash(f"the number {phone} is not equal to 9", category = 'error')
+        return redirect(url_for('general_logic.admin_logic',choice = 3, action=0))
     
 
 

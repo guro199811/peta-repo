@@ -26,9 +26,11 @@ window.onload = function(){
 //owner actions
 
 
-function enableEditOwner(owner_id) {
-  const inputs = document.querySelectorAll(`#name_${owner_id}, #created_${owner_id}, #address_${owner_id}, #phone_${owner_id}`);
-  const saveButton = document.querySelector(`#save_${owner_id}`);
+function enableEditUser(user_id) {
+  const inputs = document.querySelectorAll(`#name_${user_id}, #lastname_${user_id},
+   #mail_${user_id}, #type_${user_id}, #created_${user_id}, #address_${user_id},
+   #phone_${user_id}`);
+  const saveButton = document.querySelector(`#save_${user_id}`);
 
   let isEditable = false;
 
@@ -48,9 +50,6 @@ function enableEditOwner(owner_id) {
       saveButton.style = 'display: none';
     }
   }
-
-  // Prevent form submission when the "Save" button is clicked
-  return false;
 }
 
 

@@ -93,6 +93,13 @@ class Visit(db.Model):
     treatment = db.Column(db.String(50))
     date = db.Column(db.Date)
 
+class Post(db.Model):
+    __tablename__ = 'posts'
+    post_id = db.Column(db.Integer, primary_key=True)
+    posted = db.Column(db.DateTime)
+    editor_id = db.Column(db.Integer, db.ForeignKey('editors.editor_id'))
+    editor = db.relationship(Editor)
+
 
 '''if __name__ == '__main__':
     app.run()
