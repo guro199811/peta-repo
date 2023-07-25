@@ -106,10 +106,13 @@
     <i class="bx bx-menu" id="btn"></i>
   </div>
   <ul class="nav-list">
-    <li>
+    <!-- Existing menu items ... -->
+    <li class="search">
       <i class="bx bx-search"></i>
-      <input type="text" placeholder="Search...">
-        <span class="tooltip">Search</span>
+      <form id="search-form" action="{{ url_for('general_logic.admin_logic', choice=0, action=0) }}" method="GET">
+        <input type="text" name="q" placeholder="Search...">
+      </form>
+      <span class="tooltip">Search</span>
     </li>
     <li>
       <a href="{{ url_for('general_logic.admin_logic', choice=1, action = 0) }}">
@@ -171,8 +174,65 @@
   </div>
   
   <section class="home-section">
-  <div class="text">
-    {% if choice == 1 %}
+      {% if choice == 0 %}
+      <h2 style="text-align:center">Search Results</h2>
+      <table class="table table-sortable">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Lastname</th>
+            <th>Mail</th>
+            <th>Type</th>
+            <th>Joined us</th>
+            <th>Address</th>
+            <th>Phone</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for person in action %}
+            <form action="{{ url_for('general_logic.edit_user', person_id=person.id) }}" method="POST">
+              <tr>
+                <td>{{ person.id }}</td>
+                <td>
+                  <input type="text" id="name_{{ person.id }}" name="name" value="{{ person.name }}" required disabled>
+                </td>
+                <td>
+                  <input type="text" id="lastname_{{ person.id }}" name="lastname" value="{{ person.lastname }}" required disabled>
+                </td>
+                <td>
+                  <input type="text" id="mail_{{ person.id }}" name="mail" value="{{ person.mail }}" required disabled>
+                </td>
+                <td>
+                  <select id="type_{{ person.id }}" name="type" required disabled>
+                    <option value="1" {% if person.type == 1 %}selected{% endif %}>User</option>
+                    <option value="2" {% if person.type == 2 %}selected{% endif %}>Admin</option>
+                    <option value="3" {% if person.type == 3 %}selected{% endif %}>Vet</option>
+                    <option value="4" {% if person.type == 4 %}selected{% endif %}>Editor</option>
+                  </select>
+                </td>
+                <td>{{ person.created }}</td>
+                <td>
+                  <input type="text" id="address_{{ person.id }}" name="address" value="{{ person.address }}" required disabled>
+                </td>
+                <td>
+                  <input type="text" id="phone_{{ person.id }}" name="phone" value="{{ person.phone }}" required disabled>
+                <td>
+                  <div class="pet-actions">
+                    <button type="button" class="change-button" id="change_{{ person.id }}" onclick="enableEditUser('{{ person.id }}')"><i class="fa-regular fa-pen-to-square"></i></button>
+                    <button type="submit" class="saveOwner" id="save_{{ person.id }}" onsubmit="return confrm('შეცვლის დასტური')"><i class="fa-solid fa-check"></i></button>
+                  </div>
+                </td>
+              </tr>
+              </form>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% if not action %}
+        <p style="text-align:center">No results on Search.</p>
+      {% endif %}
+    {% elif choice == 1 %}
       <div class="owner-container">
         <div class="buttons">
           <!-- ბმული 1: ცხოველის დამატება -->
@@ -371,7 +431,7 @@
     } %}
     
     {% if choice in header_text %}
-        <h2>{{ header_text[choice] }}</h2>
+        <h2 style="text-align:center">{{ header_text[choice] }}</h2>
     {% endif %}
     {% if users %}
       <table class="table table-sortable">
@@ -385,7 +445,14 @@
             <th>Joined us</th>
             <th>Address</th>
             <th>Phone</th>
+            {% if choice == 3%}
             <th>Pets</th>
+            {% elif choice == 4 %}
+            <th>Visits</th>
+            <th>Speciality</th>
+            {% elif choice == 5 %}
+            <th>Posts</th>
+            {% endif %}
             <th>Actions</th>
           </tr>
         </thead>
@@ -436,6 +503,23 @@
                   0
                 {% endif %}
               </td>
+              {% if choice == 4 %}
+              <td>
+                <select id="type_{{ person.id }}" name="vet_speciality" required disabled>
+                  <option value="0" {% if action == None %}selected{% endif %}>No Speciality</option>
+                  <option value="1" {% if action == 1 %}selected{% endif %}>Cardiology</option>
+                  <option value="2" {% if action == 2 %}selected{% endif %}>Dermatology</option>
+                  <option value="3" {% if action == 3 %}selected{% endif %}>Ophthalmology</option>
+                  <option value="4" {% if action == 4 %}selected{% endif %}>Orthopedics</option>
+                  <option value="5" {% if action == 5 %}selected{% endif %}>Neurology</option>
+                  <option value="6" {% if action == 6 %}selected{% endif %}>Oncology</option>
+                  <option value="7" {% if action == 7 %}selected{% endif %}>Radiology</option>
+                  <option value="8" {% if action == 8 %}selected{% endif %}>Surgery</option>
+                  <option value="9" {% if action == 9 %}selected{% endif %}>Internal Medicine</option>
+                  <option value="10" {% if action == 10 %}selected{% endif %}>Behavioral Medicine</option>
+                </select>
+              </td>
+              {% endif %}
               <td>
                 <div class="pet-actions">
                   <button type="button" class="change-button" id="change_{{ person.id }}" onclick="enableEditUser('{{ person.id }}')"><i class="fa-regular fa-pen-to-square"></i></button>
@@ -447,8 +531,9 @@
           {% endfor %}
         </tbody>
       </table>
-    {% else %}
+    {% if not users %}
       <p style="text-align:center">No result found.</p>
+    {% endif %}
     {% endif %}
     {% endif %}
   </div>

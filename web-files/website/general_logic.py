@@ -2,8 +2,9 @@ from flask import (Blueprint, render_template,
                 request, flash, redirect, url_for,
                 jsonify, abort)
 from flask_login import login_required, current_user
-from sqlalchemy import join, select, or_, func
+from sqlalchemy import join, select, or_, func, and_, cast, String  
 from sqlalchemy.orm import contains_eager
+from sqlalchemy.orm.exc import NoResultFound
 
 
 from . import db
@@ -121,6 +122,25 @@ def owner_logic(action):
 def admin_logic(choice, action):
     if current_user.type != 2:
         abort(404)
+    if choice == 0:
+    # Handle search functionality here
+        search_query = request.args.get('q')
+        if search_query:
+            # Perform a case-insensitive search on the 'persons' table
+            search_query = f"%{search_query.lower()}%"
+            search_results = db.session.query(Person).filter(
+                or_(
+                    func.lower(Person.name).like(search_query),
+                    func.lower(Person.lastname).like(search_query),
+                    func.lower(Person.mail).like(search_query),
+                    func.lower(Person.address).like(search_query),
+                    cast(Person.phone, String).like(search_query)
+                )
+            ).all()
+
+        return render_template('login/admin.html', choice=choice, action = search_results)
+
+    
     if choice == 1:
         if action == 1:
             if request.method =="POST":
@@ -174,22 +194,41 @@ def admin_logic(choice, action):
 
     if choice == 2:
         owner_count = db.session.query(Owner).count()
-        vet_count = db.session.query(Vet).count()
-        editor_count = db.session.query(Editor).count()
+        vet_count = db.session.query(Vet).filter_by(active = True).count()
+        editor_count = db.session.query(Editor).filter_by(active = True).count()
         visit_count = db.session.query(Visit).count()
-        # Add counts for other user types as needed
+        admin_count = db.session.query(Admin).count()
+
+
+        # Subquery to find the IDs of owners, vets, and editors
+        owner_ids = db.session.query(Owner.person_id)
+        vet_ids = db.session.query(Vet.person_id)
+        editor_ids = db.session.query(Editor.person_id)
+
+        other_users = db.session.query(Person).filter(
+            and_(
+                Person.id.notin_(owner_ids),
+                Person.id.notin_(vet_ids),
+                Person.id.notin_(editor_ids)
+            )
+        ).count()
+
+
 
         data = [
             ['Users', 'User count chart'],
             ['Owners', owner_count],
             ['Vets', vet_count],
             ['Editors', editor_count],
-            ['Visits', visit_count]
-            # Add other user types and their respective counts here
+            ['Visits', visit_count],
+            ['Admins', admin_count],
+            ['Regular users', other_users]
         ]
+        
         return render_template('login/admin.html',
-                                    choice = choice, action=action,
-                                    data = data)
+                                choice = choice,
+                                action=action,
+                                data = data)
 
     if choice == 3:
         users = db.session.query(Owner, Person, func.count(Pet.pet_id)  # Adding the pet counter
@@ -198,29 +237,29 @@ def admin_logic(choice, action):
             group_by(Owner, Person).all()
         
         return render_template('login/admin.html',
-                               choice=choice,
-                               action=action,
-                               users=users) 
+                                choice=choice,
+                                action=action,
+                                users=users) 
     if choice == 4:
         users = db.session.query(Vet, Person, func.count(Visit.visit_id)  # Adding the pet counter
         ).join(Person, Vet.person_id == Person.id). \
-            outerjoin(Visit, Visit.vet_id == Vet.vet_id). \
+            outerjoin(Visit, Visit.vet_id == Vet.vet_id).filter(Vet.active == True). \
             group_by(Vet, Person).all()
         
         return render_template('login/admin.html',
-                               choice=choice,
-                               action=action,
-                               users=users) 
+                                choice=choice,
+                                action=action,
+                                users=users) 
     if choice == 5:
         users = db.session.query(Editor, Person, func.count(Post.post_id)  # Adding the pet counter
         ).join(Person, Editor.person_id == Person.id). \
-            outerjoin(Post, Post.editor_id == Editor.editor_id). \
+            outerjoin(Post, Post.editor_id == Editor.editor_id).filter(Editor.active == True). \
             group_by(Editor, Person).all()
 
         return render_template('login/admin.html',
-                               choice=choice,
-                               action=action,
-                               users=users) 
+                                choice=choice,
+                                action=action,
+                                users=users) 
     if choice == 6:
         pass
     if choice == 7:
@@ -263,6 +302,10 @@ def change_user_data(firstname, lastname, address):
 @general_logic.route('/admin/edit_user/<int:person_id>', methods=['GET', 'POST'])
 @login_required
 def edit_user(person_id):
+    if current_user.type != 2:
+        abort(404)
+        
+
     if request.method == 'POST':
         name = request.form.get('name')
         lastname = request.form.get('lastname')
@@ -271,20 +314,133 @@ def edit_user(person_id):
         address = request.form.get('address')
         phone = request.form.get('phone')
         
-        person = db.session.query(Person).filter_by(id = person_id).one()
-        person.name = name
-        person.lastname = lastname
-        person.mail = mail
-        person.type = type
-        flash(f"{person.type}, {type}")
-        person.address = address
-        person.phone = phone
-        if len(phone) == 9:
-            db.session.commit()
-        else:
-            flash(f"the number {phone} is not equal to 9", category = 'error')
-        return redirect(url_for('general_logic.admin_logic',choice = 3, action=0))
-    
+        try:
+            person = db.session.query(Person).filter_by(id=person_id).one()
+
+            previous_person_type = person.type
+            
+            person.name = name
+            person.lastname = lastname
+            person.mail = mail
+            person.type = type
+            person.address = address
+            person.phone = phone
+            choice = 3
+            #Am using action in vets for identifiend speciality, action is needed for routing
+            action = 0
+            if len(phone) == 9:
+                db.session.commit()
+                if int(type) == 1:  # Regular user
+
+                    choice = 5  #Choice for redirections
+                    
+                    if previous_person_type == 2:
+                        try:
+                            admin = db.session.query(Admin).filter_by(person_id=person_id).one()
+                            admin.active = False
+                        except NoResultFound:
+                            pass
+                    
+                    # Sets previous role's active status to False (Vet and Editor)
+                    if previous_person_type == 3:
+                        try:
+                            vet = db.session.query(Vet).filter_by(person_id=person_id).one()
+                            vet.active = False
+                        except NoResultFound:
+                            pass
+
+                    if previous_person_type == 4:
+                        try:
+                            editor = db.session.query(Editor).filter_by(person_id=person_id).one()
+                            editor.active = False
+                        except NoResultFound:
+                            pass
+                
+                if int(type) == 2:  # Admin
+                    try:
+                        choice = 6  # Or any other choice number for admin
+                        admin = db.session.query(Admin).filter_by(person_id=person_id).one()
+                        admin.active = True
+                    except NoResultFound:
+                        admin = Admin(person_id=person_id, active=True)
+                        db.session.add(admin)
+                    
+                    # Sets previous role's active status to False (Vet and Editor)
+                    if previous_person_type == 3:
+                        try:
+                            vet = db.session.query(Vet).filter_by(person_id=person_id).one()
+                            vet.active = False
+                        except NoResultFound:
+                            pass
+                    if previous_person_type == 4:
+                        try:
+                            editor = db.session.query(Editor).filter_by(person_id=person_id).one()
+                            editor.active = False
+                        except NoResultFound:
+                            pass
+
+                elif int(type) == 3:  # Vet
+                    try:
+                        choice = 4
+                        vet = db.session.query(Vet).filter_by(person_id=person_id).one()
+                        vet_speciality = request.form.get('vet_speciality')
+                        if vet_speciality != None or vet_speciality != 0 or vet_speciality != '0':
+                            vet.spec_id = vet_speciality
+                        vet.active = True
+                        action = vet_speciality
+                    except NoResultFound:
+                        vet = Vet(person_id=person_id, active=True)
+                        db.session.add(vet)
+
+                    # Set previous role's active status to False (Editor)
+                    if previous_person_type == 2:
+                        try:
+                            admin = db.session.query(Admin).filter_by(person_id=person_id).one()
+                            admin.active = False
+                        except NoResultFound:
+                            pass
+                    
+                    if previous_person_type == 4:
+                        try:
+                            editor = db.session.query(Editor).filter_by(person_id=person_id).one()
+                            editor.active = False
+                        except NoResultFound:
+                            pass
+
+                elif int(type) == 4:  # Editor
+                    try:
+                        choice = 5
+                        editor = db.session.query(Editor).filter_by(person_id=person_id).one()
+                        editor.active = True
+                    except NoResultFound:
+                        editor = Editor(person_id=person_id, active=True)
+                        db.session.add(editor)
+
+                    # Set previous role's active status to False (Vet)
+                    if previous_person_type == 2:
+                        try:
+                            admin = db.session.query(Admin).filter_by(person_id=person_id).one()
+                            admin.active = False
+                        except NoResultFound:
+                            pass
+
+                    if previous_person_type == 3:
+                        try:
+                            vet = db.session.query(Vet).filter_by(person_id=person_id).one()
+                            vet.active = False
+                        except NoResultFound:
+                            pass
+
+
+                db.session.commit()
+
+            else:
+                flash(f"The number {phone} is not equal to 9", category='error')
+
+        except NoResultFound:
+            flash("User not found.", category='error')
+
+        return redirect(url_for('general_logic.admin_logic', choice=choice, action=action))
 
 
 @general_logic.route('edit/<int:action>/<int:pet_id>', methods=['GET', 'POST'])

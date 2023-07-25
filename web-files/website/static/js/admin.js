@@ -52,5 +52,10 @@ function enableEditUser(user_id) {
   }
 }
 
+const searchIcon = document.querySelector('.search i');
+const searchForm = document.getElementById('search-form');
 
+searchIcon.addEventListener('click', () => {
+  searchForm.classList.toggle('show-search');
+});
 

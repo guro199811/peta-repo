@@ -42,12 +42,12 @@ class Speciality(db.Model):
 
 class Vet(db.Model):
     __tablename__ = 'vets'
+    active = db.Column(db.Boolean, default=True)
     vet_id = db.Column(db.Integer, primary_key=True)
     person_id = db.Column(db.Integer, db.ForeignKey('persons.id'))
     person = db.relationship(Person)
     spec_id = db.Column(db.Integer, db.ForeignKey('specialities.spec_id'))
     speciality = db.relationship(Speciality)
-    type = db.Column(db.Integer, db.ForeignKey('types.type'))
 
 class Pet(db.Model):
     __tablename__ = 'pets'
@@ -66,18 +66,18 @@ class Pet(db.Model):
 
 class Admin(db.Model):
     __tablename__ = 'admins'
+    active = db.Column(db.Boolean, default=True)
     admin_id = db.Column(db.Integer, primary_key=True)
     person_id = db.Column(db.Integer, db.ForeignKey('persons.id'))
     person = db.relationship(Person)
-    type = db.Column(db.Integer, db.ForeignKey('types.type'))
 
 
 class Editor(db.Model):
     __tablename__ = 'editors'
+    active = db.Column(db.Boolean, default=True)
     editor_id = db.Column(db.Integer, primary_key=True)
     person_id = db.Column(db.Integer, db.ForeignKey('persons.id'))
     person = db.relationship(Person)
-    type = db.Column(db.Integer, db.ForeignKey('types.type'))
 
 
 class Visit(db.Model):
