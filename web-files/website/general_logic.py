@@ -2,8 +2,8 @@ from flask import (Blueprint, render_template,
                 request, flash, redirect, url_for,
                 jsonify, abort)
 from flask_login import login_required, current_user
-from sqlalchemy import join, select, or_, func, and_, cast, String  
-from sqlalchemy.orm import contains_eager
+from sqlalchemy import join, select, or_, func, and_, cast, String
+from sqlalchemy.orm import contains_eager, aliased
 from sqlalchemy.orm.exc import NoResultFound
 
 
@@ -261,9 +261,29 @@ def admin_logic(choice, action):
                                 action=action,
                                 users=users) 
     if choice == 6:
-        pass
+
+        vet_person = aliased(Person)
+        owner_person = aliased(Person)
+
+        visits = db.session.query(
+        Visit, Vet, Owner, Pet, vet_person.name.label('vet_name'), vet_person.lastname.label('vet_lastname'),
+        owner_person.name.label('owner_name'), owner_person.lastname.label('owner_lastname'), Pet.name.label('pet_name')
+        ).join(Vet, Vet.vet_id == Visit.vet_id) \
+        .join(Owner, Owner.owner_id == Visit.owner_id) \
+        .join(Pet, Pet.pet_id == Visit.pet_id) \
+        .join(vet_person, vet_person.id == Vet.person_id) \
+        .join(owner_person, owner_person.id == Owner.person_id).all()
+
+        return render_template('login/admin.html', choice=choice, action=action, visits=visits)
+    
     if choice == 7:
-        pass
+        pets = db.session.query(Pet, Owner, Person).join(
+            Owner, Pet.owner_id == Owner.owner_id
+        ).join(
+            Person, and_(Owner.person_id == Person.id)
+        ).all()
+        return render_template('login/admin.html', choice = choice, pets = pets)
+
     if choice == 8:
         if request.method =="POST":
             firstname = request.form.get('firstname')

@@ -205,7 +205,7 @@ body{
 .sidebar li a:hover .link_name,
 .sidebar li a:hover i{
   transition: all 0.5s ease;
-  color:var(--color-default)
+  color:#ff6347
 }
 
 .sidebar.open li a .link_name{
@@ -549,3 +549,5 @@ nav{
 .home-section .text table tbody tr td input[type=text]{
   width:100% !important;
  }
+
+ 
