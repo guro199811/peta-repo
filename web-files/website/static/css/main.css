@@ -887,3 +887,8 @@ footer {
   z-index: 2;
   transition: background-color 0.3s ease; /* Smooth transition for sticky header */
 }
+
+/* Table Data */
+#table_div tr td{
+  text-align:center;
+ }

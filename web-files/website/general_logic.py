@@ -5,6 +5,8 @@ from flask_login import login_required, current_user
 from sqlalchemy import join, select, or_, func, and_, cast, String
 from sqlalchemy.orm import contains_eager, aliased
 from sqlalchemy.orm.exc import NoResultFound
+from datetime import date, timedelta
+
 
 
 from . import db
@@ -213,7 +215,30 @@ def admin_logic(choice, action):
             )
         ).count()
 
+        owners = db.session.query(
+            Owner, Person, func.count(Pet.pet_id)
+        ).join(Person, Owner.person_id == Person.id). \
+        outerjoin(Pet, Owner.owner_id == Pet.owner_id). \
+        group_by(Owner, Person).all()
 
+        #google charts table data here
+        owner_data = []
+        for owner in owners:
+            owner_id = owner[0].owner_id
+            name = f"{owner.Person.name} {owner.Person.lastname}"
+            pet_count = owner[2]
+            owner_data.append([owner_id, name, int(pet_count)])
+
+        #Google charts trend data here
+        
+        persons = db.session.query(Person).all()
+
+        trend_data = [{'created': str(person.created), 'count': 1} for person in persons]
+        current_date = date.today()
+        min_date = current_date - timedelta(days=4 * 30) 
+
+
+        #Piechart data
 
         data = [
             ['Users', 'User count chart'],
@@ -228,7 +253,11 @@ def admin_logic(choice, action):
         return render_template('login/admin.html',
                                 choice = choice,
                                 action=action,
-                                data = data)
+                                data = data,
+                                owner_data = owner_data,
+                                trend_data = trend_data,
+                                current_date = current_date,
+                                min_date = min_date)
 
     if choice == 3:
         users = db.session.query(Owner, Person, func.count(Pet.pet_id)  # Adding the pet counter
