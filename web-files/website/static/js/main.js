@@ -39,12 +39,31 @@ else{
   saveButton.style.display = "block";
 }}
 
-//map script
-var map = L.map('map').setView([51.505, -0.09], 13);
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  maxZoom: 19,
-  attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-}).addTo(map);
+
+function initializeMap() {
+  var map = L.map('map').setView([41.7151377, 44.827096], 8);
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+  }).addTo(map);
+
+  map.locate({ setView: true, maxZoom: 16 });
+
+  // Add a marker at the user's location
+  function onLocationFound(e) {
+    var radius = e.accuracy / 2;
+    L.marker(e.latlng).addTo(map)
+      .bindPopup("ჩემი ლოკაცია").openPopup();
+    L.circle(e.latlng, radius).addTo(map);
+  }
+
+  map.on('locationfound', onLocationFound);
+}
+
+
+if (document.getElementById('map')) {
+  initializeMap();
+}
 
 
 

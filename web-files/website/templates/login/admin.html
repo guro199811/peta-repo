@@ -369,18 +369,25 @@
                 <div id="map"></div>
       
           {% elif action == 4 %}
+              {% if vets %}
               <div class="list-box">
                 <h3>დარეგისტრირებული ვეტერინარების ტელ.ნომრები</h3>
                 <ul>
-                  {% for vet in vets %}
+                  {% for vet, person in vets %}
                     <li>
-                      <strong>სახელი: </strong> {{vet.name}}<br>
-                      <strong>გვარი: </strong> {{vet.lastname}}<br>
-                      <strong>ტელ.ნომერი: </strong> {{vet.phone}}<br>
+                      <strong>სახელი: </strong> {{person.name}}<br>
+                      <strong>გვარი: </strong> {{person.lastname}}<br>
+                      <strong>ტელ.ნომერი: </strong> {{person.phone}}<br>
+                      {% if vet.speciality %}
+                      <strong>სპეციალიზაცია: </strong> {{vet.Speciality}}<br>
+                      {% else %}
+                      <strong>სპეციალიზაცია არ არის მითითებული</strong><br>
+                      {% endif %}
                     </li>
                     {% endfor %}
                 </ul>
               </div>
+              {% endif %}
         {% endif %}
       </div>
     </div>
@@ -612,7 +619,7 @@
 {% endblock %}
 
 {% block script %}
+  <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js" integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="crossorigin=""></script>
   <script src="../../static/js/admin.js"></script>
   <script src="../../static/js/main.js"></script>
-  <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js" integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="crossorigin=""></script>
 {% endblock %}

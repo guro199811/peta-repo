@@ -101,6 +101,18 @@ class Post(db.Model):
     editor = db.relationship(Editor)
 
 
+class Pet_breed(db.Model):
+    __tablename__ = 'pet_breeds'
+    breed_id = db.Column(db.integer, primary_key=True)
+    breed = db.Column(db.String(50))
+
+
+class Pet_species(db.Model):
+    __tablename__ = 'pet_species'
+    pet_type_id = db.Column(db.Integer, primary_key=True)
+    pet_type = db.Column(db.String(50))
+
+
 '''if __name__ == '__main__':
     app.run()
 '''

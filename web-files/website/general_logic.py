@@ -110,7 +110,7 @@ def owner_logic(action):
         elif action == 3:
             return render_template('login/owner.html', action=action)
         elif action == 4:
-            vets = db.session.query(Vet).filter_by(type = 3).all()
+            vets = db.session.query(Vet, Person).join(Person, Vet.person_id == Person.id).filter(Vet.active == True).all()
             return render_template('login/owner.html', action=action, vets = vets)
         else:
             abort(404)
@@ -185,7 +185,7 @@ def admin_logic(choice, action):
             return render_template('login/admin.html',
                                    choice  = choice, action=action)
         elif action == 4:
-            vets = db.session.query(Vet).filter_by(type = 3).all()
+            vets = db.session.query(Vet, Person).join(Person, Vet.person_id == Person.id).filter(Vet.active == True).all()
             return render_template('login/admin.html',
                                     choice = choice, action=action,
                                     vets = vets)
@@ -198,7 +198,6 @@ def admin_logic(choice, action):
         owner_count = db.session.query(Owner).count()
         vet_count = db.session.query(Vet).filter_by(active = True).count()
         editor_count = db.session.query(Editor).filter_by(active = True).count()
-        visit_count = db.session.query(Visit).count()
         admin_count = db.session.query(Admin).count()
 
 
@@ -245,11 +244,10 @@ def admin_logic(choice, action):
             ['Owners', owner_count],
             ['Vets', vet_count],
             ['Editors', editor_count],
-            ['Visits', visit_count],
             ['Admins', admin_count],
             ['Regular users', other_users]
         ]
-        
+
         return render_template('login/admin.html',
                                 choice = choice,
                                 action=action,
@@ -374,7 +372,7 @@ def edit_user(person_id):
             person.type = type
             person.address = address
             person.phone = phone
-            choice = 3
+            choice = 8
             #Am using action in vets for identifiend speciality, action is needed for routing
             action = 0
             if len(phone) == 9:
