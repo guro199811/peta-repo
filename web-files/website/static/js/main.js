@@ -17,16 +17,16 @@ function enableInput(inputId) {
 //editing pet script
 function enableEdit(petId) {
 const nameInput = document.getElementById(`name_${petId}`);
-/*const speciesInput = document.getElementById(`species_${petId}`); */
-const breedInput = document.getElementById(`breed_${petId}`);
+//const speciesInput = document.getElementById(`species_${petId}`);
+//const breedInput = document.getElementById(`breed_${petId}`);
 const vaccinationInput = document.getElementById(`recent_vaccination_${petId}`);
 const saveButton = document.getElementById(`save_${petId}`);
 
 // Check if the inputs are already enabled
-if ( nameInput.disabled == false || breedInput.disabled == false || vaccinationInput.disabled == false) {
+if ( nameInput.disabled == false || vaccinationInput.disabled == false) {
   nameInput.disabled = true;
   /*speciesInput.disabled = true;*/
-  breedInput.disabled = true;
+  //breedInput.disabled = true;
   vaccinationInput.disabled = true;
   saveButton.style.display = "none";
   // Return early if already enabled
@@ -34,7 +34,7 @@ if ( nameInput.disabled == false || breedInput.disabled == false || vaccinationI
 else{
   nameInput.disabled = false;
   /*speciesInput.disabled = false;*/
-  breedInput.disabled = false;
+  //breedInput.disabled = false;
   vaccinationInput.disabled = false;
   saveButton.style.display = "block";
 }}
@@ -112,7 +112,45 @@ headerCell.addEventListener("click", () => {
 });
 
 
+// getting pet breeds based on pet species
+document.addEventListener('DOMContentLoaded', function() {
+  // Function to fetch and populate the pet breeds dropdown
+  function populatePetBreeds(species_id) {
+      fetch('/get_pet_breeds', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+              species_id: species_id,
+          }),
+      })
+      .then(response => response.json())
+      .then(data => {
+          // Clear the existing options
+          const petBreedSelect = document.getElementById('pet_breed');
+          petBreedSelect.innerHTML = '';
 
+          // Add the new options based on the data received
+          for (const breed of data) {
+              const option = document.createElement('option');
+              option.value = breed;
+              option.textContent = breed;
+              petBreedSelect.appendChild(option);
+          }
+      });
+  }
 
+  // Add an event listener to the species dropdown to trigger breed population
+  const petSpeciesSelect = document.getElementById('pet_species');
+  petSpeciesSelect.addEventListener('change', function() {
+      const selectedSpeciesId = petSpeciesSelect.value;
+      populatePetBreeds(selectedSpeciesId);
+  });
+
+  // Initialize the breeds dropdown based on the initial selected value (if any)
+  const initialSelectedSpeciesId = petSpeciesSelect.value;
+  populatePetBreeds(initialSelectedSpeciesId);
+});
 
 

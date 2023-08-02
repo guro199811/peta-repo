@@ -57,73 +57,20 @@
       <label for="bdate">დაბადებულია: </label>
       <input type="date" id="bdate" name="bdate" required>
 
-
-      
-      <label for="pet_species" >შინაური ცხოველის ტიპი: </label>
+      <label for="pet_species">შინაური ცხოველის ტიპი:</label>
       <select id="pet_species" name="pet_species" required>
-        <option value="dog">ძაღლი</option>
-        <option value="cat">კატა</option>
-        <option value="bird">ფრინველი</option>
-        <option value="hamster">ზაზუნა</option>
-        <option value="rabbit">კურდღელი</option>
-        <option value="fish">თევზი</option>
-        <option value="guinea_pig">ზღვის გოჭი</option>
-        <option value="turtle">კუ</option>
-        <option value="snake">გველი</option>
-        <option value="horse">ცხენი</option>
+        {% for pet_species in pet_species_list %}
+            <option value="{{ pet_species.species_id }}">{{ pet_species.species }}</option>
+        {% endfor %}
+      </select>
+      <label for="pet_breed">შინაური ცხოველის ჯიში:</label>
+      <select id="pet_breed" name="pet_breed">
       </select>
     
-      <label for="pet_breed">შინაური ცხოველის ჯიში: </label>
-      <select id="pet_breed" name="pet_breed">
-        <!-- Options for Dog Breeds -->
-        <optgroup label="Dog Breeds">
-          <option value="bulldog">Bulldog</option>
-          <option value="poodle">Poodle</option>
-          <option value="labrador">Labrador Retriever</option>
-          <option value="german_shepherd">German Shepherd</option>
-          <option value="golden_retriever">Golden Retriever</option>
-          <option value="beagle">Beagle</option>
-          <option value="boxer">Boxer</option>
-          <option value="dalmatian">Dalmatian</option>
-          <option value="rottweiler">Rottweiler</option>
-          <option value="chihuahua">Chihuahua</option>
-        </optgroup>
-    
-        <!-- Options for Cat Breeds -->
-        <optgroup label="Cat Breeds">
-          <option value="siamese">Siamese</option>
-          <option value="persian">Persian</option>
-          <option value="maine_coon">Maine Coon</option>
-          <option value="ragdoll">Ragdoll</option>
-          <option value="british_shorthair">British Shorthair</option>
-          <option value="bengal">Bengal</option>
-          <option value="sphynx">Sphynx</option>
-          <option value="abyssinian">Abyssinian</option>
-          <option value="scottish_fold">Scottish Fold</option>
-          <option value="norwegian_forest">Norwegian Forest</option>
-        </optgroup>
-    
-        <!-- Options for Bird Species -->
-        <optgroup label="Bird Species">
-          <option value="parakeet">Parakeet</option>
-          <option value="canary">Canary</option>
-          <option value="cockatiel">Cockatiel</option>
-          <option value="lovebird">Lovebird</option>
-          <option value="finch">Finch</option>
-          <option value="budgerigar">Budgerigar</option>
-          <option value="conure">Conure</option>
-          <option value="macaw">Macaw</option>
-          <option value="cockatoo">Cockatoo</option>
-          <option value="parrot">Parrot</option>
-          <option value="canary">Canary</option>
-          <option value="cockatiel">Cockatiel</option>
-        </optgroup>
-        </select>
-      
-        <label for="recent_vaccination">აცრის დრო (არაა აუცილებელი):</label>
-        <input type="date" id="recent_vaccination" name="recent_vaccination">
+      <label for="recent_vaccination">აცრის დრო (არაა აუცილებელი):</label>
+      <input type="date" id="recent_vaccination" name="recent_vaccination">
 
-        <button type="submit">Register Pet</button>
+      <button type="submit">Register Pet</button>
       </form>
     </div>
       {% elif action == 2 %}
@@ -132,7 +79,7 @@
             <h2>თქვენი ერთგული მეგობრები</h2>
             {% if pets %}
               <ul>
-                {% for pet in pets %}
+                {% for pet, pet_species, pet_breed in pets %}
                   <li>
 
                     <div class="pet-actions">
@@ -141,9 +88,8 @@
                           <strong>იდენტიფიკატორი:</strong> {{ pet.pet_id }}<br><br>
                           <label for="name">სახელი:</label>
                           <input type="text" id="name_{{ pet.pet_id }}" name="name" value="{{ pet.name }}" required disabled><br>
-                          <br><strong>ტიპი:</strong><br>{{ pet.species }}<br><br>
-                          <label for="breed">ჯიში:</label>
-                          <input type="text" id="breed_{{ pet.pet_id }}" name="breed" value="{{ pet.breed }}" required disabled><br><br>
+                          <br><strong>ტიპი:</strong><br>{{ pet_species.species }}<br><br>
+                          <br><strong>ჯიში:</strong><br>{{ pet_breed.breed }}<br><br>
                           <label for="recent_vaccination">ბოლო ვაქცინაციის თარიღი:</label>
                           <input type="date" id="recent_vaccination_{{ pet.pet_id }}" name="recent_vaccination" value="{{ pet.recent_vaccination }}" disabled><br>
                         </div>

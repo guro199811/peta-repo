@@ -49,11 +49,28 @@ class Vet(db.Model):
     spec_id = db.Column(db.Integer, db.ForeignKey('specialities.spec_id'))
     speciality = db.relationship(Speciality)
 
+
+class Pet_species(db.Model):
+    __tablename__ = 'pet_species'
+    species_id = db.Column(db.Integer, primary_key=True)
+    species = db.Column(db.String(50))
+
+
+class Pet_breed(db.Model):
+    __tablename__ = 'pet_breeds'
+    breed_id = db.Column(db.Integer, primary_key=True)
+    species_id = db.Column(db.Integer, db.ForeignKey('pet_species.species_id'))
+    species = db.relationship(Pet_species)
+    breed = db.Column(db.String(100))
+
+
 class Pet(db.Model):
     __tablename__ = 'pets'
     pet_id = db.Column(db.Integer, primary_key=True)
-    species = db.Column(db.String(50))
-    breed = db.Column(db.String(100))
+    pet_species = db.Column(db.Integer, db.ForeignKey('pet_species.species_id'))
+    species = db.relationship(Pet_species)
+    pet_breed = db.Column(db.Integer, db.ForeignKey('pet_breeds.breed_id'))
+    breed = db.relationship(Pet_breed)
     gender = db.Column(db.String(2))
     medical_condition = db.Column(db.String(50))
     current_treatment = db.Column(db.String(50))
@@ -101,16 +118,6 @@ class Post(db.Model):
     editor = db.relationship(Editor)
 
 
-class Pet_breed(db.Model):
-    __tablename__ = 'pet_breeds'
-    breed_id = db.Column(db.integer, primary_key=True)
-    breed = db.Column(db.String(50))
-
-
-class Pet_species(db.Model):
-    __tablename__ = 'pet_species'
-    pet_type_id = db.Column(db.Integer, primary_key=True)
-    pet_type = db.Column(db.String(50))
 
 
 '''if __name__ == '__main__':

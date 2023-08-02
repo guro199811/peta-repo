@@ -1,3 +1,7 @@
 ssh_keys
 ssh_keys.pub
 web-files/premade_data
+web-files/migrations
+web-files/__pycache__
+postgres-data
+database

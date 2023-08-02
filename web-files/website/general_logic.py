@@ -45,8 +45,9 @@ def register_pet(pet_name, pet_species, pet_breed, recent_vaccination, gender, b
             db.session.commit() 
         if owner is not None:
             owner = db.session.query(Owner).filter_by(person_id = current_user.id).one()
+            breed = db.session.query(Pet_breed).filter_by(breed = pet_breed).one()
             pet = Pet(owner_id=owner.owner_id, name=pet_name,
-                    species=pet_species, breed=pet_breed,
+                    pet_species=pet_species, pet_breed=breed.breed_id,
                     recent_vaccination=recent_vaccination if recent_vaccination else None,
                     gender = gender, birth_date = birth_date)
             db.session.add(pet)
@@ -73,7 +74,12 @@ def owner_logic(action):
                 if changed:
                     flash('Changes saved successfully.', category='success')
                 return render_template('login/owner.html', action = action)
+            
         elif action == 1:
+            if request.method == "GET":
+                pet_species_list = db.session.query(Pet_species).all()
+                return render_template('login/owner.html', action = action, pet_species_list = pet_species_list)
+            
             if request.method =="POST":
                 pet_name = request.form.get('pet_name')
                 pet_species = request.form.get('pet_species')
@@ -98,7 +104,12 @@ def owner_logic(action):
                 owner_id = owner.owner_id
 
                 # მფლობელის იდენტიფიკატორით ცხოვლის მფლობლების მიღება
-                pets = db.session.query(Pet).filter_by(owner_id=owner_id).order_by(Pet.pet_id.asc()).all()
+                pets = db.session.query(Pet, Pet_species, Pet_breed).\
+                    join(Pet_species, Pet.pet_species == Pet_species.species_id).\
+                    join(Pet_breed, Pet.pet_breed == Pet_breed.breed_id).\
+                    filter(Pet.owner_id == owner_id).\
+                    order_by(Pet.pet_id.asc()).\
+                    all()
                 if len(pets) == 0:
                     #flash('თქვენ ცხოველები არ გყავთ.')
                     return render_template('login/owner.html', action=action, pets=None)
@@ -145,6 +156,10 @@ def admin_logic(choice, action):
     
     if choice == 1:
         if action == 1:
+            if request.method == "GET":
+                pet_species_list = db.session.query(Pet_species).all()
+                return render_template('login/admin.html', choice = choice, action = action, pet_species_list = pet_species_list)
+            
             if request.method =="POST":
                 pet_name = request.form.get('pet_name')
                 pet_species = request.form.get('pet_species')
@@ -170,7 +185,12 @@ def admin_logic(choice, action):
                 owner_id = owner.owner_id
 
                 # მფლობელის იდენტიფიკატორით ცხოვლის მფლობლების მიღება
-                pets = db.session.query(Pet).filter_by(owner_id=owner_id).order_by(Pet.pet_id.asc()).all()
+                pets = db.session.query(Pet, Pet_species, Pet_breed).\
+                    join(Pet_species, Pet.pet_species == Pet_species.species_id).\
+                    join(Pet_breed, Pet.pet_breed == Pet_breed.breed_id).\
+                    filter(Pet.owner_id == owner_id).\
+                    order_by(Pet.pet_id.asc()).\
+                    all()
                 if len(pets) == 0:
                     #flash('თქვენ ცხოველები არ გყავთ.')
                     return render_template('login/admin.html',
@@ -501,7 +521,7 @@ def edit_pet(action, pet_id):
         if request.method == 'POST':
             name = request.form.get('name')
             #species = request.form.get('species')
-            breed = request.form.get('breed')
+            #breed = request.form.get('breed')
             recent_vaccination = request.form.get('recent_vaccination')
             if name is not None and name != '':
                 pet.name = name
@@ -513,10 +533,10 @@ def edit_pet(action, pet_id):
                 db.session.commit()
                 changed = True'''
                 
-            if breed is not None and breed != '':
+            '''if breed is not None and breed != '':
                 pet.breed = breed
                 db.session.commit()
-                changed = True
+                changed = True'''
 
             if recent_vaccination is not None and recent_vaccination != '':
                 pet.recent_vaccination = recent_vaccination
@@ -559,3 +579,17 @@ def remove_pet(action, pet_id):
             return redirect(url_for('general_logic.admin_logic',choice = 1, action=2))
     else:
         abort(404)
+
+
+@general_logic.route('/get_pet_breeds', methods=['POST'])
+def get_pet_breeds():
+    # Get the selected species_id from the frontend
+    species_id = request.json['species_id']
+
+    # Retrieve the pet breeds for the selected species_id
+    pet_breeds = Pet_breed.query.filter_by(species_id=species_id).all()
+
+    # Prepare a list of breed names to send to the frontend
+    breed_list = [breed.breed for breed in pet_breeds]
+
+    return jsonify(breed_list)
