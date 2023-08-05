@@ -59,3 +59,5 @@ searchIcon.addEventListener('click', () => {
   searchForm.classList.toggle('show-search');
 });
 
+
+

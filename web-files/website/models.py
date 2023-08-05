@@ -79,6 +79,16 @@ class Pet(db.Model):
     birth_date = db.Column(db.Date)
     owner_id = db.Column(db.Integer, db.ForeignKey('owners.owner_id'))
     owner = db.relationship(Owner)
+    
+    
+class Pet_history(db.Model):
+    __tablename__ = 'pet_history'
+    history_id = db.Column(db.Integer, primary_key=True)
+    pet_id = db.Column(db.Integer, db.ForeignKey('pets.pet_id'))
+    pet = db.relationship(Pet)
+    treatment = db.Column(db.String(50))
+    date = db.Column(db.Date)
+    comment = db.Column(db.String(500))
 
 
 class Admin(db.Model):

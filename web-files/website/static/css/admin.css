@@ -550,4 +550,13 @@ nav{
   width:100% !important;
  }
 
+ /* Change button */
+.table-sortable tr .change-button{
+  border-style:solid;
+  border-color:#000000;
+  border-width:0px;
+  box-shadow:0px 0px 5px 0px rgba(0,0,0,0.3);
+  color:#000000;
+ }
+
  

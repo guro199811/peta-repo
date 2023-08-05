@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="geo">
+<html lang="eng">
 <head>
   <title>{% block title %} Petta {% endblock %}</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
@@ -24,18 +24,18 @@
       </a>
       {% if current_user.is_authenticated %}
         {%if current_user.type == 1 %}
-          <li class="navbar-item"><a href="/owner">ჩემი გვერდი</a></li>
+          <li class="navbar-item"><a href="/owner">My Account</a></li>
         {% elif current_user.type == 2 %}
-          <li class="navbar-item"><a href="/admin">ჩემი გვერდი</a></li>
+          <li class="navbar-item"><a href="/admin">My Account</a></li>
         {% elif current_user.type == 3 %}
-          <li class="navbar-item"><a href="/vet">ჩემი გვერდი</a></li>
+          <li class="navbar-item"><a href="/vet">My Account</a></li>
         {% elif current_user.type == 4 %}
-          <li class="navbar-item"><a href="/editor">ჩემი გვერდი</a></li>
+          <li class="navbar-item"><a href="/editor">My Account</a></li>
           {% endif %}
-          <li class="navbar-item"><a href="/logout">ანგარიშიდან გამოსვლა</a></li>
+          <li class="navbar-item"><a href="/logout">Logout</a></li>
       {% else %}
-          <li class="navbar-item"><a href="/login">ანგარიშზე შესვლა</a></li>
-          <li class="navbar-item"><a href="/register">რეგისტრაცია</a></li>
+          <li class="navbar-item"><a href="/login">Login</a></li>
+          <li class="navbar-item"><a href="/register">Register</a></li>
       {% endif %}
     </ul>
   </nav>
@@ -68,7 +68,7 @@
   <div class="push"></div>
   <footer class="footer">
 
-    <p>დამატებითი ინფორმაციისთვის დაგვიკავშირდით <a href="mailto:Gurosivs@gmail.com"><br>Gurosivs@gmail.com</br></a></p>
+    <p>For additional information please contact us: <a href="mailto:Gurosivs@gmail.com"><br>Gurosivs@gmail.com</br></a></p>
   </footer>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
   {% block script %}

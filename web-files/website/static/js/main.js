@@ -154,3 +154,24 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
+
+function enableEditHistory(petId) {
+  const treatmentSelect = document.getElementById(`treatment_${petId}`);
+  const dateInput = document.getElementById(`date_${petId}`);
+  const commentTextarea = document.getElementById(`comment_${petId}`);
+  const saveButton = document.getElementById(`save_${petId}`);
+
+  let isEditable = false;
+
+  treatmentSelect.disabled = !treatmentSelect.disabled;
+  dateInput.disabled = !dateInput.disabled;
+  commentTextarea.disabled = !commentTextarea.disabled;
+
+  if (!treatmentSelect.disabled || !dateInput.disabled || !commentTextarea.disabled) {
+    isEditable = true;
+  }
+
+  if (saveButton) {
+    saveButton.disabled = !isEditable;
+  }
+}

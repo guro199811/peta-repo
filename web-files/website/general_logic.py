@@ -5,7 +5,7 @@ from flask_login import login_required, current_user
 from sqlalchemy import join, select, or_, func, and_, cast, String
 from sqlalchemy.orm import contains_eager, aliased
 from sqlalchemy.orm.exc import NoResultFound
-from datetime import date, timedelta
+from datetime import date as dt, timedelta
 
 
 
@@ -156,27 +156,6 @@ def admin_logic(choice, action):
     
     if choice == 1:
         if action == 1:
-            if request.method == "GET":
-                pet_species_list = db.session.query(Pet_species).all()
-                return render_template('login/admin.html', choice = choice, action = action, pet_species_list = pet_species_list)
-            
-            if request.method =="POST":
-                pet_name = request.form.get('pet_name')
-                pet_species = request.form.get('pet_species')
-                pet_breed = request.form.get('pet_breed')
-                recent_vaccination = request.form.get('recent_vaccination')
-                gender = request.form.get('gender')
-                birth_date = request.form.get('bdate')
-
-                confirmation = register_pet(pet_name, pet_species, pet_breed, 
-                                            recent_vaccination, gender, birth_date)
-                if confirmation:
-                    flash('ცხოველი დარეგისტრირდა წარმატებით', category='success')
-                else:
-                    flash('თქვენი ცხოველი ვერ დარეგისტრირდა', category='error')    
-
-            return render_template('login/admin.html',choice = choice, action=action)
-        elif action == 2:
             # მფლობელის მონაცემების მიღება და მფლობელის ID-ის მიხედვით
             owner = db.session.query(Owner).filter_by(person_id=current_user.id).one_or_none()
             if owner is None:
@@ -199,20 +178,90 @@ def admin_logic(choice, action):
                     return render_template('login/admin.html',
                                            choice = choice, action=action, pets=pets)
                 
-            
+        elif action == 2:
+            pet_history = db.session.query(Pet_history, Pet).\
+                    join(Pet, Pet_history.pet_id == Pet.pet_id).all()
+            if request.method == "GET":
+                return render_template('login/admin.html',
+                    choice = choice, action = action, 
+                    pet_history = pet_history)
+            elif request.method == "POST":
+                history_id = request.form.get('history_id')
+                treatment = request.form.get('treatment')
+                comment = request.form.get('comment')
+                date = request.form.get('date')
+                
+                history = db.session.query(Pet_history).filter_by(history_id = history_id).one_or_none()
+                if history:
+                    if treatment:
+                        history.treatment = treatment
+                    if comment:
+                        history.comment = comment
+                    if date:
+                        history.date = date
+                else:
+                    flash(f'{history_id}')
+                db.session.commit()
 
+                return render_template('login/admin.html',
+                                    choice = choice, action = action,
+                                    pet_history = pet_history)
+
+        
         elif action == 3:
             return render_template('login/admin.html',
                                    choice  = choice, action=action)
+        
         elif action == 4:
             vets = db.session.query(Vet, Person).join(Person, Vet.person_id == Person.id).filter(Vet.active == True).all()
             return render_template('login/admin.html',
                                     choice = choice, action=action,
                                     vets = vets)
+        
+        elif action == 5:
+            if request.method == "GET":
+                pet_species_list = db.session.query(Pet_species).all()
+                return render_template('login/admin.html', choice = choice, action = action, pet_species_list = pet_species_list)
+            
+            if request.method =="POST":
+                pet_name = request.form.get('pet_name')
+                pet_species = request.form.get('pet_species')
+                pet_breed = request.form.get('pet_breed')
+                recent_vaccination = request.form.get('recent_vaccination')
+                gender = request.form.get('gender')
+                birth_date = request.form.get('bdate')
+
+                confirmation = register_pet(pet_name, pet_species, pet_breed, 
+                                            recent_vaccination, gender, birth_date)
+                if confirmation:
+                    flash('ცხოველი დარეგისტრირდა წარმატებით', category='success')
+                else:
+                    flash('თქვენი ცხოველი ვერ დარეგისტრირდა', category='error')    
+
+            return render_template('login/admin.html',choice = choice, action=action)
+        
+        elif action == 6: #needs pets from current user
+            if request.method == "GET":    
+                owner = db.session.query(Owner).filter_by(person_id = current_user.id).one_or_none()
+                if owner:
+                    pets = db.session.query(Pet).filter_by(owner_id = owner.owner_id).all()
+                    return render_template('login/admin.html',
+                                    choice = choice, action = 6, pets = pets)
+            elif request.method == "POST":
+                pet_id = request.form.get('pet_name')
+                treatment = request.form.get('treatment')
+                comment = request.form.get('comment')
+                date = request.form.get('date')
+                new_history = Pet_history(pet_id = pet_id, treatment = treatment,
+                                        date = date, comment = comment)
+                db.session.add(new_history)
+                db.session.commit()
+                return render_template('login/admin.html',
+                                    choice = choice, action = 2)
         else:
             return render_template('login/admin.html',
                                    choice = choice, action = None)
-                
+           
 
     if choice == 2:
         owner_count = db.session.query(Owner).count()
@@ -251,9 +300,9 @@ def admin_logic(choice, action):
         #Google charts trend data here
         
         persons = db.session.query(Person).all()
-
+        
         trend_data = [{'created': str(person.created), 'count': 1} for person in persons]
-        current_date = date.today()
+        current_date = dt.today()
         min_date = current_date - timedelta(days=4 * 30) 
 
 
@@ -324,11 +373,18 @@ def admin_logic(choice, action):
         return render_template('login/admin.html', choice=choice, action=action, visits=visits)
     
     if choice == 7:
-        pets = db.session.query(Pet, Owner, Person).join(
+        '''pets = db.session.query(Pet, Owner, Person).join(
             Owner, Pet.owner_id == Owner.owner_id
         ).join(
             Person, and_(Owner.person_id == Person.id)
-        ).all()
+        ).all()'''
+        
+        pets = db.session.query(Pet, Pet_species, Pet_breed, Owner, Person).\
+            join(Pet_species, Pet.pet_species == Pet_species.species_id).\
+            join(Pet_breed, Pet.pet_breed == Pet_breed.breed_id).\
+            join(Owner, Pet.owner_id == Owner.owner_id).\
+            join(Person, and_(Owner.person_id == Person.id)).\
+            all()
         return render_template('login/admin.html', choice = choice, pets = pets)
 
     if choice == 8:
@@ -576,7 +632,7 @@ def remove_pet(action, pet_id):
         if current_user.type == 1:
             return redirect(url_for('general_logic.owner_logic', action=2))
         if current_user.type == 2:
-            return redirect(url_for('general_logic.admin_logic',choice = 1, action=2))
+            return redirect(url_for('general_logic.admin_logic',choice = 1, action=1))
     else:
         abort(404)
 
@@ -593,3 +649,13 @@ def get_pet_breeds():
     breed_list = [breed.breed for breed in pet_breeds]
 
     return jsonify(breed_list)
+
+
+@general_logic.route('/delete/<int:history_id>', methods=['GET', 'DELETE'])
+@login_required
+def delete_history(history_id):
+    pet_history = db.session.query(Pet_history).filter_by(history_id = history_id).one_or_none()
+    if pet_history:
+        db.session.delete(pet_history)
+        db.session.commit()
+        return redirect(url_for('general_logic.admin_logic',choice = 1, action=2))

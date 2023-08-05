@@ -287,12 +287,12 @@ footer {
   display: flex;
   padding-top:40px;
   margin-right:67px;
+  
 }
 
 
 .square-button {
-  display: flex;
-  flex-direction: column;
+  display: block;
   align-items: flex-start;
   width: 150px;
   height: 150px;
@@ -302,10 +302,6 @@ footer {
   font-size: 16px;
   font-weight: bold;
   cursor: pointer;
-  padding-top:50px;
-  padding-left:3px;
-  padding-right:3px;
-  text-align:center;
   margin-bottom: 10px;
   margin-left:30px;
   border-radius: 10px;
@@ -313,6 +309,8 @@ footer {
   transition: background-color 0.5s ease;
   transition: color 0.3s ease;
   text-transform:capitalize;
+  text-align:center;
+  padding-top:55px;
 }
 
 .square-button:hover {
@@ -387,7 +385,7 @@ footer {
   border-color: #ffa500;
 }
 
-.box-menu button[type="submit"] {
+.submit-style {
   display: block;
   width: 400px;
   height: 45px;
@@ -892,3 +890,34 @@ footer {
 #table_div tr td{
   text-align:center;
  }
+ 
+.pet-actions .r-button {
+  transform:backround-color 0.3s ease;
+}
+
+.pet-actions .s-button{
+  background-color: #ccc;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transform:backround-color 0.3s ease;
+
+}
+
+.pet-actions .s-button:hover {
+  background-color: green;
+  border:#000;
+}
+
+.pet-actions .r-button:hover {
+  background-color: red !important;
+}
+
+
+/* Apply styles when the button is disabled */
+.pet-actions .s-btton:disabled {
+  background-color: #a1a1a1;
+  opacity: 0.3;
+  cursor: default;
+}
