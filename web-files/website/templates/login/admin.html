@@ -243,7 +243,6 @@
           {% if action == None %}
             <h1 class="welcome-text">{{ current_user.name }}, This is your pet ownership menu<br> Please select any action</h1><br><br>
 
-            </form>
             {% elif action == 1 %}
               <div class="pet-list-bg">
                 <div class="pets-list">
@@ -389,7 +388,7 @@
                 <label for="recent_vaccination">Latest Vaccination(not required)</label>
                 <input type="date" id="recent_vaccination" name="recent_vaccination">
         
-                <button type="submit">Register Pet</button>
+                <button type="submit" class="submit-style">Register Pet</button>
             </form>
           </div>
           {% elif action == 6 %}

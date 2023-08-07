@@ -6,3 +6,97 @@
 
 {% block content%}
 {% endblock%}
+
+
+<!--    {% elif action == 1 %}
+    <div class="newpetbox">
+    <form action="{{ url_for('general_logic.owner_logic', action=1) }}" method="POST">
+      <label for="pet_name">შინაური ცხოველის სახელი: </label>
+      <input type="text" id="pet_name" name="pet_name" required>
+
+      <label for="gender">შინაური ცხოველის სქესი: </label>
+      <select id="gender" name="gender" required>
+        <option value="M">ხვადი (მამალი)</option>
+        <option value="F">ძუ (დედალი)</option>
+      </select>
+
+      <label for="bdate">დაბადებულია: </label>
+      <input type="date" id="bdate" name="bdate" required>
+
+      <label for="pet_species">შინაური ცხოველის ტიპი:</label>
+      <select id="pet_species" name="pet_species" required>
+        {% for pet_species in pet_species_list %}
+            <option value="{{ pet_species.species_id }}">{{ pet_species.species }}</option>
+        {% endfor %}
+      </select>
+      <label for="pet_breed">შინაური ცხოველის ჯიში:</label>
+      <select id="pet_breed" name="pet_breed">
+      </select>
+    
+      <label for="recent_vaccination">აცრის დრო (არაა აუცილებელი):</label>
+      <input type="date" id="recent_vaccination" name="recent_vaccination">
+
+      <button type="submit">Register Pet</button>
+      </form>
+    </div>
+      {% elif action == 2 %}
+        <div class="pet-list-bg">
+          <div class="pets-list">
+            <h2>თქვენი ერთგული მეგობრები</h2>
+            {% if pets %}
+              <ul>
+                {% for pet, pet_species, pet_breed in pets %}
+                  <li>
+
+                    <div class="pet-actions">
+                      <form action="{{ url_for('general_logic.edit_pet', action=2, pet_id=pet.pet_id) }}" method="POST">
+                        <div class="pet-info">
+                          <strong>იდენტიფიკატორი:</strong> {{ pet.pet_id }}<br><br>
+                          <label for="name">სახელი:</label>
+                          <input type="text" id="name_{{ pet.pet_id }}" name="name" value="{{ pet.name }}" required disabled><br>
+                          <br><strong>ტიპი:</strong><br>{{ pet_species.species }}<br><br>
+                          <br><strong>ჯიში:</strong><br>{{ pet_breed.breed }}<br><br>
+                          <label for="recent_vaccination">ბოლო ვაქცინაციის თარიღი:</label>
+                          <input type="date" id="recent_vaccination_{{ pet.pet_id }}" name="recent_vaccination" value="{{ pet.recent_vaccination }}" disabled><br>
+                        </div>
+                        <input type="submit" value="Save" class="save-button" id="save_{{ pet.pet_id }}" style="display: none;">
+                      </form>
+                      <button type="button" class="change-button" onclick="enableEdit('{{ pet.pet_id }}')"><i class="fa-regular fa-pen-to-square"></i></button>
+                      <form action="{{ url_for('general_logic.remove_pet', action=2, pet_id=pet.pet_id) }}" method="DELETE" onsubmit="return confirm('დასტური წაშლაზე.');" >
+                        <button type="submit" class="remove-button"><i class="fa-solid fa-eraser"></i></button>
+                      </form>
+                    </div>
+                  </li>
+                {% endfor %}
+              </ul>
+            {% else %}
+              <p>თქვენ ცხოველები არ გყავთ დარეგისტრირებული, გთხოვთ დაარეგისტრიროთ...</p>
+            {% endif %}
+          </div>
+        </div>
+    
+    {% elif action == 3 %}
+          <!--iframe src="https://www.google.com/maps/d/u/0/embed?mid=11ZnEvFOa3xipWz70F4d_jAo_nwrodVQ&ehbc=2E312F" width="100%" height="100%"></iframe-->
+        <!--  <div id="map"></div>
+
+    {% elif action == 4 %}
+        <div class="list-box">
+          <h3>დარეგისტრირებული ვეტერინარების ტელ.ნომრები</h3>
+          <ul>
+            {% for vet, person in vets %}
+              <li>
+                <strong>სახელი: </strong> {{person.name}}<br>
+                <strong>გვარი: </strong> {{person.lastname}}<br>
+                <strong>ტელ.ნომერი: </strong> {{person.phone}}<br>
+                {% if vet.speciality %}
+                <strong>სპეციალიზაცია: </strong> {{vet.Speciality}}<br>
+                {% else %}
+                <strong>სპეციალიზაცია არ არის მითითებული</strong><br>
+                {% endif %}
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+    {% endif %}
+  </div>
+</div> -->
