@@ -162,7 +162,7 @@ def owner_logic(action):
                 else:
                     flash('თქვენი ცხოველი ვერ დარეგისტრირდა', category='error')    
 
-            return render_template('login/owner.html', action=action)
+            return render_template('login/owner.html', action=1)
         
         elif action == 6: #needs pets from current user
             if request.method == "GET":    
@@ -326,7 +326,7 @@ def admin_logic(choice, action):
                 db.session.commit()
                 return redirect(url_for('login/admin.html', choice=choice, action=2))
         else:
-            abort(404)
+            return render_template('login/admin.html', choice=1, action=None)
            
 
     if choice == 2:
@@ -667,10 +667,9 @@ def edit_pet(action, pet_id):
             if changed:
                 flash('მონაცემები წარმატებით შეიცვალა', category='success')
             if current_user.type == 1:
-                return redirect(url_for('general_logic.owner_logic', action=action))
+                return redirect(url_for('general_logic.owner_logic', action=1))
             elif current_user.type == 2:
-                return redirect(url_for('general_logic.admin_logic',choice = 1, action=action))
-                return 
+                return redirect(url_for('general_logic.admin_logic', choice = 1, action=1))
         #return render_template('owner.html', action=action, pet=pet, changed=changed)
 
     #flash('Pet not found.')
@@ -681,10 +680,14 @@ def edit_pet(action, pet_id):
 @login_required
 def remove_pet(action, pet_id):
     pet = db.session.query(Pet).filter_by(pet_id=pet_id).one_or_none()
+    history = db.session.query(Pet_history).filter_by(pet_id = pet.pet_id).all( )
     if pet is not None:
         owner = db.session.query(Owner).filter_by(person_id=current_user.id).one_or_none()
         if owner is not None:
             try:
+                if history:
+                    for h in history:
+                        db.session.delete(h)
                 db.session.delete(pet)
                 db.session.commit()
                 
@@ -696,7 +699,7 @@ def remove_pet(action, pet_id):
             except Exception as e:
                 flash(e)
         if current_user.type == 1:
-            return redirect(url_for('general_logic.owner_logic', action=2))
+            return redirect(url_for('general_logic.owner_logic', action=1))
         if current_user.type == 2:
             return redirect(url_for('general_logic.admin_logic',choice = 1, action=1))
     else:

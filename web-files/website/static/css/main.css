@@ -396,12 +396,17 @@ footer {
   border: none;
   border-radius: 3px;
   cursor: pointer;
-  transition: background-color 0.3s ease-in-out;
+  box-shadow:0px 0px 6px 0px #ffffff;
+  transition: all 0.4s ease-in-out;
+ }
+
+.submit-style:hover{
+  background-color: #3dce38;
+  color:#000;
+  text-decoration: none;
+  box-shadow: 0px 0px 6px 0px #000000;
 }
 
-.box-menu button[type="submit"]:hover {
-  background-color: #3dce38;
-}
 
 .box-menu select option {
   color: #333;
@@ -1493,4 +1498,28 @@ nav{
   color:#000000;
  }
 
- 
+ /* This is css for link that appears if no value is returned and needs adding */
+
+
+ .novalue {
+  color:black;
+  background-color: orange;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  height: auto;
+  transform: translate(-50%, -50%);
+  display: inline-block;
+  padding: 10px 10px;
+  transition: all 0.4s;
+}
+
+.novalue:hover {
+  background-color: rgb(218, 120, 0);
+  text-decoration: none;
+  color:white
+}
+
+
+
+

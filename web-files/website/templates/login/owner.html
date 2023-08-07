@@ -70,10 +70,10 @@
                   </div>
                 </li>
               {% endfor %}
-              <a href="{{ url_for('general_logic.owner_logic', action=5) }}">Add New pet</a>
+              <a class="submit-style" href="{{ url_for('general_logic.owner_logic', action=5) }}">Add New pet</a>
             </ul>
           {% else %}
-          <a href="{{ url_for('general_logic.owner_logic', action=5) }}">You dont have pets, Click me to add them</a>
+          <a class="novalue submit-style" href="{{ url_for('general_logic.owner_logic', action=5) }}">You dont have pets, Click me to add them</a>
           {% endif %}
         </div>
       </div>
@@ -129,9 +129,9 @@
           {% endfor %}
         </tbody>
       </table>
-      <a href="{{ url_for('general_logic.owner_logic', action=6) }}">Add New History</a>
+      <a class="novalue submit-style" href="{{ url_for('general_logic.owner_logic', action=6) }}">Add New History</a>
   {% else %}
-  <a href="{{ url_for('general_logic.owner_logic', action=6) }}">Your pets dont have vaccination history? Add New History</a>
+  <a class="novalue submit-style" href="{{ url_for('general_logic.owner_logic', action=6) }}">Add New History</a>
   {% endif %}
   {% elif action == 3 %}
         <!--iframe src="https://www.google.com/maps/d/u/0/embed?mid=11ZnEvFOa3xipWz70F4d_jAo_nwrodVQ&ehbc=2E312F" width="100%" height="100%"></iframe-->
@@ -225,7 +225,7 @@
   {% else %}
   <h1></h1>
   <h1></h1>
-  <a href="{{ url_for('general_logic.owner_logic', action=5) }}">You dont have pets, Click me to add them</a>
+  <a class="novalue submit-style" href="{{ url_for('general_logic.owner_logic', action=5) }}">It seems you dont have pets, Click here to add them</a>
   {% endif %}
 {% endif %}
 </div>
