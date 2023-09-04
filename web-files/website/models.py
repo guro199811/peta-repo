@@ -128,6 +128,13 @@ class Post(db.Model):
     editor = db.relationship(Editor)
 
 
+class Note(db.Model):
+    __tablename__ = 'notes'
+    note_id = db.Column(db.Integer, primary_key=True)
+    person_id = db.Column(db.Integer, db.ForeignKey('persons.id'))
+    person = db.relationship(Person)
+    created = db.Column(db.Date)
+    content = db.Column(db.String(500))
 
 
 '''if __name__ == '__main__':

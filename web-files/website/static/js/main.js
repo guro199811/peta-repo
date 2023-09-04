@@ -154,6 +154,21 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
+function enableEditNote(note_id){
+  const commentTextarea = document.getElementById(`comment_${note_id}`);
+  
+  let isEditable = false;
+
+  commentTextarea.disabled = !commentTextarea.disabled;
+
+  if (!commentTextarea.disabled) {
+    isEditable = true;
+  }
+  if (saveButton) {
+    saveButton.disabled = !isEditable;
+  }
+}
+
 
 function enableEditHistory(petId) {
   const treatmentSelect = document.getElementById(`treatment_${petId}`);

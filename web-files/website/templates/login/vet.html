@@ -1,7 +1,474 @@
 {% extends "base.html" %}
-{% block title %} Pet Site {% endblock %}
+{% block title %} Veterinary Page {% endblock %}
+<!-- ვაპირებ ადმინის ჰტმლს გადაკეთებას, ფერის შეცვლა მენიუზე, ცოტა ვიზუალის თემების მიხედვა, და იდეების გადახედვაა საჭირო -->
 
-<h1>vet shesulia</h1>
+{% block style %}
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI="crossorigin=""/>
+  <link rel="stylesheet" href="../../static/css/main.css">
+  <link rel="stylesheet" href="../../static/css/vet.css">
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  
+{% endblock %}
+
+{% block bg %}
+{% endblock %}
+
 
 {% block content%}
-{% endblock%}
+  <div class="sidebar">
+  <div class="logo_details">
+    <div class="logo_name">Petta</div>
+    <i class="bx bx-menu" id="btn"></i>
+  </div>
+  <ul class="nav-list">
+    <!-- Existing menu items ... -->
+    <li class="search">
+      <i class="bx bx-search"></i>
+      <form id="search-form" action="{{ url_for('general_logic.vet_logic', choice=0, action=0) }}" method="GET">
+        <input type="text" name="q" placeholder="Search...">
+      </form>
+      <span class="tooltip">Search</span>
+    </li>
+    <li>
+      <a href="{{ url_for('general_logic.vet_logic', choice=5, action = 0) }}">
+        <i class='bx bx-message-alt-add'></i>
+       <span class="link_name">Add My Clinic</span>
+      </a>
+    <span class="tooltip">Add My Clinic</span>
+  </li>
+    <li>
+      <a href="{{ url_for('general_logic.vet_logic', choice=1, action = 0) }}">
+        <i class='bx bx-home' ></i>
+        <span class="link_name">My Pet ownership menu</span>
+      </a>
+      <span class="tooltip">My Pet ownership menu</span>
+    </li>
+    <li>
+      <a href="{{ url_for('general_logic.vet_logic', choice=2, action = 0) }}">
+        <i class='bx bx-grid-alt'></i>
+        <span class="link_name">Dashboard</span>
+      </a>
+      <span class="tooltip">Dashboard</span>
+    </li>
+    <li>
+      <a href="{{ url_for('general_logic.vet_logic', choice=4, action = 0) }}">
+        <i class='bx bx-clinic'></i>
+        <span class="link_name">My Visits</span>
+      </a>
+      <span class="tooltip">My Visits</span>
+    </li>
+    <li>
+      <a href="{{ url_for('general_logic.vet_logic', choice=7, action = 0) }}">
+        <i class='bx bxs-dog'></i>
+        <span class="link_name">Visited Pets</span>
+      </a>
+      <span class="tooltip">Visited Pets</span>
+    </li>
+    <li>
+      <a href="{{ url_for('general_logic.vet_logic', choice=8, action = 0) }}">
+        <i class='bx bx-user-circle'></i>
+        <span class="link_name">My data</span>
+      </a>
+      <span class="tooltip">My data</span>
+    </li>
+  </ul>
+  </div>
+  
+  <section class="home-section">
+      {% if choice == 0 %}
+      <h2 style="text-align:center">Search Results</h2>
+      <table class="table table-sortable">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Lastname</th>
+            <th>Mail</th>
+            <th>Type</th>
+            <th>Joined us</th>
+            <th>Address</th>
+            <th>Phone</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for person in action %}
+            <form action="{{ url_for('general_logic.edit_user', person_id=person.id) }}" method="POST">
+              <tr>
+                <td>{{ person.id }}</td>
+                <td>
+                  <input type="text" id="name_{{ person.id }}" name="name" value="{{ person.name }}" required disabled>
+                </td>
+                <td>
+                  <input type="text" id="lastname_{{ person.id }}" name="lastname" value="{{ person.lastname }}" required disabled>
+                </td>
+                <td>
+                  <input type="text" id="mail_{{ person.id }}" name="mail" value="{{ person.mail }}" required disabled>
+                </td>
+                <td>
+                  <select id="type_{{ person.id }}" name="type" required disabled>
+                    <option value="1" {% if person.type == 1 %}selected{% endif %}>User</option>
+                    <option value="2" {% if person.type == 2 %}selected{% endif %}>Admin</option>
+                    <option value="3" {% if person.type == 3 %}selected{% endif %}>Vet</option>
+                    <option value="4" {% if person.type == 4 %}selected{% endif %}>Editor</option>
+                  </select>
+                </td>
+                <td>{{ person.created }}</td>
+                <td>
+                  <input type="text" id="address_{{ person.id }}" name="address" value="{{ person.address }}" required disabled>
+                </td>
+                <td>
+                  <input type="text" id="phone_{{ person.id }}" name="phone" value="{{ person.phone }}" required disabled>
+                <td>
+                  <div class="pet-actions">
+                    <button type="button" class="change-button" id="change_{{ person.id }}" onclick="enableEditUser('{{ person.id }}')"><i class="fa-regular fa-pen-to-square"></i></button>
+                    <button type="submit" class="saveOwner" id="save_{{ person.id }}" onsubmit="return confrm('Change Confirmation')"><i class="fa-solid fa-check"></i></button>
+                  </div>
+                </td>
+              </tr>
+              </form>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% if not action %}
+        <p style="text-align:center">No results on Search.</p>
+      {% endif %}
+    {% elif choice == 1 %}
+      <div class="owner-container">
+        <div class="buttons">
+          <!-- ბმული 1: ცხოველის დამატება -->
+          <a href="{{ url_for('general_logic.admin_logic',choice=1, action=1) }}" class="square-button">My Pets</a>
+          <!-- ბმული 2: ჩემი ცხოველების ჩამონათვალი -->
+          <a href="{{ url_for('general_logic.admin_logic',choice=1, action=2) }}" class="square-button">My Pet History</a>
+          <!-- ბმული 3: ვეტერინარული კლინიკები ჩემს ახლოს -->
+          <a href="{{ url_for('general_logic.admin_logic',choice=1, action=3) }}" class="square-button">Map</a>
+          <!-- ბმული 4: ვეტერინარების ტელეფონის ნომრები -->
+          <a href="{{ url_for('general_logic.admin_logic',choice=1, action=4) }}" class="square-button">Vet Phone numbers</a>
+        </div>    
+        <!-- აქ არის box-menu ლოგიკა -->
+        <div class="box-menu">
+      
+          {% if action == None %}
+            <h1 class="welcome-text">{{ current_user.name }}, This is your pet ownership menu<br> Please select any action</h1><br><br>
+
+            {% elif action == 1 %}
+              <div class="pet-list-bg">
+                <div class="pets-list">
+                  <h2>Your pets</h2>
+                  {% if pets %}
+                    <ul>
+                      {% for pet, pet_species, pet_breed in pets %}
+                        <li>
+                          <div class="pet-actions">
+                            <form action="{{ url_for('general_logic.edit_pet', action=2, pet_id=pet.pet_id) }}" method="POST">
+                              <div class="pet-info">
+                                <strong>ID:</strong> {{ pet.pet_id }}<br><br>
+                                <label for="name">Name:</label>
+                                <input type="text" id="name_{{ pet.pet_id }}" name="name" value="{{ pet.name }}" required disabled><br>
+                                <br><strong>Species: </strong><br>{{ pet_species.species }}<br>
+                                <br><strong>Breed: </strong><br>{{ pet_breed.breed }}<br><br>
+                                <label for="recent_vaccination">Recent vaccination</label>
+                                <input type="date" id="recent_vaccination_{{ pet.pet_id }}" name="recent_vaccination" value="{{ pet.recent_vaccination }}" disabled><br>
+                              </div>
+                              <input type="submit" value="Save" class="save-button" id="save_{{ pet.pet_id }}" style="display: none;">
+                            </form>
+                            <button type="button" class="change-button" onclick="enableEdit('{{ pet.pet_id }}')"><i class="fa-regular fa-pen-to-square"></i></button>
+                            <form action="{{ url_for('general_logic.remove_pet', action=2, pet_id=pet.pet_id) }}" method="DELETE" onsubmit="return confirm('Confirm deletion.');" >
+                              <button type="submit" class="remove-button"><i class="fa-solid fa-eraser"></i></button>
+                            </form>
+                          </div>
+                        </li>
+                      {% endfor %}
+                      <a class="submit-style" href="{{ url_for('general_logic.admin_logic',choice=1, action=5) }}">Add New pet</a>
+                    </ul>
+                  {% else %}
+                  <a class="novalue submit-style" href="{{ url_for('general_logic.admin_logic',choice=1, action=5) }}">You dont have pets, Click me to add them</a>
+                  {% endif %}
+                </div>
+              </div>
+          {% elif action == 2 %}
+            <h2 style="text-align:center"> Pet history </h2>
+            {% if pet_history %}
+              <table class="table table-sortable">
+                <thead>
+                  <tr>
+                    <th>History ID</th>
+                    <th>Pet</th>
+                    <th>Treatment -- Date</th>
+                    <th>Comment</th>
+                    <th>action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for pet_hist, pet in pet_history %}
+                  <form action="{{ url_for('general_logic.admin_logic',choice=1, action = 2) }}" method="POST">
+                    <tr>
+                      <td>{{ pet_hist.history_id }}</td>
+                      <td>{{ pet.pet_id }} - {{ pet.name }}</td>
+                      <td>
+                        <select id="treatment_{{ pet_hist.history_id }}" name="treatment" required disabled>
+                          <option value="Rabbies Vaccination" {% if pet_hist.treatment == 'Rabbies' %}selected{% endif %}>Rabbies</option>
+                          <option value="Internal Parasytes" {% if pet_hist.treatment == 'Internal Parasytes' %}selected{% endif %}>Internal Parasytes</option>
+                          <option value="Skin care / External Parasytes" {% if pet_hist.treatment == 'Skin care / External Parasytes' %}selected{% endif %}>Skin care / External Parasytes</option>
+                          <option value="Other Vaccination" {% if pet_hist.treatment == 'Other Vaccination' %}selected{% endif %}>Other Vaccination</option>
+                        </select>
+                        <input type="date" id="date_{{ pet_hist.history_id }}" name="date" value="{{ pet_hist.date }}" required disabled>
+                      </td>
+                      <td>
+                        <textarea name="comment" id='comment_{{ pet_hist.history_id }}' style="width: 600px; 
+                        min-height: 110px; resize: vertical; overflow-y: auto; 
+                        word-wrap: break-word; max-width: 100%;" maxlength="500" disabled>{{ pet_hist.comment }}</textarea>
+                      </td>
+                      <td>
+                        <div class="pet-actions">
+                          <button type="button" class="change-button" id="change_{{ pet_hist.history_id }}" 
+                          onclick="enableEditHistory('{{ pet_hist.history_id }}');">
+                          <i class="fa-regular fa-pen-to-square"></i></button>
+                          <h6></h6>
+                          <input type="hidden" name="history_id" value="{{ pet_hist.history_id }}">
+                          <button type="submit" class="change-button s-button" id="save_{{ pet_hist.history_id }}" disabled><i class="fa-solid fa-check"></i></button><br>
+                          <h6></h6>
+                          </form>
+                          <form action="{{ url_for('general_logic.remove_history', history_id = pet_hist.history_id) }}" method="DELETE" onsubmit="return confirm('Confirm deletion.');" >
+                          <button type="submit" class="change-button r-button" style="border: none; box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);"><i class="fa-solid fa-eraser"></i></button><br>
+                          </form>
+                        </div>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+              <a class="submit-style" href="{{ url_for('general_logic.admin_logic',choice=1, action=6) }}">Add New History</a>
+          {% else %}
+          <a class="novalue submit-style" href="{{ url_for('general_logic.admin_logic',choice=1, action=6) }}">Your pets dont have vaccination history? Add New History</a>
+          {% endif %}
+          {% elif action == 3 %}
+                <!--iframe src="https://www.google.com/maps/d/u/0/embed?mid=11ZnEvFOa3xipWz70F4d_jAo_nwrodVQ&ehbc=2E312F" width="100%" height="100%"></iframe-->
+                <div id="map"></div>
+      
+          {% elif action == 4 %}
+              {% if vets %}
+              <div class="list-box">
+                <h3>Registered Vet phone numbers</h3>
+                <ul>
+                  {% for vet, person in vets %}
+                    <li>
+                      <strong>Name: </strong> {{person.name}}<br>
+                      <strong>Lastname: </strong> {{person.lastname}}<br>
+                      <strong>Phone: </strong> {{person.phone}}<br>
+                      {% if vet.speciality %}
+                      <strong>Speciality: </strong> {{vet.Speciality}}<br>
+                      {% else %}
+                      <strong>Does not have speciality registered</strong><br>
+                      {% endif %}
+                    </li>
+                    {% endfor %}
+                </ul>
+              </div>
+              {% else %}
+              <p style="text-align:center">No vets detected in database.</p>
+              {% endif %}
+          {% elif action == 5 %}
+          <div class="newpetbox">
+            <form action="{{ url_for('general_logic.admin_logic',choice = 1, action=5) }}" method="POST">
+              <label for="pet_name">Pet name: </label>
+              <input type="text" id="pet_name" name="pet_name" required>
+        
+              <label for="gender">Gender: </label>
+              <select id="gender" name="gender" required>
+                <option value="M">Male</option>
+                <option value="F">Female</option>
+              </select>
+        
+              <label for="bdate">Birth date</label>
+              <input type="date" id="bdate" name="bdate" required>
+        
+        
+              
+              <label for="pet_species">Species: </label>
+              <select id="pet_species" name="pet_species" required>
+                {% for pet_species in pet_species_list %}
+                    <option value="{{ pet_species.species_id }}">{{ pet_species.species }}</option>
+                {% endfor %}
+              </select>
+              <label for="pet_breed">Breed: </label>
+              <select id="pet_breed" name="pet_breed">
+              </select>
+              
+                <label for="recent_vaccination">Latest Vaccination(not required)</label>
+                <input type="date" id="recent_vaccination" name="recent_vaccination">
+        
+                <button type="submit" class="submit-style">Register Pet</button>
+            </form>
+          </div>
+          {% elif action == 6 %}
+          {% if pets %}
+          <div class="newpetbox">
+            <form action="{{ url_for('general_logic.admin_logic',choice = 1, action=6) }}" method="POST">
+              <label for="pet_name">Pet name</label>
+              <select id="pet_name" name="pet_name">
+                {% for pet in pets %}
+                  <option value="{{ pet.pet_id }}">{{ pet.name }}</option>
+                {% endfor %}
+              </select>
+
+              <label for="treatment">Treatment / Vaccination</label>
+              <select id="treatment" name="treatment" required>
+                <option value="Rabbies Vaccination">Rabbies</option>
+                <option value="Internal Parasytes">Internal Parasytes</option>
+                <option value="Skin care / External Parasytes">Skin care / External Parasytes</option>
+                <option value="Other Vaccination">Other Vaccination</option>
+              </select>
+
+              <label for="date">Treatment Date</label>
+              <input type="date" id="date" name="date" required>
+
+              <label for="comment">Comment</label>
+              <textarea id="comment" name="comment" style="width: 600px; 
+              height: 250px; resize: vertical; overflow-y: auto; 
+              word-wrap: break-word; max-width: 100%;" maxlength="500"></textarea>
+
+              <button type="submit" class="submit-style">Add History</button>
+            </form>
+          </div>
+          {% else %}
+          <h1></h1>
+          <h1></h1>
+          <a class="novalue submit-style" href="{{ url_for('general_logic.owner_logic', action=5) }}">It seems you dont have pets, Click here to add them</a>
+          {%endif%}
+        {% endif %}
+      </div>
+      {% elif choice == 2 %}
+      <div class="dashboard">
+        <div class='box1' id="piechart">
+        </div>
+        <div class="box2" id="chart_div">
+        </div>
+        <div class="box3" id="table_div">
+        </div>
+        <div class="box4" style=" margin-left:50px; margin-bottom:20px; display:flex; overflow:scroll">
+          <div>
+          {% if action == 0 %}
+          {% if notes %}
+          <table class="table table-sortable">
+            <thead>
+              <tr>
+                <th>Admin Notes</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+            {% for note in notes %}
+            <form action="{{ url_for('general_logic.edit_note', action=0, note_id=note.note_id) }}" method="POST">
+            <tr>
+              <td>
+              <textarea name="comment" id='comment_{{ note.note_id }}' style="width: 700px; 
+              min-height: 90px; resize: vertical; overflow-y: auto; 
+              word-wrap: break-word; max-width: 100%;" maxlength="500" disabled>{{ note.content }}</textarea>
+              </td>
+              <td>
+              <div class="pet-actions">
+                <button type="button" class="change-button" id="change_{{ note.note_id }}" 
+                onclick="enableEditNote('{{ note.note_id }}');">
+                <i class="fa-regular fa-pen-to-square"></i></button>
+                <h6></h6>
+                <input type="hidden" name="history_id" value="{{ note.note_id }}">
+                <button type="submit" class="change-button s-button" id="save_{{ note.note_id }}" disabled><i class="fa-solid fa-check"></i></button><br>
+                <h6></h6>
+                </form>
+                <form action="{{ url_for('general_logic.remove_note', note_id=note.note_id) }}" method="DELETE" onsubmit="return confirm('Confirm deletion.');" >
+                <button type="submit" class="change-button r-button" style="border: none; box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);"><i class="fa-solid fa-eraser"></i></button><br>
+                </form>
+              </div>
+            </td>
+          </tr>
+            {% endfor %}
+          </tbody>
+          </table>
+          <a class="submit-style" style="text-align: center;" href="{{ url_for('general_logic.admin_logic', choice=2, action=1) }}">Add New Note</a>
+          {% else %}
+          <a class="submit-style" style="text-align: center;" href="{{ url_for('general_logic.admin_logic', choice=2, action=1) }}">Add a Note</a>
+          {%endif%}
+          {%endif%}
+          {% if action == 1 %}
+            <form action="{{ url_for('general_logic.add_note') }}" method="POST">
+
+              <label for="note"></label>
+              <textarea id="note" name="note" style="width: 600px; 
+              height: 200px; resize: vertical; overflow-y: auto; 
+              word-wrap: break-word; max-width: 100%;" maxlength="500" placeholder="You can write notes here"></textarea>
+
+              <button type="submit" class="submit-style">Add Note</button>
+            </form>
+          
+          {% endif %}
+        </div>
+      </div>
+    </div>
+      {% elif choice == 7 %}
+      <h2 style="text-align:center"> Pets </h2>
+      {% if pets %}
+        <table class="table table-sortable">
+          <thead>
+            <tr>
+              <th>Pet id</th>
+              <th>Owner</th>
+              <th>Pet Name</th>
+              <th>Pet Species</th>
+              <th>Gender</th>
+              <th>Treatment</th>
+              <th>Recent Vaccination</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for pet, species, breed, owner, person in pets %}
+            <form>
+              <tr>
+                <td>{{ pet.pet_id }}</td>
+                <td>{{ owner.owner_id}} - {{ person.name }} {{ person.lastname }}</td>
+                <td>{{ pet.name }}</td>
+                <td>{{ species.species }} - {{ breed.breed }}</td>
+                {% if pet.gender == "M" %}
+                <td>Male</td>
+                {% elif pet.gender =="F" %}
+                <td>Female</td>
+                {% else %}
+                <td>somethings off</td>
+                {% endif %}
+                <td>{{ pet.treatment }}</td>
+                <td>{{ pet.recent_vaccination }}</td>
+              </tr>
+            </form>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+      <p style="text-align:center">No result found.</p>
+      {% endif %}
+    
+    {% elif choice == 8 %}
+    <div class="user-menu">
+      <form action="{{ url_for('general_logic.vet_logic', choice = 8, action = 0) }}" class="mymenu" method="POST">
+        <label for="firstname">Name</label>
+        <input type="text" id="firstname" name="firstname" value="{{ current_user.name }}" disabled>
+        <button type="button" class="change-button" onclick="enableInput('firstname')"><i class="fa-solid fa-pen-to-square"></i></button><br>
+        
+        <label for="lastname">Lastname</label>
+        <input type="text" id="lastname" name="lastname" value="{{ current_user.lastname }}" disabled>
+        <button type="button" class="change-button" onclick="enableInput('lastname')"><i class="fa-solid fa-pen-to-square"></i></button><br>
+
+        <label for="address">Address</label>
+        <input type="text" id="address" name="address" value="{{ current_user.address }}" disabled>
+        <button type="button" class="change-button" onclick="enableInput('address')"><i class="fa-solid fa-pen-to-square"></i></button><br>
+
+        <input type="submit" value="Save Changes" class="save-button" id="save-button" style="display: none;">
+      </form>
+    </div>
+  </section>
+  {%endif%}
+{% endblock %}
+
+{% block script %}
+  <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js" integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="crossorigin=""></script>
+  <script src="../../static/js/main.js"></script>
+{% endblock %}

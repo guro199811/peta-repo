@@ -1,0 +1,22 @@
+.sidebar input{
+    font-size: 15px;
+    color: #000;
+    font-weight: 400;
+    outline: none;
+    height: 35px;
+    width: 35px;
+    border:none;
+    border-radius: 5px;
+    background-color: white;
+    transition: all .5s ease;
+  }
+
+.sidebar{
+    background-color:lightblue;
+    transform:translatex(0px) translatey(0px);
+   }
+
+/* Home section */
+.home-section{
+    height:90vh;
+   }

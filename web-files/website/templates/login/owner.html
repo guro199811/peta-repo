@@ -120,7 +120,7 @@
                   <button type="submit" class="change-button s-button" id="save_{{ pet_hist.history_id }}" disabled><i class="fa-solid fa-check"></i></button><br>
                   <h6></h6>
                   </form>
-                  <form action="{{ url_for('general_logic.delete_history', history_id = pet_hist.history_id) }}" method="DELETE" onsubmit="return confirm('Confirm deletion.');" >
+                  <form action="{{ url_for('general_logic.remove_history', history_id = pet_hist.history_id) }}" method="DELETE" onsubmit="return confirm('Confirm deletion.');" >
                   <button type="submit" class="change-button r-button" style="border: none; box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);"><i class="fa-solid fa-eraser"></i></button><br>
                   </form>
                 </div>
@@ -199,7 +199,7 @@
       <label for="pet_name">Pet name</label>
       <select id="pet_name" name="pet_name">
         {% for pet in pets %}
-          <option value="{{ pet.pet_id }}">{{ pet.name }}</option>
+          <option value="{{ pet.pet_id }}">{{ pet.name }} : {{ pet.pet_id }}</option>
         {% endfor %}
       </select>
 
