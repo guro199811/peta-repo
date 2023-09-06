@@ -20,3 +20,12 @@
 .home-section{
     height:90vh;
    }
+
+/* Owner container */
+.home-section .owner-container{
+  width:100%;
+  height:100%;
+  transform:translatex(0px) translatey(3px);
+  padding-top:27px;
+ }
+ 

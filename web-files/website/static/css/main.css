@@ -1249,7 +1249,8 @@ nav{
   background-color:rgba(132,64,0,0.18);
   transform:translatex(0px) translatey(0px);
  }
- 
+
+
  /* Clinic */
  .nav-list a .bx-clinic{
   background-color:rgba(0,0,0,0);
@@ -1306,6 +1307,10 @@ nav{
  }
 
  .nav-list a .bx-message-alt-add{
+  color:#000000;
+ }
+
+.nav-list a .bx-male{
   color:#000000;
  }
 

@@ -171,23 +171,31 @@ def owner_logic(action):
 def admin_logic(choice, action):
     if current_user.type != 2:
         abort(404)
+    
     if choice == 0:
-    # Handle search functionality here
-        search_query = request.args.get('q')
-        if search_query:
-            # Perform a case-insensitive search on the 'persons' table
-            search_query = f"%{search_query.lower()}%"
-            search_results = db.session.query(Person).filter(
-                or_(
-                    func.lower(Person.name).like(search_query),
-                    func.lower(Person.lastname).like(search_query),
-                    func.lower(Person.mail).like(search_query),
-                    func.lower(Person.address).like(search_query),
-                    cast(Person.phone, String).like(search_query)
-                )
-            ).all()
+        # Handle search functionality here
+        if action == 0:
+            search_query = request.args.get('q')
+            if search_query:
+                # Perform a case-insensitive search on the 'persons' table
+                search_query = f"%{search_query.lower()}%"
+                search_results = db.session.query(Person).filter(
+                    or_(
+                        func.lower(Person.name).like(search_query),
+                        func.lower(Person.lastname).like(search_query),
+                        func.lower(Person.mail).like(search_query),
+                        func.lower(Person.address).like(search_query),
+                        cast(Person.phone, String).like(search_query)
+                    )
+                ).all()
+            else:
+                search_results = []
 
-        return render_template('login/admin.html', choice=choice, action = search_results)
+        elif action == 1:
+            # When action is 1, display all persons
+            search_results = db.session.query(Person).all()
+
+        return render_template('login/admin.html', choice=choice, action=action, result = search_results)
 
     
     if choice == 1:
@@ -288,6 +296,8 @@ def admin_logic(choice, action):
                     pets = db.session.query(Pet).filter_by(owner_id = owner.owner_id).all()
                     return render_template('login/admin.html',
                                     choice = choice, action = 6, pets = pets)
+                else:
+                    return render_template('login/admin.html', choice = choice, action = 6, pets = None)
             elif request.method == "POST":
                 pet_id = request.form.get('pet_name')
                 treatment = request.form.get('treatment')
@@ -370,7 +380,16 @@ def admin_logic(choice, action):
         
             
 
-
+    if choice == -1:
+        users = db.session.query(Owner, Person, func.count(Pet.pet_id)  # Adding the pet counter
+        ).join(Person, Owner.person_id == Person.id). \
+            outerjoin(Pet, Owner.owner_id == Pet.owner_id). \
+            group_by(Owner, Person).all()
+        
+        return render_template('login/admin.html',
+                                choice=choice,
+                                action=action,
+                                users=users)
     if choice == 3:
         users = db.session.query(Owner, Person, func.count(Pet.pet_id)  # Adding the pet counter
         ).join(Person, Owner.person_id == Person.id). \
@@ -473,7 +492,7 @@ def vet_logic(choice, action):
             # მფლობელის მონაცემების მიღება და მფლობელის ID-ის მიხედვით
             owner = db.session.query(Owner).filter_by(person_id=current_user.id).one_or_none()
             if owner is None:
-                return render_template('login/admin.html',choice = choice, action=action, pets=None)
+                return render_template('login/vet.html',choice = choice, action=action, pets=None)
             else:
                 owner_id = owner.owner_id
 
@@ -486,10 +505,10 @@ def vet_logic(choice, action):
                     all()
                 if len(pets) == 0:
                     #flash('თქვენ ცხოველები არ გყავთ.')
-                    return render_template('login/admin.html',
+                    return render_template('login/vet.html',
                                            choice = choice ,action=action, pets=None)
                 else:
-                    return render_template('login/admin.html',
+                    return render_template('login/vet.html',
                                            choice = choice, action=action, pets=pets)
                 
         elif action == 2:
@@ -499,7 +518,7 @@ def vet_logic(choice, action):
                     join(Pet, Pet_history.pet_id == Pet.pet_id).\
                     filter(Pet.owner_id == owner.owner_id).all()
                 if request.method == "GET":
-                    return render_template('login/admin.html',
+                    return render_template('login/vet.html',
                         choice = choice, action = action, 
                         pet_history = pet_history)
                 elif request.method == "POST":
@@ -518,29 +537,29 @@ def vet_logic(choice, action):
                             history.date = date
                     db.session.commit()
 
-                    return render_template('login/admin.html',
+                    return render_template('login/vet.html',
                                     choice = choice, action = action,
                                     pet_history = pet_history)
             else:
-                return render_template('login/admin.html',
+                return render_template('login/vet.html',
                                     choice = choice, action = action,
                                     pet_history = None)
 
         
         elif action == 3:
-            return render_template('login/admin.html',
+            return render_template('login/vet.html',
                                    choice  = choice, action=action)
         
         elif action == 4:
             vets = db.session.query(Vet, Person).join(Person, Vet.person_id == Person.id).filter(Vet.active == True).all()
-            return render_template('login/admin.html',
+            return render_template('login/vet.html',
                                     choice = choice, action=action,
                                     vets = vets)
         
         elif action == 5:
             if request.method == "GET":
                 pet_species_list = db.session.query(Pet_species).all()
-                return render_template('login/admin.html', choice = choice, action = action, pet_species_list = pet_species_list)
+                return render_template('login/vet.html', choice = choice, action = action, pet_species_list = pet_species_list)
             
             if request.method =="POST":
                 pet_name = request.form.get('pet_name')
@@ -557,15 +576,17 @@ def vet_logic(choice, action):
                 else:
                     flash('თქვენი ცხოველი ვერ დარეგისტრირდა', category='error')    
 
-            return render_template('login/vet.html',choice = choice, action=action)
-        
+            return redirect(url_for('general_logic.vet_logic', choice=choice, action=1))
+
         elif action == 6: #needs pets from current user
             if request.method == "GET":    
                 owner = db.session.query(Owner).filter_by(person_id = current_user.id).one_or_none()
                 if owner:
                     pets = db.session.query(Pet).filter_by(owner_id = owner.owner_id).all()
-                    return render_template('login/admin.html',
+                    return render_template('login/vet.html',
                                     choice = choice, action = 6, pets = pets)
+                else:
+                    return render_template('login/vet.html', choice = choice, action = action, pets = None)
             elif request.method == "POST":
                 pet_id = request.form.get('pet_name')
                 treatment = request.form.get('treatment')
@@ -815,7 +836,9 @@ def edit_pet(action, pet_id):
             if current_user.type == 1:
                 return redirect(url_for('general_logic.owner_logic', action=1))
             elif current_user.type == 2:
-                return redirect(url_for('general_logic.admin_logic', choice = 1, action=1))
+                return redirect(url_for('general_logic.admin_logic', choice=1, action=1))
+            elif current_user.type == 3:
+                return redirect(url_for('general_logic.vet_logic', choice=1, action=1))
         #return render_template('owner.html', action=action, pet=pet, changed=changed)
 
     #flash('Pet not found.')
@@ -828,7 +851,7 @@ def edit_user(person_id):
     if current_user.type != 2:
         abort(404)
         
-
+    
     if request.method == 'POST':
         name = request.form.get('name')
         lastname = request.form.get('lastname')
@@ -836,7 +859,8 @@ def edit_user(person_id):
         type = request.form.get('type')
         address = request.form.get('address')
         phone = request.form.get('phone')
-        
+        choice = 0
+
         try:
             person = db.session.query(Person).filter_by(id=person_id).one()
 
@@ -848,15 +872,10 @@ def edit_user(person_id):
             person.type = type
             person.address = address
             person.phone = phone
-            choice = 8
-            #Am using action in vets for identifiend speciality, action is needed for routing
-            action = 0
+            #Am using action in vets for identifiend speciality, result is needed for routing
             if len(phone) == 9:
                 db.session.commit()
                 if int(type) == 1:  # Regular user
-
-                    choice = 5  #Choice for redirections
-                    
                     if previous_person_type == 2:
                         try:
                             admin = db.session.query(Admin).filter_by(person_id=person_id).one()
@@ -881,7 +900,6 @@ def edit_user(person_id):
                 
                 if int(type) == 2:  # Admin
                     try:
-                        choice = 6  # Or any other choice number for admin
                         admin = db.session.query(Admin).filter_by(person_id=person_id).one()
                         admin.active = True
                     except NoResultFound:
@@ -904,7 +922,6 @@ def edit_user(person_id):
 
                 elif int(type) == 3:  # Vet
                     try:
-                        choice = 4
                         vet = db.session.query(Vet).filter_by(person_id=person_id).one()
                         vet_speciality = request.form.get('vet_speciality')
                         if vet_speciality != None or vet_speciality != 0 or vet_speciality != '0':
@@ -932,7 +949,6 @@ def edit_user(person_id):
 
                 elif int(type) == 4:  # Editor
                     try:
-                        choice = 5
                         editor = db.session.query(Editor).filter_by(person_id=person_id).one()
                         editor.active = True
                     except NoResultFound:
@@ -962,7 +978,8 @@ def edit_user(person_id):
 
         except NoResultFound:
             flash("User not found.", category='error')
-
+        action = request.form.get('action')
+        action = int(action)
         return redirect(url_for('general_logic.admin_logic', choice=choice, action=action))
 
 
@@ -1028,8 +1045,10 @@ def remove_pet(action, pet_id):
                 flash(e)
         if current_user.type == 1:
             return redirect(url_for('general_logic.owner_logic', action=1))
-        if current_user.type == 2:
+        elif current_user.type == 2:
             return redirect(url_for('general_logic.admin_logic',choice = 1, action=1))
+        elif current_user.type == 3:
+            return redirect(url_for('general_logic.vet_logic', choice=1, action=1))
     else:
         abort(404)
 

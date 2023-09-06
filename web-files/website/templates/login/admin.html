@@ -9,6 +9,9 @@
   
 {% endblock %}
 
+{% block bg %}
+{% endblock %}
+
 {% block headscript %}
 {% if data %}
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
@@ -105,18 +108,18 @@
       <span class="tooltip">Search</span>
     </li>
     <li>
-      <a href="{{ url_for('general_logic.admin_logic', choice=1, action = 0) }}">
-        <i class='bx bx-home' ></i>
-        <span class="link_name">My ownership menu</span>
-      </a>
-      <span class="tooltip">My ownership menu</span>
-    </li>
-    <li>
       <a href="{{ url_for('general_logic.admin_logic', choice=2, action = 0) }}">
         <i class="bx bx-grid-alt"></i>
         <span class="link_name">Dashboard</span>
       </a>
       <span class="tooltip">Dashboard</span>
+    </li>
+    <li>
+      <a href="{{ url_for('general_logic.admin_logic', choice=0, action = 1) }}">
+        <i class='bx bx-male'></i>
+        <span class="link_name">All Registered Users</span>
+      </a>
+      <span class="tooltip">All Registered users</span>
     </li>
     <li>
       <a href="{{ url_for('general_logic.admin_logic', choice=3, action = 0) }}">
@@ -154,6 +157,13 @@
       <span class="tooltip">Pets</span>
     </li>
     <li>
+      <a href="{{ url_for('general_logic.admin_logic', choice=1, action = 0) }}">
+        <i class='bx bx-home' ></i>
+        <span class="link_name">My ownership menu</span>
+      </a>
+      <span class="tooltip">My ownership menu</span>
+    </li>
+    <li>
       <a href="{{ url_for('general_logic.admin_logic', choice=8, action = 0) }}">
         <i class='bx bx-user-circle'></i>
         <span class="link_name">My data</span>
@@ -165,7 +175,11 @@
   
   <section class="home-section">
       {% if choice == 0 %}
-      <h2 style="text-align:center">Search Results</h2>
+        {% if action == 0 %}
+        <h2 style="text-align:center">Search Results</h2>
+        {% elif action == 1 %}
+        <h2 style="text-align:center">All Registered Users</h2>
+        {% endif %}
       <table class="table table-sortable">
         <thead>
           <tr>
@@ -181,9 +195,14 @@
           </tr>
         </thead>
         <tbody>
-          {% for person in action %}
-            <form action="{{ url_for('general_logic.edit_user', person_id=person.id) }}" method="POST">
+          {% for person in result %}
+            <form action="{{ url_for('general_logic.edit_user',action = 0, person_id=person.id) }}" method="POST">
               <tr>
+                {% if action == 0 %}
+                <input type="hidden" name="action" value="0">
+                {% elif action == 1 %}
+                <input type="hidden" name="action" value="1">
+                {% endif %}
                 <td>{{ person.id }}</td>
                 <td>
                   <input type="text" id="name_{{ person.id }}" name="name" value="{{ person.name }}" required disabled>
@@ -219,7 +238,7 @@
             {% endfor %}
           </tbody>
         </table>
-      {% if not action %}
+      {% if not result %}
         <p style="text-align:center">No results on Search.</p>
       {% endif %}
     {% elif choice == 1 %}
@@ -423,7 +442,7 @@
           {% else %}
           <h1></h1>
           <h1></h1>
-          <a class="novalue submit-style" href="{{ url_for('general_logic.owner_logic', action=5) }}">It seems you dont have pets, Click here to add them</a>
+          <a class="novalue submit-style" href="{{ url_for('general_logic.admin_logic',choice=1, action=5) }}">It seems you dont have pets, Click here to add them</a>
           {%endif%}
         {% endif %}
       </div>
