@@ -716,19 +716,19 @@ def vet_logic(choice, action):
         return render_template('login/admin.html', choice=choice, action=action, visits=visits)
     
     if choice == 7:
-        '''pets = db.session.query(Pet, Owner, Person).join(
-            Owner, Pet.owner_id == Owner.owner_id
-        ).join(
-            Person, and_(Owner.person_id == Person.id)
-        ).all()'''
         
-        pets = db.session.query(Pet, Pet_species, Pet_breed, Owner, Person).\
-            join(Pet_species, Pet.pet_species == Pet_species.species_id).\
-            join(Pet_breed, Pet.pet_breed == Pet_breed.breed_id).\
-            join(Owner, Pet.owner_id == Owner.owner_id).\
-            join(Person, and_(Owner.person_id == Person.id)).\
-            all()
-        return render_template('login/admin.html', choice = choice, pets = pets)
+        vet = db.session.query(Vet).filter_by(person_id = current_user.id).one_or_none()
+        if vet:
+            pets = db.session.query(
+                Pet, Pet_species, Pet_breed, Owner, Person).select_from(Visit).join(
+                Pet, Visit.pet_id == Pet.pet_id).join(
+                Pet_species, Pet.pet_species == Pet_species.species_id).join(
+                Pet_breed, Pet.pet_breed == Pet_breed.breed_id).join(
+                Owner, Pet.owner_id == Owner.owner_id).join(
+                Person, and_(Owner.person_id == Person.id)).filter(Visit.vet_id == vet.vet_id).all()
+            return render_template('login/vet.html', choice = choice, pets = pets)
+        else:
+            return render_template('login/vet.html', choice = choice, pets = None)
     if choice == 8:
         if request.method =="POST":
             firstname = request.form.get('firstname')
