@@ -405,6 +405,41 @@
         </div>
       </div>
     </div>
+    {% elif choice == 4 %}
+      <h2 style="text-align:center"> Visits </h2>
+      {% if visits %}
+        <table class="table table-sortable">
+          <thead>
+            <tr>
+              <th>Visit id</th>
+              <th>Vet</th>
+              <th>Pet Owner</th>
+              <th>Pet</th>
+              <th>Diagnosis</th>
+              <th>Treatment</th>
+              <th>Visit Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for visit, vet, owner, pet, vet_name, vet_lastname,
+               owner_name, owner_lastname, pet_name in visits %}
+            <form>
+              <tr>
+                <td>{{ visit.visit_id }}</td>
+                <td>{{ vet.vet_id }} - {{ vet_name }} {{ vet_lastname }}</td>
+                <td>{{ owner.owner_id }} - {{ owner_name }} {{ owner_lastname }}</td>
+                <td>{{ pet.pet_id }} - {{ pet_name }}</td>
+                <td>{{ visit.diagnosis }}</td>
+                <td>{{ visit.treatment }}</td>
+                <td>{{ visit.date.strftime('%Y-%m-%d') }}</td>
+              </tr>
+            </form>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+      <p style="text-align:center">No Visits found.</p>
+      {% endif %}
       {% elif choice == 7 %}
       <h2 style="text-align:center"> Visited Pets </h2>
       {% if pets %}

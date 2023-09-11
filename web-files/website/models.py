@@ -40,6 +40,12 @@ class Speciality(db.Model):
     description = db.Column(db.String(150))
 
 
+class Clinic(db.Model):
+    __tablename__ = 'clinics'
+    clinic_id = db.Column(db.Integer, primary_key=True)
+    clinic_name = db.Column(db.String(200))
+
+
 class Vet(db.Model):
     __tablename__ = 'vets'
     active = db.Column(db.Boolean, default=True)
@@ -48,6 +54,7 @@ class Vet(db.Model):
     person = db.relationship(Person)
     spec_id = db.Column(db.Integer, db.ForeignKey('specialities.spec_id'))
     speciality = db.relationship(Speciality)
+    clinic_id = db.Column(db.Integer, db.ForeignKey('vets.vet_id'))
 
 
 class Pet_species(db.Model):
@@ -135,6 +142,8 @@ class Note(db.Model):
     person = db.relationship(Person)
     created = db.Column(db.Date)
     content = db.Column(db.String(500))
+
+
 
 
 '''if __name__ == '__main__':
