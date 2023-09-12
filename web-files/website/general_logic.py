@@ -667,23 +667,23 @@ def vet_logic(choice, action):
                             notes = notes)
         
     if choice == 4: #My visits
+        if action == 0:
+            vet_person = aliased(Person)
+            owner_person = aliased(Person)
+            vet = db.session.query(Vet).filter_by(person_id = current_user.id).one_or_none()
+            if vet:
+                visits = db.session.query(
+                Visit, Vet, Owner, Pet, vet_person.name.label('vet_name'), vet_person.lastname.label('vet_lastname'),
+                owner_person.name.label('owner_name'), owner_person.lastname.label('owner_lastname'), Pet.name.label('pet_name')
+                ).join(Vet, Vet.vet_id == Visit.vet_id) \
+                .join(Owner, Owner.owner_id == Visit.owner_id) \
+                .join(Pet, Pet.pet_id == Visit.pet_id) \
+                .join(vet_person, vet_person.id == Vet.person_id) \
+                .join(owner_person, owner_person.id == Owner.person_id).filter(Visit.vet_id == vet.vet_id).all()
 
-        vet_person = aliased(Person)
-        owner_person = aliased(Person)
-        vet = db.session.query(Vet).filter_by(person_id = current_user.id).one_or_none()
-        if vet:
-            visits = db.session.query(
-            Visit, Vet, Owner, Pet, vet_person.name.label('vet_name'), vet_person.lastname.label('vet_lastname'),
-            owner_person.name.label('owner_name'), owner_person.lastname.label('owner_lastname'), Pet.name.label('pet_name')
-            ).join(Vet, Vet.vet_id == Visit.vet_id) \
-            .join(Owner, Owner.owner_id == Visit.owner_id) \
-            .join(Pet, Pet.pet_id == Visit.pet_id) \
-            .join(vet_person, vet_person.id == Vet.person_id) \
-            .join(owner_person, owner_person.id == Owner.person_id).filter(Visit.vet_id == vet.vet_id).all()
-
-            return render_template('login/vet.html', choice=choice, action=action, visits=visits)
-        else:
-            return render_template('login/vet.html', choice=choice, action=action, visits=None)
+                return render_template('login/vet.html', choice=choice, action=action, visits=visits)
+            else:
+                return render_template('login/vet.html', choice=choice, action=action, visits=None)
 
 
     if choice == 5: #Add my clinic
@@ -697,7 +697,7 @@ def vet_logic(choice, action):
                                 action=action,
                                 users=users) 
      
-    if choice == 7: #Visited Pets
+    ''' if choice == 7: #Visited Pets
         
         vet = db.session.query(Vet).filter_by(person_id = current_user.id).one_or_none()
         if vet:
@@ -710,7 +710,7 @@ def vet_logic(choice, action):
                 Person, and_(Owner.person_id == Person.id)).filter(Visit.vet_id == vet.vet_id).all()
             return render_template('login/vet.html', choice = choice, pets = pets)
         else:
-            return render_template('login/vet.html', choice = choice, pets = None)
+            return render_template('login/vet.html', choice = choice, pets = None)'''
     if choice == 8: #My Data
         if request.method =="POST":
             firstname = request.form.get('firstname')

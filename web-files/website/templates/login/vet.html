@@ -50,13 +50,13 @@
       </a>
       <span class="tooltip">My Visits</span>
     </li>
-    <li>
+    <!--li>
       <a href="{{ url_for('general_logic.vet_logic', choice=7, action = 0) }}">
         <i class='bx bxs-dog'></i>
         <span class="link_name">Visited Pets</span>
       </a>
       <span class="tooltip">Visited Pets</span>
-    </li>
+    </li-->
     <li>
       <a href="{{ url_for('general_logic.vet_logic', choice=1, action = 0) }}">
         <i class='bx bx-home' ></i>
@@ -440,7 +440,7 @@
       {% else %}
       <p style="text-align:center">No Visits found.</p>
       {% endif %}
-      {% elif choice == 7 %}
+<!--      {% elif choice == 7 %}
       <h2 style="text-align:center"> Visited Pets </h2>
       {% if pets %}
         <table class="table table-sortable">
@@ -479,7 +479,7 @@
         </table>
       {% else %}
       <p style="text-align:center">No result found.</p>
-      {% endif %}
+      {% endif %}-->
     
     {% elif choice == 8 %}
     <div class="user-menu">

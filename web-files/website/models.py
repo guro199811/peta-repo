@@ -44,7 +44,7 @@ class Clinic(db.Model):
     __tablename__ = 'clinics'
     clinic_id = db.Column(db.Integer, primary_key=True)
     clinic_name = db.Column(db.String(200))
-
+    coordinates = db.Column(db.Integer)
 
 class Vet(db.Model):
     __tablename__ = 'vets'
