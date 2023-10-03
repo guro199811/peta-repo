@@ -1,3 +1,4 @@
+from tokens import generate_confirmation_token
 from flask import (Blueprint, 
                     render_template, 
                     request, flash, 
@@ -73,7 +74,7 @@ def register():
         choice = 1
         date = dt.today()
 
-        #ვიგებთ მომხმარებელის ელ.ფოსტა არსებობს თუ არა ბაზაში...
+        #incade hes allready regisered
         user = Person.query.filter_by(mail=mail).first()
 
         if user:
@@ -87,14 +88,21 @@ def register():
         elif len(password1) < 6:
             flash("პაროლის მინიმალური ზომა არის 6.", category="error")
         else:
-            #შეგვაქვს მონაცემთა ბაზაში
+            #Adding data to database
             new_user = Person(name=name, lastname=lastname, phone=phone,
                             mail=mail, address=address, created=date,
                             type=choice, password=generate_password_hash(password1, method='sha256'))
             db.session.add(new_user)
             db.session.commit()
             login_user(new_user, remember=True)
-            flash("თქვენი აქაუნთი შეიქმნა", category="success")
+            token = generate_confirmation_token(new_user.email)
+
+            # Send a confirmation email
+            confirmation_url = url_for('confirm_email', token=token, _external=True)
+            message = Message('ელ.ფოსტის დასტური(Peta.ge)', recipients=[user.email])
+            message.body = f'გთხოვთ დაადასტუროთ თქვენი ელ.ფოსტა მოცემული ბმულით: {confirmation_url}\n\n\nპატივისცემით, Peta-Team'
+            mail.send(message)
+            flash("თქვენს ელ.ფოსტაზე გაიგზავნა დასტურის ბმული, გთხოვთ შეამოწმოთ", category="success")
             return redirect(url_for('views.owner'))
 
     return render_template("sign-up.html", user=current_user)

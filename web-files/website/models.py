@@ -24,6 +24,8 @@ class Person(db.Model, UserMixin):
     type = db.Column(db.Integer, db.ForeignKey('types.type'))
     person_type = db.relationship(Type)
     password = db.Column(db.String(150), nullable=False)
+    confirmed = db.Column(db.Boolean, nullable=False, default=False)
+    confirmed_on = db.Column(db.DateTime, nullable=True)
 
 
 class Owner(db.Model):

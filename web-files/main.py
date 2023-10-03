@@ -10,6 +10,7 @@ app = create_app(migrate)
 
 
 
+
 #Mail Verification Section
 
 

@@ -6,7 +6,7 @@ from sqlalchemy import join, select, or_, func, and_, cast, String
 from sqlalchemy.orm import contains_eager, aliased
 from sqlalchemy.orm.exc import NoResultFound
 from datetime import date as dt, timedelta
-
+from .views import grant_access
 
 
 from . import db
@@ -19,19 +19,7 @@ general_logic = Blueprint('general_logic', __name__)
 
 
 #user allowence decorator (does not work as intended)
-'''
-def allow_users(user_types):
-    def decorator(fun):
-        def wrapper(*args, **kwargs):
-            # check usertype here 
-            if current_user.type in user_types:
-                return fun(*args, **kwargs)
-            else:
-                raise PermissionError("Access not allowed for this user type.")
-            
-        return wrapper
-    return decorator
-'''
+
 
 
 #User Logics section
@@ -39,9 +27,8 @@ def allow_users(user_types):
 
 @general_logic.route('/owner/<int:action>', methods=['GET', 'POST'])
 @login_required
+@grant_access([1])
 def owner_logic(action):
-        if current_user.type != 1:
-            abort(404)
         if action == 0:
             if request.method =="POST":
                 firstname = request.form.get('firstname')
@@ -169,10 +156,8 @@ def owner_logic(action):
 
 @general_logic.route('/admin/<int:choice>/<int:action>', methods=['GET', 'POST'])
 @login_required
+@grant_access([2])
 def admin_logic(choice, action):
-    if current_user.type != 2:
-        abort(404)
-    
     if choice == 0:
         # Handle search functionality here
         if action == 0:
@@ -467,9 +452,8 @@ def admin_logic(choice, action):
 
 @general_logic.route('/vet/<int:choice>/<int:action>', methods=['GET', 'POST'])
 @login_required
+@grant_access([3])
 def vet_logic(choice, action):
-    if current_user.type != 3:
-        abort(404)
     if choice == 0:
     # Handle search functionality here
         search_query = request.args.get('q')
@@ -754,18 +738,17 @@ def register_pet(pet_name, pet_species, pet_breed, recent_vaccination, gender, b
 
 
 @general_logic.route('/add_new_note', methods=['POST'])
-def add_note():
-    if current_user.type ==2:    
-        #category = request.form.get('icon_option')
-        note = request.form.get('note')
-        person_id = current_user.id
-        created = dt.today()
-        new_note = Note(person_id = person_id, created = created, content = note)
-        db.session.add(new_note)
-        db.session.commit()
-        return redirect(url_for('general_logic.admin_logic', choice = 2, action = 0))
-    else:
-        abort(404)
+@grant_access([2])
+def add_note(): 
+    #category = request.form.get('icon_option')
+    note = request.form.get('note')
+    person_id = current_user.id
+    created = dt.today()
+    new_note = Note(person_id = person_id, created = created, content = note)
+    db.session.add(new_note)
+    db.session.commit()
+    return redirect(url_for('general_logic.admin_logic', choice = 2, action = 0))
+
 
 
 
@@ -835,11 +818,8 @@ def edit_pet(action, pet_id):
 
 @general_logic.route('/admin/edit_user/<int:person_id>', methods=['GET', 'POST'])
 @login_required
+@grant_access([2])
 def edit_user(person_id):
-    if current_user.type != 2:
-        abort(404)
-        
-    
     if request.method == 'POST':
         name = request.form.get('name')
         lastname = request.form.get('lastname')
@@ -1058,14 +1038,13 @@ def remove_history(history_id):
 
 @general_logic.route('/remove_note/<int:note_id>', methods=['GET', 'DELETE'])
 @login_required
+@grant_access([2])
 def remove_note(note_id):
     admin_note = db.session.query(Note).filter_by(note_id = note_id).one_or_none()
     if admin_note:
         db.session.delete(admin_note)
         db.session.commit()
-        if current_user.type == 2:
-            return redirect(url_for('general_logic.admin_logic',choice = 2, action=0))
-        else:
-            abort(404)
+        return redirect(url_for('general_logic.admin_logic',choice = 2, action=0))
+
     else:
         return redirect(url_for('general_logic.admin_logic',choice = 2, action=0))
