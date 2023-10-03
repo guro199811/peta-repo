@@ -14,6 +14,7 @@ from .models import *
 import logging
 import json
 
+
 general_logic = Blueprint('general_logic', __name__)
 
 
@@ -685,6 +686,11 @@ def vet_logic(choice, action):
             else:
                 return render_template('login/vet.html', choice=choice, action=action, visits=None)
 
+        if action == 1:
+            if request.method == "GET":
+                return render_template('login/vet.html', choice=choice, action=action)
+            elif request.method == "POST":
+                pass
 
     if choice == 5: #Add my clinic
         users = db.session.query(Editor, Person, func.count(Post.post_id)  # Adding the pet counter

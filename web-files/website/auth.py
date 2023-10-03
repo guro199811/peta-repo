@@ -1,9 +1,15 @@
-from flask import Blueprint, render_template, request, flash, redirect, url_for
+from flask import (Blueprint, 
+                    render_template, 
+                    request, flash, 
+                    redirect, url_for,
+                    current_app)
 from werkzeug.security import generate_password_hash, check_password_hash
 from . import db
 from .models import Person
 from datetime import datetime
 from datetime import date as dt
+
+from flask_mail import Message
 
 from flask_login import (
     login_user, 
@@ -12,6 +18,7 @@ from flask_login import (
     current_user)
 
 auth = Blueprint('auth', __name__)
+verimail = current_app.extensions['mail']
 
 #შესვლის ფუნქცია, ამოწმებს მომხმარებელს ბაზაში
 @auth.route('/login', methods=['GET', 'POST'])

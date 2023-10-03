@@ -719,8 +719,6 @@ footer {
 
 /* Form Division */
 .newpetbox form{
-  background-image:url("../images/10.jpg");
-  background-size:100% 165%;
   background-attachment:scroll;
   margin-bottom:4px;
   min-height:619px;

@@ -125,6 +125,7 @@ class Visit(db.Model):
     owner = db.relationship(Owner)
     diagnosis = db.Column(db.String(100))
     treatment = db.Column(db.String(50))
+    comment = db.Column(db.String(500))
     date = db.Column(db.Date)
 
 class Post(db.Model):

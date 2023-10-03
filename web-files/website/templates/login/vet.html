@@ -406,6 +406,7 @@
       </div>
     </div>
     {% elif choice == 4 %}
+     {%if action == 0%}
       <h2 style="text-align:center"> Visits </h2>
       {% if visits %}
         <table class="table table-sortable">
@@ -438,7 +439,30 @@
           </tbody>
         </table>
       {% else %}
-      <p style="text-align:center">No Visits found.</p>
+      <a class="novalue submit-style" style="text-align:center" href="{{ url_for('general_logic.vet_logic',choice=4, action=1) }}">No Visits found, Click here to add one</a>
+      {% endif %}
+
+      {% elif action == 1 %}
+      <div class="newpetbox">
+        <form action="{{ url_for('general_logic.vet_logic',choice = 2, action=1) }}" method="POST">
+
+          <label for="diagnosis">Diagnosis</label>
+          <input type="text" id="diagnosis" name="diagnosis" maxlength="100" required>
+      
+          <label for="treatment">Treatment</label>
+          <input type="text" id="treatment" name="treatment" maxlength="50" required>      
+          
+          <label for="date">Visit Date(By default its Today)</label>
+          <input type="date" id="date" name="date" required>
+
+          <label for="comment">Comment</label>
+          <textarea id="comment" name="comment" style="width: 600px; 
+          height: 250px; resize: vertical; overflow-y: auto; 
+          word-wrap: break-word; max-width: 100%;" maxlength="500"></textarea>
+
+          <button type="submit" class="submit-style">Add History</button>
+        </form>
+      </div>
       {% endif %}
 <!--      {% elif choice == 7 %}
       <h2 style="text-align:center"> Visited Pets </h2>
