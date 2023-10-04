@@ -15,7 +15,7 @@ def grant_access(user_types):
             if current_user.type in user_types:
                 return view_func(*args, **kwargs)
             else:
-                abort(404)  # Replace with the appropriate action for unauthorized access
+                abort(404)
         return wrapper
     return decorator
 

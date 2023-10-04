@@ -13,13 +13,13 @@
 <div class="owner-container">
   <div class="buttons">
     <!-- ბმული 1: ცხოველის დამატება -->
-    <a href="{{ url_for('general_logic.owner_logic', action=1) }}" class="square-button">My Pets</a>
+    <a href="{{ url_for('general_logic.owner_logic', action=1) }}" class="square-button">ჩემი შინაური ცხოველები</a>
     <!-- ბმული 2: ჩემი ცხოველების ჩამონათვალი -->
-    <a href="{{ url_for('general_logic.owner_logic', action=2) }}" class="square-button">My Pet History</a>
+    <a href="{{ url_for('general_logic.owner_logic', action=2) }}" class="square-button">ჩემი შინარუი ცხოველების ისტორია</a>
     <!-- ბმული 3: ვეტერინარული კლინიკები ჩემს ახლოს -->
-    <a href="{{ url_for('general_logic.owner_logic', action=3) }}" class="square-button">Map</a>
+    <a href="{{ url_for('general_logic.owner_logic', action=3) }}" class="square-button">რუკა</a>
     <!-- ბმული 4: ვეტერინარების ტელეფონის ნომრები -->
-    <a href="{{ url_for('general_logic.owner_logic', action=4) }}" class="square-button">Vet Phone numbers</a>
+    <a href="{{ url_for('general_logic.owner_logic', action=4) }}" class="square-button">დარეგისტრირებული ვეტ.ექიმების ტელ.ნომრები</a>
   </div>      
   <!-- აქ არის box-menu ლოგიკა -->
   <div class="box-menu">
@@ -54,11 +54,11 @@
                     <form action="{{ url_for('general_logic.edit_pet', action=2, pet_id=pet.pet_id) }}" method="POST">
                       <div class="pet-info">
                         <strong>ID:</strong> {{ pet.pet_id }}<br><br>
-                        <label for="name">Name:</label>
+                        <label for="name">სახელი:</label>
                         <input type="text" id="name_{{ pet.pet_id }}" name="name" value="{{ pet.name }}" required disabled><br>
-                        <br><strong>Species: </strong><br>{{ pet_species.species }}<br>
-                        <br><strong>Breed: </strong><br>{{ pet_breed.breed }}<br><br>
-                        <label for="recent_vaccination">Recent vaccination</label>
+                        <br><strong>სახეობა: </strong><br>{{ pet_species.species }}<br>
+                        <br><strong>ჯიში: </strong><br>{{ pet_breed.breed }}<br><br>
+                        <label for="recent_vaccination">ბოლოდროინდელი ვაქცინაცია</label>
                         <input type="date" id="recent_vaccination_{{ pet.pet_id }}" name="recent_vaccination" value="{{ pet.recent_vaccination }}" disabled><br>
                       </div>
                       <input type="submit" value="Save" class="save-button" id="save_{{ pet.pet_id }}" style="display: none;">
@@ -70,24 +70,24 @@
                   </div>
                 </li>
               {% endfor %}
-              <a class="submit-style" href="{{ url_for('general_logic.owner_logic', action=5) }}">Add New pet</a>
+              <a class="submit-style" href="{{ url_for('general_logic.owner_logic', action=5) }}">ახალი შინაური ცხოველის დამატება</a>
             </ul>
           {% else %}
-          <a class="novalue submit-style" href="{{ url_for('general_logic.owner_logic', action=5) }}">You dont have pets, Click me to add them</a>
+          <a class="novalue submit-style" href="{{ url_for('general_logic.owner_logic', action=5) }}">თქვენ არ გყავთ შინაური ცხოველი დარეგისტრირებული, დააჭირეთ აქ რომ დაარეგისტრიროთ</a>
           {% endif %}
         </div>
       </div>
   {% elif action == 2 %}
-    <h2 style="text-align:center"> Pet history </h2>
+    <h2 style="text-align:center"> შინაური ცხოველის(ების) ისტორია</h2>
     {% if pet_history %}
       <table class="table table-sortable">
         <thead>
           <tr>
-            <th>History ID</th>
-            <th>Pet</th>
-            <th>Treatment -- Date</th>
-            <th>Comment</th>
-            <th>action</th>
+            <th>ისტორიის იდენტიფიკატორი</th>
+            <th>შინაური ცხოველი</th>
+            <th>მკურნალობა -- რიცხვი</th>
+            <th>კომენტარი</th>
+            <th>მოქმედება</th>
           </tr>
         </thead>
         <tbody>
@@ -98,10 +98,10 @@
               <td>{{ pet.pet_id }} - {{ pet.name }}</td>
               <td>
                 <select id="treatment_{{ pet_hist.history_id }}" name="treatment" required disabled>
-                  <option value="Rabbies Vaccination" {% if pet_hist.treatment == 'Rabbies' %}selected{% endif %}>Rabbies</option>
-                  <option value="Internal Parasytes" {% if pet_hist.treatment == 'Internal Parasytes' %}selected{% endif %}>Internal Parasytes</option>
-                  <option value="Skin care / External Parasytes" {% if pet_hist.treatment == 'Skin care / External Parasytes' %}selected{% endif %}>Skin care / External Parasytes</option>
-                  <option value="Other Vaccination" {% if pet_hist.treatment == 'Other Vaccination' %}selected{% endif %}>Other Vaccination</option>
+                  <option value="ცოფის ვაქცინაცია(Rabbies Vaccination)" {% if pet_hist.treatment == 'ცოფის ვაქცინაცია(Rabbies Vaccination)' %}selected{% endif %}>ცოფის ვაქცინაცია(Rabbies Vaccination)</option>
+                  <option value="შიდა პარაზიტები(Internal Parasytes)" {% if pet_hist.treatment == 'შიდა პარაზიტები(Internal Parasytes)' %}selected{% endif %}>შიდა პარაზიტები(Internal Parasytes)</option>
+                  <option value="კანის მოვლა ან/და გარე პარაზიტები(Skin care / External Parasytes)" {% if pet_hist.treatment == 'კანის მოვლა ან/და გარე პარაზიტები(Skin care / External Parasytes)' %}selected{% endif %}>კანის მოვლა ან/და გარე პარაზიტები(Skin care / External Parasytes)</option>
+                  <option value="სხვა(Other)" {% if pet_hist.treatment == 'სხვა(Other)' %}selected{% endif %}>სხვა(Other)</option>
                 </select>
                 <input type="date" id="date_{{ pet_hist.history_id }}" name="date" value="{{ pet_hist.date }}" required disabled>
               </td>
@@ -129,9 +129,9 @@
           {% endfor %}
         </tbody>
       </table>
-      <a class="novalue submit-style" href="{{ url_for('general_logic.owner_logic', action=6) }}">Add New History</a>
+      <a class="novalue submit-style" href="{{ url_for('general_logic.owner_logic', action=6) }}">დავამატოთ ახალი ისტორია</a>
   {% else %}
-  <a class="novalue submit-style" href="{{ url_for('general_logic.owner_logic', action=6) }}">Add New History</a>
+  <a class="novalue submit-style" href="{{ url_for('general_logic.owner_logic', action=6) }}">დავამატოთ ახალი ისტორია</a>
   {% endif %}
   {% elif action == 3 %}
         <!--iframe src="https://www.google.com/maps/d/u/0/embed?mid=11ZnEvFOa3xipWz70F4d_jAo_nwrodVQ&ehbc=2E312F" width="100%" height="100%"></iframe-->
@@ -140,92 +140,92 @@
   {% elif action == 4 %}
       {% if vets %}
       <div class="list-box">
-        <h3>Registered Vet phone numbers</h3>
+        <h3>დარეგისტრირებული ვეტ.ექიმების ტელ.ნომრები</h3>
         <ul>
           {% for vet, person in vets %}
             <li>
-              <strong>Name: </strong> {{person.name}}<br>
-              <strong>Lastname: </strong> {{person.lastname}}<br>
-              <strong>Phone: </strong> {{person.phone}}<br>
+              <strong>სახელი: </strong> {{person.name}}<br>
+              <strong>გვარი: </strong> {{person.lastname}}<br>
+              <strong>ტელ.ნომერი: </strong> {{person.phone}}<br>
               {% if vet.speciality %}
-              <strong>Speciality: </strong> {{vet.Speciality}}<br>
+              <strong>სპეციალობა: </strong> {{vet.Speciality}}<br>
               {% else %}
-              <strong>Does not have speciality registered</strong><br>
+              <strong>არ აქვს სპეციალობა დარეგისტრირებული</strong><br>
               {% endif %}
             </li>
             {% endfor %}
         </ul>
       </div>
       {% else %}
-      <h2 style="text-align:center"> There are no Vets yet registered </h2>
+      <h2 style="text-align:center"> ჯერჯერობით ვეტერინარები არ არიან დარეგისტრირებულ </h2>
       {% endif %}
   {% elif action == 5 %}
   <div class="newpetbox">
     <form action="{{ url_for('general_logic.owner_logic', action=5) }}" method="POST">
-      <label for="pet_name">Pet name: </label>
+      <label for="pet_name">შინაური ცხოველის სახელი: </label>
       <input type="text" id="pet_name" name="pet_name" required>
 
-      <label for="gender">Gender: </label>
+      <label for="gender">სქესი: </label>
       <select id="gender" name="gender" required>
-        <option value="M">Male</option>
-        <option value="F">Female</option>
+        <option value="M">მამალი</option>
+        <option value="F">დედალი</option>
       </select>
 
-      <label for="bdate">Birth date</label>
+      <label for="bdate">დაბადების დღე</label>
       <input type="date" id="bdate" name="bdate" required>
 
 
       
-      <label for="pet_species">Species: </label>
+      <label for="pet_species">სახეობა: </label>
       <select id="pet_species" name="pet_species" required>
         {% for pet_species in pet_species_list %}
             <option value="{{ pet_species.species_id }}">{{ pet_species.species }}</option>
         {% endfor %}
       </select>
-      <label for="pet_breed">Breed: </label>
+      <label for="pet_breed">ჯიში: </label>
       <select id="pet_breed" name="pet_breed">
       </select>
       
-        <label for="recent_vaccination">Latest Vaccination(not required)</label>
+        <label for="recent_vaccination">ბოლოდროინდელი ვაქცინაცია(არ არის აუცილებელი)</label>
         <input type="date" id="recent_vaccination" name="recent_vaccination">
 
-        <button type="submit" class="submit-style">Register Pet</button>
+        <button type="submit" class="submit-style">შინაური ცხოველის რეგისტრაცია</button>
     </form>
   </div>
   {% elif action == 6 %}
   {% if pets %}
   <div class="newpetbox">
     <form action="{{ url_for('general_logic.owner_logic', action=6) }}" method="POST">
-      <label for="pet_name">Pet name</label>
+      <label for="pet_name">შინაური ცხოველის სახელი</label>
       <select id="pet_name" name="pet_name">
         {% for pet in pets %}
           <option value="{{ pet.pet_id }}">{{ pet.name }} : {{ pet.pet_id }}</option>
         {% endfor %}
       </select>
 
-      <label for="treatment">Treatment / Vaccination</label>
+      <label for="treatment">მკურნალობის ტიპი</label>
       <select id="treatment" name="treatment" required>
-        <option value="Rabbies Vaccination">Rabbies</option>
-        <option value="Internal Parasytes">Internal Parasytes</option>
-        <option value="Skin care / External Parasytes">Skin care / External Parasytes</option>
-        <option value="Other Vaccination">Other Vaccination</option>
+        <option value="ცოფის ვაქცინაცია(Rabbies Vaccination)">ცოფის ვაქცინაცია(Rabbies Vaccination)</option>
+        <option value="შიდა პარაზიტები(Internal Parasytes)">შიდა პარაზიტები(Internal Parasytes)</option>
+        <option value="კანის მოვლა ან/და გარე პარაზიტები(Skin care / External Parasytes)">კანის მოვლა ან/და გარე პარაზიტები(Skin care / External Parasytes)</option>
+        <option value="სხვა(Other)">სხვა(Other)</option>
       </select>
 
-      <label for="date">Treatment Date</label>
+      <label for="date">მკურნალობის რიცხვი</label>
       <input type="date" id="date" name="date" required>
 
-      <label for="comment">Comment</label>
+      <label for="comment">კომენტარი</label>
       <textarea id="comment" name="comment" style="width: 600px; 
       height: 250px; resize: vertical; overflow-y: auto; 
       word-wrap: break-word; max-width: 100%;" maxlength="500"></textarea>
 
-      <button type="submit" class="submit-style">Add History</button>
+      <button type="submit" class="submit-style">ისტორიის დამატება</button>
     </form>
   </div>
   {% else %}
   <h1></h1>
   <h1></h1>
-  <a class="novalue submit-style" href="{{ url_for('general_logic.owner_logic', action=5) }}">It seems you dont have pets, Click here to add them</a>
+  <a class="novalue submit-style" href="{{ url_for('general_logic.owner_logic', action=5) }}">როგორც ჩანს თქვენ არ გყავთ დარეგისტრირებული შინაური ცხოველები<br>გთხოვთ დაარეგისტრიროთ ისინი მოცემულ ბმულიდან</a>
   {% endif %}
 {% endif %}
 </div>

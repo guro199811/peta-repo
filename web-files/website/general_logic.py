@@ -36,7 +36,7 @@ def owner_logic(action):
                 address = request.form.get('address')
                 changed = change_user_data(firstname, lastname, address)
                 if changed:
-                    flash('Changes saved successfully.', category='success')
+                    flash('მონაცემები წარმატებით შეიცვალა.', category='success')
                 return render_template('login/owner.html', action = action)
             
                     
@@ -444,7 +444,7 @@ def admin_logic(choice, action):
             address = request.form.get('address')
             changed = change_user_data(firstname, lastname, address)
             if changed:
-                flash('Changes saved successfully.', category='success')
+                flash('მონაცემები წარმატებით შეიცვალა.', category='success')
             return render_template('login/admin.html',choice = choice, action = action)
 
     return render_template('login/admin.html', choice = choice)
@@ -708,7 +708,7 @@ def vet_logic(choice, action):
             address = request.form.get('address')
             changed = change_user_data(firstname, lastname, address)
             if changed:
-                flash('Changes saved successfully.', category='success')
+                flash('მონაცემები წარმატებით შეიცვალა.', category='success')
             return render_template('login/vet.html',choice = choice, action = action)
 
     return render_template('login/vet.html', choice = choice)
@@ -841,111 +841,107 @@ def edit_user(person_id):
             person.address = address
             person.phone = phone
             #Am using action in vets for identifiend speciality, result is needed for routing
-            if len(phone) == 9:
-                db.session.commit()
-                if int(type) == 1:  # Regular user
-                    if previous_person_type == 2:
-                        try:
-                            admin = db.session.query(Admin).filter_by(person_id=person_id).one()
-                            admin.active = False
-                        except NoResultFound:
-                            pass
-                    
-                    # Sets previous role's active status to False (Vet and Editor)
-                    if previous_person_type == 3:
-                        try:
-                            vet = db.session.query(Vet).filter_by(person_id=person_id).one()
-                            vet.active = False
-                        except NoResultFound:
-                            pass
-
-                    if previous_person_type == 4:
-                        try:
-                            editor = db.session.query(Editor).filter_by(person_id=person_id).one()
-                            editor.active = False
-                        except NoResultFound:
-                            pass
-                
-                if int(type) == 2:  # Admin
+            db.session.commit()
+            if int(type) == 1:  # Regular user
+                if previous_person_type == 2:
                     try:
                         admin = db.session.query(Admin).filter_by(person_id=person_id).one()
-                        admin.active = True
+                        admin.active = False
                     except NoResultFound:
-                        admin = Admin(person_id=person_id, active=True)
-                        db.session.add(admin)
-                    
-                    # Sets previous role's active status to False (Vet and Editor)
-                    if previous_person_type == 3:
-                        try:
-                            vet = db.session.query(Vet).filter_by(person_id=person_id).one()
-                            vet.active = False
-                        except NoResultFound:
-                            pass
-                    if previous_person_type == 4:
-                        try:
-                            editor = db.session.query(Editor).filter_by(person_id=person_id).one()
-                            editor.active = False
-                        except NoResultFound:
-                            pass
-
-                elif int(type) == 3:  # Vet
+                        pass
+                
+                # Sets previous role's active status to False (Vet and Editor)
+                if previous_person_type == 3:
                     try:
                         vet = db.session.query(Vet).filter_by(person_id=person_id).one()
-                        vet_speciality = request.form.get('vet_speciality')
-                        if vet_speciality != None or vet_speciality != 0 or vet_speciality != '0':
-                            vet.spec_id = vet_speciality
-                        vet.active = True
-                        action = vet_speciality
+                        vet.active = False
                     except NoResultFound:
-                        vet = Vet(person_id=person_id, active=True)
-                        db.session.add(vet)
+                        pass
 
-                    # Set previous role's active status to False (Editor)
-                    if previous_person_type == 2:
-                        try:
-                            admin = db.session.query(Admin).filter_by(person_id=person_id).one()
-                            admin.active = False
-                        except NoResultFound:
-                            pass
-                    
-                    if previous_person_type == 4:
-                        try:
-                            editor = db.session.query(Editor).filter_by(person_id=person_id).one()
-                            editor.active = False
-                        except NoResultFound:
-                            pass
-
-                elif int(type) == 4:  # Editor
+                if previous_person_type == 4:
                     try:
                         editor = db.session.query(Editor).filter_by(person_id=person_id).one()
-                        editor.active = True
+                        editor.active = False
                     except NoResultFound:
-                        editor = Editor(person_id=person_id, active=True)
-                        db.session.add(editor)
+                        pass
+            
+            if int(type) == 2:  # Admin
+                try:
+                    admin = db.session.query(Admin).filter_by(person_id=person_id).one()
+                    admin.active = True
+                except NoResultFound:
+                    admin = Admin(person_id=person_id, active=True)
+                    db.session.add(admin)
+                
+                # Sets previous role's active status to False (Vet and Editor)
+                if previous_person_type == 3:
+                    try:
+                        vet = db.session.query(Vet).filter_by(person_id=person_id).one()
+                        vet.active = False
+                    except NoResultFound:
+                        pass
+                if previous_person_type == 4:
+                    try:
+                        editor = db.session.query(Editor).filter_by(person_id=person_id).one()
+                        editor.active = False
+                    except NoResultFound:
+                        pass
 
-                    # Set previous role's active status to False (Vet)
-                    if previous_person_type == 2:
-                        try:
-                            admin = db.session.query(Admin).filter_by(person_id=person_id).one()
-                            admin.active = False
-                        except NoResultFound:
-                            pass
+            elif int(type) == 3:  # Vet
+                try:
+                    vet = db.session.query(Vet).filter_by(person_id=person_id).one()
+                    vet_speciality = request.form.get('vet_speciality')
+                    if vet_speciality != None or vet_speciality != 0 or vet_speciality != '0':
+                        vet.spec_id = vet_speciality
+                    vet.active = True
+                    action = vet_speciality
+                except NoResultFound:
+                    vet = Vet(person_id=person_id, active=True)
+                    db.session.add(vet)
 
-                    if previous_person_type == 3:
-                        try:
-                            vet = db.session.query(Vet).filter_by(person_id=person_id).one()
-                            vet.active = False
-                        except NoResultFound:
-                            pass
+                # Set previous role's active status to False (Editor)
+                if previous_person_type == 2:
+                    try:
+                        admin = db.session.query(Admin).filter_by(person_id=person_id).one()
+                        admin.active = False
+                    except NoResultFound:
+                        pass
+                
+                if previous_person_type == 4:
+                    try:
+                        editor = db.session.query(Editor).filter_by(person_id=person_id).one()
+                        editor.active = False
+                    except NoResultFound:
+                        pass
+
+            elif int(type) == 4:  # Editor
+                try:
+                    editor = db.session.query(Editor).filter_by(person_id=person_id).one()
+                    editor.active = True
+                except NoResultFound:
+                    editor = Editor(person_id=person_id, active=True)
+                    db.session.add(editor)
+
+                # Set previous role's active status to False (Vet)
+                if previous_person_type == 2:
+                    try:
+                        admin = db.session.query(Admin).filter_by(person_id=person_id).one()
+                        admin.active = False
+                    except NoResultFound:
+                        pass
+
+                if previous_person_type == 3:
+                    try:
+                        vet = db.session.query(Vet).filter_by(person_id=person_id).one()
+                        vet.active = False
+                    except NoResultFound:
+                        pass
 
 
-                db.session.commit()
-
-            else:
-                flash(f"The number {phone} is not equal to 9", category='error')
+            db.session.commit()
 
         except NoResultFound:
-            flash("User not found.", category='error')
+            flash("მომხმარებელი ვერ მოიძებნა.", category='error')
         action = request.form.get('action')
         action = int(action)
         return redirect(url_for('general_logic.admin_logic', choice=choice, action=action))
@@ -982,7 +978,7 @@ def edit_note(note_id):
         db.session.commit()
     except:
         db.session.rollback()
-        flash("something went wrong", category='error')
+        flash("შეცდომა.", category='error')
     return redirect(url_for('general_logic.admin_logic', choice = 2, action=0))
 
 
