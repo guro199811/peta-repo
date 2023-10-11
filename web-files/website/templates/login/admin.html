@@ -105,70 +105,70 @@
       <form id="search-form" action="{{ url_for('general_logic.admin_logic', choice=0, action=0) }}" method="GET">
         <input type="text" name="q" placeholder="Search...">
       </form>
-      <span class="tooltip">Search</span>
+      <span class="tooltip">ძიება</span>
     </li>
     <li>
       <a href="{{ url_for('general_logic.admin_logic', choice=2, action = 0) }}">
         <i class="bx bx-grid-alt"></i>
-        <span class="link_name">Dashboard</span>
+        <span class="link_name">მთავარი დაფა</span>
       </a>
-      <span class="tooltip">Dashboard</span>
+      <span class="tooltip">მთავარი დაფა</span>
     </li>
     <li>
       <a href="{{ url_for('general_logic.admin_logic', choice=0, action = 1) }}">
         <i class='bx bx-male'></i>
-        <span class="link_name">All Registered Users</span>
+        <span class="link_name">ყველა მომხმარებელი</span>
       </a>
-      <span class="tooltip">All Registered users</span>
+      <span class="tooltip">ყველა მომხმარებელი</span>
     </li>
     <li>
       <a href="{{ url_for('general_logic.admin_logic', choice=3, action = 0) }}">
         <i class="bx bx-user"></i>
-        <span class="link_name">Owners</span>
+        <span class="link_name">ცხოველების პატრონები</span>
       </a>
-      <span class="tooltip">Owners</span>
+      <span class="tooltip">ცხოველების პატრონები</span>
     </li>
     <li>
       <a href="{{ url_for('general_logic.admin_logic', choice=4, action = 0) }}">
         <i class='bx bx-plus-medical' ></i>
-        <span class="link_name">Vets</span>
+        <span class="link_name">ვეტერინარები</span>
       </a>
-      <span class="tooltip">Vets</span>
+      <span class="tooltip">ვეტერინარები</span>
     </li>
     <li>
       <a href="{{ url_for('general_logic.admin_logic', choice=5, action = 0) }}">
         <i class='bx bxs-devices' ></i>
-        <span class="link_name">Editors</span>
+        <span class="link_name">რედაქტორები</span>
       </a>
-      <span class="tooltip">Editors</span>
+      <span class="tooltip">რედაქტორები</span>
     </li>
     <li>
       <a href="{{ url_for('general_logic.admin_logic', choice=6, action = 0) }}">
         <i class='bx bx-clinic' ></i>
-        <span class="link_name">Visits</span>
+        <span class="link_name">ყველა ვიზიტები</span>
       </a>
-      <span class="tooltip">Visits</span>
+      <span class="tooltip">ყველა ვიზიტები</span>
     </li>
     <li>
       <a href="{{ url_for('general_logic.admin_logic', choice=7, action = 0) }}">
         <i class='bx bxs-dog'></i>
-        <span class="link_name">Pets</span>
+        <span class="link_name">შინაური ცხოველები</span>
       </a>
-      <span class="tooltip">Pets</span>
+      <span class="tooltip">შინაური ცხოველები</span>
     </li>
     <li>
       <a href="{{ url_for('general_logic.admin_logic', choice=1, action = 0) }}">
         <i class='bx bx-home' ></i>
-        <span class="link_name">My ownership menu</span>
+        <span class="link_name">ჩემი ცხოველების მენიუ</span>
       </a>
-      <span class="tooltip">My ownership menu</span>
+      <span class="tooltip">ჩემი ცხოველების მენიუ</span>
     </li>
     <li>
       <a href="{{ url_for('general_logic.admin_logic', choice=8, action = 0) }}">
         <i class='bx bx-user-circle'></i>
-        <span class="link_name">My data</span>
+        <span class="link_name">ჩემი მონაცემები</span>
       </a>
-      <span class="tooltip">My data</span>
+      <span class="tooltip">ჩემი მონაცემები</span>
     </li>
   </ul>
   </div>
@@ -176,22 +176,22 @@
   <section class="home-section">
       {% if choice == 0 %}
         {% if action == 0 %}
-        <h2 style="text-align:center">Search Results</h2>
+        <h2 style="text-align:center">ძიების შედეგი</h2>
         {% elif action == 1 %}
-        <h2 style="text-align:center">All Registered Users</h2>
+        <h2 style="text-align:center">ყველა დარეგისტრირებული მომხმარებელი</h2>
         {% endif %}
       <table class="table table-sortable">
         <thead>
           <tr>
             <th>ID</th>
-            <th>Name</th>
-            <th>Lastname</th>
-            <th>Mail</th>
-            <th>Type</th>
-            <th>Joined us</th>
-            <th>Address</th>
-            <th>Phone</th>
-            <th>Actions</th>
+            <th>სახელი</th>
+            <th>გვარი</th>
+            <th>ე.მაილი</th>
+            <th>ტიპი</th>
+            <th>შემოგვიერთდა</th>
+            <th>მისამართი</th>
+            <th>ტელ.ნომერი</th>
+            <th>მოქმედება</th>
           </tr>
         </thead>
         <tbody>
@@ -239,496 +239,495 @@
           </tbody>
         </table>
       {% if not result %}
-        <p style="text-align:center">No results on Search.</p>
+        <p style="text-align:center">ძიების შედეგი არ არის.</p>
       {% endif %}
     {% elif choice == 1 %}
       <div class="owner-container">
         <div class="buttons">
           <!-- ბმული 1: ცხოველის დამატება -->
-          <a href="{{ url_for('general_logic.admin_logic',choice=1, action=1) }}" class="square-button">My Pets</a>
+          <a href="{{ url_for('general_logic.admin_logic',choice=1, action=1) }}" class="square-button">ჩემი ცხოველების ჩამონათვალი</a>
           <!-- ბმული 2: ჩემი ცხოველების ჩამონათვალი -->
-          <a href="{{ url_for('general_logic.admin_logic',choice=1, action=2) }}" class="square-button">My Pet History</a>
+          <a href="{{ url_for('general_logic.admin_logic',choice=1, action=2) }}" class="square-button">ჩემი ცხოველების ისტორია</a>
           <!-- ბმული 3: ვეტერინარული კლინიკები ჩემს ახლოს -->
-          <a href="{{ url_for('general_logic.admin_logic',choice=1, action=3) }}" class="square-button">Map</a>
+          <a href="{{ url_for('general_logic.admin_logic',choice=1, action=3) }}" class="square-button">რუკა</a>
           <!-- ბმული 4: ვეტერინარების ტელეფონის ნომრები -->
-          <a href="{{ url_for('general_logic.admin_logic',choice=1, action=4) }}" class="square-button">Vet Phone numbers</a>
+          <a href="{{ url_for('general_logic.admin_logic',choice=1, action=4) }}" class="square-button">ვეტერინარების ტელეფონის ნომრები</a>
         </div>    
         <!-- აქ არის box-menu ლოგიკა -->
         <div class="box-menu">
-      
           {% if action == None %}
-            <h1 class="welcome-text">{{ current_user.name }}, This is your pet ownership menu<br> Please select any action</h1><br><br>
-
-            {% elif action == 1 %}
-              <div class="pet-list-bg">
-                <div class="pets-list">
-                  <h2>Your pets</h2>
-                  {% if pets %}
-                    <ul>
-                      {% for pet, pet_species, pet_breed in pets %}
-                        <li>
-                          <div class="pet-actions">
-                            <form action="{{ url_for('general_logic.edit_pet', action=2, pet_id=pet.pet_id) }}" method="POST">
-                              <div class="pet-info">
-                                <strong>ID:</strong> {{ pet.pet_id }}<br><br>
-                                <label for="name">Name:</label>
-                                <input type="text" id="name_{{ pet.pet_id }}" name="name" value="{{ pet.name }}" required disabled><br>
-                                <br><strong>Species: </strong><br>{{ pet_species.species }}<br>
-                                <br><strong>Breed: </strong><br>{{ pet_breed.breed }}<br><br>
-                                <label for="recent_vaccination">Recent vaccination</label>
-                                <input type="date" id="recent_vaccination_{{ pet.pet_id }}" name="recent_vaccination" value="{{ pet.recent_vaccination }}" disabled><br>
-                              </div>
-                              <input type="submit" value="Save" class="save-button" id="save_{{ pet.pet_id }}" style="display: none;">
-                            </form>
-                            <button type="button" class="change-button" onclick="enableEdit('{{ pet.pet_id }}')"><i class="fa-regular fa-pen-to-square"></i></button>
-                            <form action="{{ url_for('general_logic.remove_pet', action=2, pet_id=pet.pet_id) }}" method="DELETE" onsubmit="return confirm('Confirm deletion.');" >
-                              <button type="submit" class="remove-button"><i class="fa-solid fa-eraser"></i></button>
-                            </form>
+          <h1 class="welcome-text">მოგესალმებით, {{ current_user.name }}</h1><br><br>
+        
+        {% elif action == 1 %}
+          <div class="pet-list-bg">
+            <div class="pets-list">
+              <h2>ჩემი ცხოველები</h2>
+              {% if pets %}
+                <ul>
+                  {% for pet, pet_species, pet_breed in pets %}
+                    <li>
+                      <div class="pet-actions">
+                        <form action="{{ url_for('general_logic.edit_pet', action=2, pet_id=pet.pet_id) }}" method="POST">
+                          <div class="pet-info">
+                            <strong>ID:</strong> {{ pet.pet_id }}<br><br>
+                            <label for="name">სახელი:</label>
+                            <input type="text" id="name_{{ pet.pet_id }}" name="name" value="{{ pet.name }}" required disabled><br>
+                            <br><strong>სახეობა: </strong><br>{{ pet_species.species }}<br>
+                            <br><strong>ჯიში: </strong><br>{{ pet_breed.breed }}<br><br>
+                            <label for="recent_vaccination">ბოლო ვაქცინაცია</label>
+                            <input type="date" id="recent_vaccination_{{ pet.pet_id }}" name="recent_vaccination" value="{{ pet.recent_vaccination }}" disabled><br>
                           </div>
-                        </li>
-                      {% endfor %}
-                      <a class="submit-style" href="{{ url_for('general_logic.admin_logic',choice=1, action=5) }}">Add New pet</a>
-                    </ul>
+                          <input type="submit" value="შენახვა" class="save-button" id="save_{{ pet.pet_id }}" style="display: none;">
+                        </form>
+                        <button type="button" class="change-button" onclick="enableEdit('{{ pet.pet_id }}')"><i class="fa-regular fa-pen-to-square"></i></button>
+                        <form action="{{ url_for('general_logic.remove_pet', action=2, pet_id=pet.pet_id) }}" method="DELETE" onsubmit="return confirm('წაშლის დადასტურება.');">
+                          <button type="submit" class="remove-button"><i class="fa-solid fa-eraser"></i></button>
+                        </form>
+                      </div>
+                    </li>
+                  {% endfor %}
+                  <a class="submit-style" href="{{ url_for('general_logic.admin_logic',choice=1, action=5) }}">ახალი ცხოველის დამატება</a>
+                </ul>
+              {% else %}
+              <a class="novalue submit-style" href="{{ url_for('general_logic.admin_logic',choice=1, action=5) }}">თქვენ არ გაქვთ ცხოველები, დააჭირეთ აქ რომ დაამატოთ</a>
+              {% endif %}
+            </div>
+          </div>
+        {% elif action == 2 %}
+          <h2 style="text-align:center">შინაური ცხოველის(ების) ისტორია</h2>
+          {% if pet_history %}
+            <table class="table table-sortable">
+              <thead>
+                <tr>
+                  <th>ისტორიის იდენტიფიკატორი</th>
+                  <th>შინაური ცხოველი</th>
+                  <th>მკურნალობა -- რიცხვი</th>
+                  <th>კომენტარი</th>
+                  <th>მოქმედება</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for pet_hist, pet in pet_history %}
+                <form action="{{ url_for('general_logic.admin_logic',choice=1, action = 2) }}" method="POST">
+                  <tr>
+                    <td>{{ pet_hist.history_id }}</td>
+                    <td>{{ pet.pet_id }} - {{ pet.name }}</td>
+                    <td>
+                      <select id="treatment_{{ pet_hist.history_id }}" name="treatment" required disabled>
+                        <option value="ცოფის ვაქცინაცია(Rabbies Vaccination)" {% if pet_hist.treatment == 'ცოფის ვაქცინაცია(Rabbies Vaccination)' %}selected{% endif %}>ცოფის ვაქცინაცია(Rabbies Vaccination)</option>
+                        <option value="შიდა პარაზიტები(Internal Parasytes)" {% if pet_hist.treatment == 'შიდა პარაზიტები(Internal Parasytes)' %}selected{% endif %}>შიდა პარაზიტები(Internal Parasytes)</option>
+                        <option value="კანის მოვლა ან/და გარე პარაზიტები(Skin care / External Parasytes)" {% if pet_hist.treatment == 'კანის მოვლა ან/და გარე პარაზიტები(Skin care / External Parasytes)' %}selected{% endif %}>კანის მოვლა ან/და გარე პარაზიტები(Skin care / External Parasytes)</option>
+                        <option value="სხვა(Other)" {% if pet_hist.treatment == 'სხვა(Other)' %}selected{% endif %}>სხვა(Other)</option>
+                      </select>
+                      <input type="date" id="date_{{ pet_hist.history_id }}" name="date" value="{{ pet_hist.date }}" required disabled>
+                    </td>
+                    <td>
+                      <textarea name="comment" id='comment_{{ pet_hist.history_id }}' style="width: 600px; 
+                      min-height: 110px; resize: vertical; overflow-y: auto; 
+                      word-wrap: break-word; max-width: 100%;" maxlength="500" disabled>{{ pet_hist.comment }}</textarea>
+                    </td>
+                    <td>
+                      <div class="pet-actions">
+                        <button type="button" class="change-button" id="change_{{ pet_hist.history_id }}" 
+                        onclick="enableEditHistory('{{ pet_hist.history_id }}');">
+                        <i class="fa-regular fa-pen-to-square"></i></button>
+                        <h6></h6>
+                        <input type="hidden" name="history_id" value="{{ pet_hist.history_id }}">
+                        <button type="submit" class="change-button s-button" id="save_{{ pet_hist.history_id }}" disabled><i class="fa-solid fa-check"></i></button><br>
+                        <h6></h6>
+                        </form>
+                        <form action="{{ url_for('general_logic.remove_history', history_id = pet_hist.history_id) }}" method="DELETE" onsubmit="return confirm('წაშლის დადასტურება.');" >
+                        <button type="submit" class="change-button r-button" style="border: none; box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);"><i class="fa-solid fa-eraser"></i></button><br>
+                        </form>
+                      </div>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+            <a class="submit-style" href="{{ url_for('general_logic.admin_logic',choice=1, action=6) }}">ახალი ისტორიის დამატება</a>
+          {% else %}
+          <a class="novalue submit-style" href="{{ url_for('general_logic.admin_logic',choice=1, action=6) }}">ახალი ისტორიის დამატება</a>
+          {% endif %}
+        {% elif action == 3 %}
+          <!--iframe src="https://www.google.com/maps/d/u/0/embed?mid=11ZnEvFOa3xipWz70F4d_jAo_nwrodVQ&ehbc=2E312F" width="100%" height="100%"></iframe-->
+          <div id="map"></div>
+        
+        {% elif action == 4 %}
+          {% if vets %}
+          <div class="list-box">
+            <h3>დარეგისტრირებული ვეტ.ექიმების ტელ.ნომრები</h3>
+            <ul>
+              {% for vet, person in vets %}
+                <li>
+                  <strong>სახელი: </strong> {{person.name}}<br>
+                  <strong>გვარი: </strong> {{person.lastname}}<br>
+                  <strong>ტელ.ნომერი: </strong> {{person.phone}}<br>
+                  {% if vet.speciality %}
+                  <strong>სპეციალობა: </strong> {{vet.Speciality}}<br>
                   {% else %}
-                  <a class="novalue submit-style" href="{{ url_for('general_logic.admin_logic',choice=1, action=5) }}">You dont have pets, Click me to add them</a>
+                  <strong>არ აქვს სპეციალობა დარეგისტრირებული</strong><br>
                   {% endif %}
-                </div>
-              </div>
-          {% elif action == 2 %}
-            <h2 style="text-align:center"> Pet history </h2>
-            {% if pet_history %}
+                </li>
+              {% endfor %}
+            </ul>
+          </div>
+          {% else %}
+          <p style="text-align:center">ჯერჯერობით ვეტერინარები არ არიან დარეგისტრირებულ</p>
+          {% endif %}
+        {% elif action == 5 %}
+        <div class="newpetbox">
+          <form action="{{ url_for('general_logic.admin_logic',choice = 1, action=5) }}" method="POST">
+            <label for="pet_name">შინაური ცხოველის სახელი: </label>
+            <input type="text" id="pet_name" name="pet_name" required>
+        
+            <label for="gender">სქესი: </label>
+            <select id="gender" name="gender" required>
+              <option value="M">მამრობითი</option>
+              <option value="F">მდედრობითი</option>
+            </select>
+        
+            <label for="bdate">დაბადების თარიღი</label>
+            <input type="date" id="bdate" name="bdate" required>
+        
+
+
+            <label for="pet_species">სახეობა: </label>
+            <select id="pet_species" name="pet_species" required>
+              {% for pet_species in pet_species_list %}
+                <option value="{{ pet_species.species_id }}">{{ pet_species.species }}</option>
+              {% endfor %}
+            </select>
+            <label for="pet_breed">ჯიში: </label>
+            <select id="pet_breed" name="pet_breed">
+            </select>
+        
+            <label for="recent_vaccination">ბოლოდროინდელი ვაქცინაცია(არ არის აუცილებელი)</label>
+            <input type="date" id="recent_vaccination" name="recent_vaccination">
+        
+            <button type="submit" class="submit-style">შინაური ცხოველის რეგისტრაცია</button>
+          </form>
+        </div>
+        {% elif action == 6 %}
+        {% if pets %}
+        <div class="newpetbox">
+          <form action="{{ url_for('general_logic.admin_logic',choice = 1, action=6) }}" method="POST">
+            <label for="pet_name">ცხოველის სახელი</label>
+            <select id="pet_name" name="pet_name">
+              {% for pet in pets %}
+                <option value="{{ pet.pet_id }}">{{ pet.name }} : {{ pet.pet_id }}</option>
+              {% endfor %}
+            </select>
+        
+            <label for="treatment">მკურნალობის ტიპი</label>
+            <select id="treatment" name="treatment" required>
+              <option value="ცოფის ვაქცინაცია(Rabbies Vaccination)">ცოფის ვაქცინაცია(Rabbies Vaccination)</option>
+              <option value="შიდა პარაზიტები(Internal Parasytes)">შიდა პარაზიტები(Internal Parasytes)</option>
+              <option value="კანის მოვლა ან/და გარე პარაზიტები(Skin care / External Parasytes)">კანის მოვლა ან/და გარე პარაზიტები(Skin care / External Parasytes)</option>
+              <option value="სხვა(Other)">სხვა(Other)</option>
+            </select>
+        
+            <label for="date">მკურნალობის რიცხვი</label>
+            <input type="date" id="date" name="date" required>
+        
+            <label for="comment">კომენტარი</label>
+            <textarea id="comment" name="comment" style="width: 600px; 
+            height: 250px; resize: vertical; overflow-y: auto; 
+            word-wrap: break-word; max-width: 100%;" maxlength="500"></textarea>
+        
+            <button type="submit" class="submit-style">ისტორიის დამატება</button>
+          </form>
+        </div>
+        {% else %}
+        <h1></h1>
+        <h1></h1>
+        <a class="novalue submit-style" href="{{ url_for('general_logic.admin_logic',choice=1, action=5) }}">როგორც ჩანს თქვენ არ გყავთ დარეგისტრირებული შინაური ცხოველები<br>გთხოვთ დაარეგისტრიროთ ისინი მოცემულ ბმულიდან</a>
+        {% endif %}
+        {% endif %}
+        </div>
+        </div>
+        {% elif choice == 2 %}
+          <div class="dashboard">
+            <div class='box1' id="piechart">
+            </div>
+            <div class="box2" id="chart_div">
+            </div>
+            <div class="box3" id="table_div">
+            </div>
+            <div class="box4" style=" margin-left:50px; margin-bottom:20px; display:flex; overflow:scroll">
+              <div>
+              {% if action == 0 %}
+              {% if notes %}
               <table class="table table-sortable">
                 <thead>
                   <tr>
-                    <th>History ID</th>
-                    <th>Pet</th>
-                    <th>Treatment -- Date</th>
-                    <th>Comment</th>
-                    <th>action</th>
+                    <th>ადმინისტრატორის ჩანიშვნა</th>
+                    <th>მოქმედება</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {% for pet_hist, pet in pet_history %}
-                  <form action="{{ url_for('general_logic.admin_logic',choice=1, action = 2) }}" method="POST">
+                {% for note in notes %}
+                <form action="{{ url_for('general_logic.edit_note', action=0, note_id=note.note_id) }}" method="POST">
+                <tr>
+                  <td>
+                  <textarea name="comment" id='comment_{{ note.note_id }}' style="width: 700px; 
+                  min-height: 90px; resize: vertical; overflow-y: auto; 
+                  word-wrap: break-word; max-width: 100%;" maxlength="500" disabled>{{ note.content }}</textarea>
+                  </td>
+                  <td>
+                  <div class="pet-actions">
+                    <button type="button" class="change-button" id="change_{{ note.note_id }}" 
+                    onclick="enableEditNote('{{ note.note_id }}');">
+                    <i class="fa-regular fa-pen-to-square"></i></button>
+                    <h6></h6>
+                    <input type="hidden" name="history_id" value="{{ note.note_id }}">
+                    <button type="submit" class="change-button s-button" id="save_{{ note.note_id }}" disabled><i class="fa-solid fa-check"></i></button><br>
+                    <h6></h6>
+                    </form>
+                    <form action="{{ url_for('general_logic.remove_note', note_id=note.note_id) }}" method="DELETE" onsubmit="return confirm('წაშლის დადასტურება.');" >
+                    <button type="submit" class="change-button r-button" style="border: none; box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);"><i class="fa-solid fa-eraser"></i></button><br>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+                {% endfor %}
+              </tbody>
+              </table>
+              <a class="submit-style" style="text-align: center;" href="{{ url_for('general_logic.admin_logic', choice=2, action=1) }}">ჩანიშვნა</a>
+              {% else %}
+              <a class="submit-style" style="text-align: center;" href="{{ url_for('general_logic.admin_logic', choice=2, action=1) }}">ჩანიშვნა</a>
+              {% endif %}
+              {% endif %}
+              {% if action == 1 %}
+              <form action="{{ url_for('general_logic.add_note') }}" method="POST">
+            
+                <label for="note"></label>
+                <textarea id="note" name="note" style="width: 600px;
+                height: 200px; resize: vertical; overflow-y: auto;
+                word-wrap: break-word; max-width: 100%;" maxlength="500" placeholder="აქ შეიძლება შენი შიგთავსი ჩაწერო"></textarea>
+            
+                <button type="submit" class="submit-style">შენახვა</button>
+              </form>
+            
+            {% endif %}
+            </div>
+            </div>
+            {% elif choice == 6 %}
+            <h2 style="text-align:center"> ვიზიტები </h2>
+            {% if visits %}
+              <table class="table table-sortable">
+                <thead>
+                  <tr>
+                    <th>ვიზიტის ID</th>
+                    <th>ვეტერინარი</th>
+                    <th>ცხოველის(ების) მფლობელი</th>
+                    <th>ცხოველი</th>
+                    <th>დიაგნოზი</th>
+                    <th>მკურნალობა</th>
+                    <th>ვიზიტის თარიღი</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for visit, vet, owner, pet, vet_name, vet_lastname,
+                       owner_name, owner_lastname, pet_name in visits %}
+                  <form>
                     <tr>
-                      <td>{{ pet_hist.history_id }}</td>
-                      <td>{{ pet.pet_id }} - {{ pet.name }}</td>
-                      <td>
-                        <select id="treatment_{{ pet_hist.history_id }}" name="treatment" required disabled>
-                          <option value="Rabbies Vaccination" {% if pet_hist.treatment == 'Rabbies' %}selected{% endif %}>Rabbies</option>
-                          <option value="Internal Parasytes" {% if pet_hist.treatment == 'Internal Parasytes' %}selected{% endif %}>Internal Parasytes</option>
-                          <option value="Skin care / External Parasytes" {% if pet_hist.treatment == 'Skin care / External Parasytes' %}selected{% endif %}>Skin care / External Parasytes</option>
-                          <option value="Other Vaccination" {% if pet_hist.treatment == 'Other Vaccination' %}selected{% endif %}>Other Vaccination</option>
-                        </select>
-                        <input type="date" id="date_{{ pet_hist.history_id }}" name="date" value="{{ pet_hist.date }}" required disabled>
-                      </td>
-                      <td>
-                        <textarea name="comment" id='comment_{{ pet_hist.history_id }}' style="width: 600px; 
-                        min-height: 110px; resize: vertical; overflow-y: auto; 
-                        word-wrap: break-word; max-width: 100%;" maxlength="500" disabled>{{ pet_hist.comment }}</textarea>
-                      </td>
-                      <td>
-                        <div class="pet-actions">
-                          <button type="button" class="change-button" id="change_{{ pet_hist.history_id }}" 
-                          onclick="enableEditHistory('{{ pet_hist.history_id }}');">
-                          <i class="fa-regular fa-pen-to-square"></i></button>
-                          <h6></h6>
-                          <input type="hidden" name="history_id" value="{{ pet_hist.history_id }}">
-                          <button type="submit" class="change-button s-button" id="save_{{ pet_hist.history_id }}" disabled><i class="fa-solid fa-check"></i></button><br>
-                          <h6></h6>
-                          </form>
-                          <form action="{{ url_for('general_logic.remove_history', history_id = pet_hist.history_id) }}" method="DELETE" onsubmit="return confirm('Confirm deletion.');" >
-                          <button type="submit" class="change-button r-button" style="border: none; box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);"><i class="fa-solid fa-eraser"></i></button><br>
-                          </form>
-                        </div>
-                      </td>
+                      <td>{{ visit.visit_id }}</td>
+                      <td>{{ vet.vet_id }} - {{ vet_name }} {{ vet_lastname }}</td>
+                      <td>{{ owner.owner_id }} - {{ owner_name }} {{ owner_lastname }}</td>
+                      <td>{{ pet.pet_id }} - {{ pet_name }}</td>
+                      <td>{{ visit.diagnosis }}</td>
+                      <td>{{ visit.treatment }}</td>
+                      <td>{{ visit.date.strftime('%Y-%m-%d') }}</td>
                     </tr>
+                  </form>
                   {% endfor %}
                 </tbody>
               </table>
-              <a class="submit-style" href="{{ url_for('general_logic.admin_logic',choice=1, action=6) }}">Add New History</a>
-          {% else %}
-          <a class="novalue submit-style" href="{{ url_for('general_logic.admin_logic',choice=1, action=6) }}">Your pets dont have vaccination history? Add New History</a>
-          {% endif %}
-          {% elif action == 3 %}
-                <!--iframe src="https://www.google.com/maps/d/u/0/embed?mid=11ZnEvFOa3xipWz70F4d_jAo_nwrodVQ&ehbc=2E312F" width="100%" height="100%"></iframe-->
-                <div id="map"></div>
-      
-          {% elif action == 4 %}
-              {% if vets %}
-              <div class="list-box">
-                <h3>Registered Vet phone numbers</h3>
-                <ul>
-                  {% for vet, person in vets %}
-                    <li>
-                      <strong>Name: </strong> {{person.name}}<br>
-                      <strong>Lastname: </strong> {{person.lastname}}<br>
-                      <strong>Phone: </strong> {{person.phone}}<br>
-                      {% if vet.speciality %}
-                      <strong>Speciality: </strong> {{vet.Speciality}}<br>
-                      {% else %}
-                      <strong>Does not have speciality registered</strong><br>
-                      {% endif %}
-                    </li>
-                    {% endfor %}
-                </ul>
-              </div>
-              {% else %}
-              <p style="text-align:center">No vets detected in database.</p>
-              {% endif %}
-          {% elif action == 5 %}
-          <div class="newpetbox">
-            <form action="{{ url_for('general_logic.admin_logic',choice = 1, action=5) }}" method="POST">
-              <label for="pet_name">Pet name: </label>
-              <input type="text" id="pet_name" name="pet_name" required>
-        
-              <label for="gender">Gender: </label>
-              <select id="gender" name="gender" required>
-                <option value="M">Male</option>
-                <option value="F">Female</option>
-              </select>
-        
-              <label for="bdate">Birth date</label>
-              <input type="date" id="bdate" name="bdate" required>
-        
-        
-              
-              <label for="pet_species">Species: </label>
-              <select id="pet_species" name="pet_species" required>
-                {% for pet_species in pet_species_list %}
-                    <option value="{{ pet_species.species_id }}">{{ pet_species.species }}</option>
-                {% endfor %}
-              </select>
-              <label for="pet_breed">Breed: </label>
-              <select id="pet_breed" name="pet_breed">
-              </select>
-              
-                <label for="recent_vaccination">Latest Vaccination(not required)</label>
-                <input type="date" id="recent_vaccination" name="recent_vaccination">
-        
-                <button type="submit" class="submit-style">Register Pet</button>
-            </form>
-          </div>
-          {% elif action == 6 %}
-          {% if pets %}
-          <div class="newpetbox">
-            <form action="{{ url_for('general_logic.admin_logic',choice = 1, action=6) }}" method="POST">
-              <label for="pet_name">Pet name</label>
-              <select id="pet_name" name="pet_name">
-                {% for pet in pets %}
-                  <option value="{{ pet.pet_id }}">{{ pet.name }}</option>
-                {% endfor %}
-              </select>
-
-              <label for="treatment">Treatment / Vaccination</label>
-              <select id="treatment" name="treatment" required>
-                <option value="Rabbies Vaccination">Rabbies</option>
-                <option value="Internal Parasytes">Internal Parasytes</option>
-                <option value="Skin care / External Parasytes">Skin care / External Parasytes</option>
-                <option value="Other Vaccination">Other Vaccination</option>
-              </select>
-
-              <label for="date">Treatment Date</label>
-              <input type="date" id="date" name="date" required>
-
-              <label for="comment">Comment</label>
-              <textarea id="comment" name="comment" style="width: 600px; 
-              height: 250px; resize: vertical; overflow-y: auto; 
-              word-wrap: break-word; max-width: 100%;" maxlength="500"></textarea>
-
-              <button type="submit" class="submit-style">Add History</button>
-            </form>
-          </div>
-          {% else %}
-          <h1></h1>
-          <h1></h1>
-          <a class="novalue submit-style" href="{{ url_for('general_logic.admin_logic',choice=1, action=5) }}">It seems you dont have pets, Click here to add them</a>
-          {%endif%}
-        {% endif %}
-      </div>
-    </div>
-    {% elif choice == 2 %}
-      <div class="dashboard">
-        <div class='box1' id="piechart">
-        </div>
-        <div class="box2" id="chart_div">
-        </div>
-        <div class="box3" id="table_div">
-        </div>
-        <div class="box4" style=" margin-left:50px; margin-bottom:20px; display:flex; overflow:scroll">
-          <div>
-          {% if action == 0 %}
-          {% if notes %}
-          <table class="table table-sortable">
-            <thead>
-              <tr>
-                <th>Admin Notes</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-            {% for note in notes %}
-            <form action="{{ url_for('general_logic.edit_note', action=0, note_id=note.note_id) }}" method="POST">
-            <tr>
-              <td>
-              <textarea name="comment" id='comment_{{ note.note_id }}' style="width: 700px; 
-              min-height: 90px; resize: vertical; overflow-y: auto; 
-              word-wrap: break-word; max-width: 100%;" maxlength="500" disabled>{{ note.content }}</textarea>
-              </td>
-              <td>
-              <div class="pet-actions">
-                <button type="button" class="change-button" id="change_{{ note.note_id }}" 
-                onclick="enableEditNote('{{ note.note_id }}');">
-                <i class="fa-regular fa-pen-to-square"></i></button>
-                <h6></h6>
-                <input type="hidden" name="history_id" value="{{ note.note_id }}">
-                <button type="submit" class="change-button s-button" id="save_{{ note.note_id }}" disabled><i class="fa-solid fa-check"></i></button><br>
-                <h6></h6>
-                </form>
-                <form action="{{ url_for('general_logic.remove_note', note_id=note.note_id) }}" method="DELETE" onsubmit="return confirm('Confirm deletion.');" >
-                <button type="submit" class="change-button r-button" style="border: none; box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);"><i class="fa-solid fa-eraser"></i></button><br>
-                </form>
-              </div>
-            </td>
-          </tr>
-            {% endfor %}
-          </tbody>
-          </table>
-          <a class="submit-style" style="text-align: center;" href="{{ url_for('general_logic.admin_logic', choice=2, action=1) }}">Add New Note</a>
-          {% else %}
-          <a class="submit-style" style="text-align: center;" href="{{ url_for('general_logic.admin_logic', choice=2, action=1) }}">Add a Note</a>
-          {%endif%}
-          {%endif%}
-          {% if action == 1 %}
-            <form action="{{ url_for('general_logic.add_note') }}" method="POST">
-
-              <label for="note"></label>
-              <textarea id="note" name="note" style="width: 600px; 
-              height: 200px; resize: vertical; overflow-y: auto; 
-              word-wrap: break-word; max-width: 100%;" maxlength="500" placeholder="You can write notes here"></textarea>
-
-              <button type="submit" class="submit-style">Add Note</button>
-            </form>
-          
-          {% endif %}
-        </div>
-      </div>
-    {% elif choice == 6 %}
-      <h2 style="text-align:center"> Visits </h2>
-      {% if visits %}
-        <table class="table table-sortable">
-          <thead>
-            <tr>
-              <th>Visit id</th>
-              <th>Vet</th>
-              <th>Pet Owner</th>
-              <th>Pet</th>
-              <th>Diagnosis</th>
-              <th>Treatment</th>
-              <th>Visit Date</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for visit, vet, owner, pet, vet_name, vet_lastname,
-               owner_name, owner_lastname, pet_name in visits %}
-            <form>
-              <tr>
-                <td>{{ visit.visit_id }}</td>
-                <td>{{ vet.vet_id }} - {{ vet_name }} {{ vet_lastname }}</td>
-                <td>{{ owner.owner_id }} - {{ owner_name }} {{ owner_lastname }}</td>
-                <td>{{ pet.pet_id }} - {{ pet_name }}</td>
-                <td>{{ visit.diagnosis }}</td>
-                <td>{{ visit.treatment }}</td>
-                <td>{{ visit.date.strftime('%Y-%m-%d') }}</td>
-              </tr>
-            </form>
-            {% endfor %}
-          </tbody>
-        </table>
-      {% else %}
-      <p style="text-align:center">No result found.</p>
-      {% endif %}
-
-      {% elif choice == 7 %}
-      <h2 style="text-align:center"> Pets </h2>
-      {% if pets %}
-        <table class="table table-sortable">
-          <thead>
-            <tr>
-              <th>Pet id</th>
-              <th>Owner</th>
-              <th>Pet Name</th>
-              <th>Pet Species</th>
-              <th>Gender</th>
-              <th>Treatment</th>
-              <th>Recent Vaccination</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for pet, species, breed, owner, person in pets %}
-            <form>
-              <tr>
-                <td>{{ pet.pet_id }}</td>
-                <td>{{ owner.owner_id}} - {{ person.name }} {{ person.lastname }}</td>
-                <td>{{ pet.name }}</td>
-                <td>{{ species.species }} - {{ breed.breed }}</td>
-                {% if pet.gender == "M" %}
-                <td>Male</td>
-                {% elif pet.gender =="F" %}
-                <td>Female</td>
-                {% else %}
-                <td>somethings off</td>
-                {% endif %}
-                <td>{{ pet.treatment }}</td>
-                <td>{{ pet.recent_vaccination }}</td>
-              </tr>
-            </form>
-            {% endfor %}
-          </tbody>
-        </table>
-      {% else %}
-      <p style="text-align:center">No result found.</p>
-      {% endif %}
-    
-    {% elif choice == 8 %}
-    <div class="user-menu">
-      <form action="{{ url_for('general_logic.admin_logic', choice = 8, action = 0) }}" class="mymenu" method="POST">
-        <label for="firstname">Name</label>
-        <input type="text" id="firstname" name="firstname" value="{{ current_user.name }}" disabled>
-        <button type="button" class="change-button" onclick="enableInput('firstname')"><i class="fa-solid fa-pen-to-square"></i></button><br>
-        
-        <label for="lastname">Lastname</label>
-        <input type="text" id="lastname" name="lastname" value="{{ current_user.lastname }}" disabled>
-        <button type="button" class="change-button" onclick="enableInput('lastname')"><i class="fa-solid fa-pen-to-square"></i></button><br>
-
-        <label for="address">Address</label>
-        <input type="text" id="address" name="address" value="{{ current_user.address }}" disabled>
-        <button type="button" class="change-button" onclick="enableInput('address')"><i class="fa-solid fa-pen-to-square"></i></button><br>
-
-        <input type="submit" value="Save Changes" class="save-button" id="save-button" style="display: none;">
-      </form>
-    </div>
-    {% else %}
-      {% set header_text = {
-        3: "List of Owners",
-        4: "List of Vets",
-        5: "List of Editors",
-        6: "List of Visits",
-        7: "List of Pets"
-    } %}
-    
-    {% if choice in header_text %}
-        <h2 style="text-align:center">{{ header_text[choice] }}</h2>
-    {% endif %}
-    {% if users %}
-      <table class="table table-sortable">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Lastname</th>
-            <th>Mail</th>
-            <th>Type</th>
-            <th>Joined us</th>
-            <th>Address</th>
-            <th>Phone</th>
-            {% if choice == 3%}
-            <th>Pets</th>
-            {% elif choice == 4 %}
-            <th>Visits</th>
-            <th>Speciality</th>
-            {% elif choice == 5 %}
-            <th>Posts</th>
+            {% else %}
+            <p style="text-align:center">შედეგები არ მოიძებნა.</p>
             {% endif %}
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for user, person, count in users %}
-          <form action="{{ url_for('general_logic.edit_user', person_id=person.id) }}" method="POST">
-            <tr>
-              {% if choice == 3 %}
-              <td>{{ user.owner_id }}</td>
-              {% elif choice == 4 %}
-              <td>{{ user.vet_id }}</td>
-              {% elif choice == 5 %}
-              <td>{{ user.editor_id }}</td>
-              {% elif choice == 6 %}
-              <td>{{ user.visit_id }}</td>
-              {% elif choice == 7 %}
-              <td>{{ user.pet_id }}</td>
-              {% endif %}
-              <td>
-                <input type="text" id="name_{{ person.id }}" name="name" value="{{ person.name }}" required disabled>
-              </td>
-              <td>
-                <input type="text" id="lastname_{{ person.id }}" name="lastname" value="{{ person.lastname }}" required disabled>
-              </td>
-              <td>
-                <input type="text" id="mail_{{ person.id }}" name="mail" value="{{ person.mail }}" required disabled>
-              </td>
-              <td>
-                <select id="type_{{ person.id }}" name="type" required disabled>
-                  <option value="1" {% if person.type == 1 %}selected{% endif %}>User</option>
-                  <option value="2" {% if person.type == 2 %}selected{% endif %}>Admin</option>
-                  <option value="3" {% if person.type == 3 %}selected{% endif %}>Vet</option>
-                  <option value="4" {% if person.type == 4 %}selected{% endif %}>Editor</option>
-                </select>
-              </td>
-              
-              <td>{{ person.created }}</td>
-              <td>
-                <input type="text" id="address_{{ person.id }}" name="address" value="{{ person.address }}" required disabled>
-              </td>
-              <td>
-                <input type="text" id="phone_{{ person.id }}" name="phone" value="{{ person.phone }}" required disabled>
-              </td>
-              <td>
-                {% if count %}
-                  {{ count }}
-                {% else %}
-                  0
-                {% endif %}
-              </td>
-              {% if choice == 4 %}
-              <td>
-                <select id="type_{{ person.id }}" name="vet_speciality" required disabled>
-                  <option value="0" {% if action == None %}selected{% endif %}>No Speciality</option>
-                  <option value="1" {% if action == 1 %}selected{% endif %}>Cardiology</option>
-                  <option value="2" {% if action == 2 %}selected{% endif %}>Dermatology</option>
-                  <option value="3" {% if action == 3 %}selected{% endif %}>Ophthalmology</option>
-                  <option value="4" {% if action == 4 %}selected{% endif %}>Orthopedics</option>
-                  <option value="5" {% if action == 5 %}selected{% endif %}>Neurology</option>
-                  <option value="6" {% if action == 6 %}selected{% endif %}>Oncology</option>
-                  <option value="7" {% if action == 7 %}selected{% endif %}>Radiology</option>
-                  <option value="8" {% if action == 8 %}selected{% endif %}>Surgery</option>
-                  <option value="9" {% if action == 9 %}selected{% endif %}>Internal Medicine</option>
-                  <option value="10" {% if action == 10 %}selected{% endif %}>Behavioral Medicine</option>
-                </select>
-              </td>
-              {% endif %}
-              <td>
-                <div class="pet-actions">
-                  <button type="button" class="change-button" id="change_{{ person.id }}" onclick="enableEditUser('{{ person.id }}')"><i class="fa-regular fa-pen-to-square"></i></button>
-                  <button type="submit" class="saveOwner" id="save_{{ person.id }}" onsubmit="return confrm('Confirm Change')"><i class="fa-solid fa-check"></i></button>
-                </div>
-              </td>
-            </tr>
-          </form>
-          {% endfor %}
-        </tbody>
-      </table>
-    {% if not users %}
-      <p style="text-align:center">No result found.</p>
-    {% endif %}
-    {% endif %}
-    {% endif %}
-  </div>
-  </div>
-  </section>
-{% endblock %}
-
-{% block script %}
-  <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js" integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="crossorigin=""></script>
-  <script src="../../static/js/main.js"></script>
-{% endblock %}
+            
+            {% elif choice == 7 %}
+            <h2 style="text-align:center"> დარეგისტრირებული შინაური ცხოველები </h2>
+            {% if pets %}
+              <table class="table table-sortable">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>მფლობელი</th>
+                    <th>სახელი</th>
+                    <th>ჯიში</th>
+                    <th>სქესი</th>
+                    <th>მკურნალობა</th>
+                    <th>უახლესი ვაქცინაცია</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for pet, species, breed, owner, person in pets %}
+                  <form>
+                    <tr>
+                      <td>{{ pet.pet_id }}</td>
+                      <td>{{ owner.owner_id}} - {{ person.name }} {{ person.lastname }}</td>
+                      <td>{{ pet.name }}</td>
+                      <td>{{ species.species }} - {{ breed.breed }}</td>
+                      {% if pet.gender == "M" %}
+                      <td>მამრობითი</td>
+                      {% elif pet.gender =="F" %}
+                      <td>მდედრობითი</td>
+                      {% else %}
+                      <td>სქესი არ არის მითითებული</td>
+                      {% endif %}
+                      <td>{{ pet.treatment }}</td>
+                      <td>{{ pet.recent_vaccination }}</td>
+                    </tr>
+                  </form>
+                  {% endfor %}
+                </tbody>
+              </table>
+            {% else %}
+            <p style="text-align:center">შედეგები ვერ მოიძებნა.</p>
+            {% endif %}
+            
+            {% elif choice == 8 %}
+            <div class="user-menu">
+              <form action="{{ url_for('general_logic.admin_logic', choice = 8, action = 0) }}" class="mymenu" method="POST">
+                <label for="firstname">სახელი</label>
+                <input type="text" id="firstname" name="firstname" value="{{ current_user.name }}" disabled>
+                <button type="button" class="change-button" onclick="enableInput('firstname')"><i class="fa-solid fa-pen-to-square"></i></button><br>
+                
+                <label for="lastname">გვარი</label>
+                <input type="text" id="lastname" name="lastname" value="{{ current_user.lastname }}" disabled>
+                <button type="button" class="change-button" onclick="enableInput('lastname')"><i class="fa-solid fa-pen-to-square"></i></button><br>
+            
+                <label for="address">მისამართი</label>
+                <input type="text" id="address" name="address" value="{{ current_user.address }}" disabled>
+                <button type="button" class="change-button" onclick="enableInput('address')"><i class="fa-solid fa-pen-to-square"></i></button><br>
+            
+                <input type="submit" value="შენახვა" class="save-button" id="save-button" style="display: none;">
+              </form>
+            </div>
+            {% else %}
+            <!--აქ მგონი გამეორებული მაქვს კოდი, კარგად გადავხედო!-->
+              {% set header_text = {
+                3: "მფლობელების ჩამონათვალი",
+                4: "ვეტერინარების ჩამონათვალი",
+                5: "რედაქტორების ჩამონათვალი"
+            } %}
+            
+            {% if choice in header_text %}
+                <h2 style="text-align:center">{{ header_text[choice] }}</h2>
+            {% endif %}
+            {% if users %}
+              <table class="table table-sortable">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>სახელი</th>
+                    <th>გვარი</th>
+                    <th>ელ. ფოსტა</th>
+                    <th>ტიპი</th>
+                    <th>შემოგვიერთდა</th>
+                    <th>მისამართი</th>
+                    <th>ტელეფონი</th>
+                    {% if choice == 3%}
+                    <th>ცხოველების რაოდენობა</th>
+                    {% elif choice == 4 %}
+                    <th>ვიზიტების რაოდენობა</th>
+                    <th>სპეციალობა</th>
+                    {% elif choice == 5 %}
+                    <th>პოსტების რაოდენობა</th>
+                    {% endif %}
+                    <th>მოქმედება</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for user, person, count in users %}
+                  <form action="{{ url_for('general_logic.edit_user', person_id=person.id) }}" method="POST">
+                    <tr>
+                      {% if choice == 3 %}
+                      <td>{{ user.owner_id }}</td>
+                      {% elif choice == 4 %}
+                      <td>{{ user.vet_id }}</td>
+                      {% elif choice == 5 %}
+                      <td>{{ user.editor_id }}</td>
+                      {% elif choice == 6 %}
+                      <td>{{ user.visit_id }}</td>
+                      {% elif choice == 7 %}
+                      <td>{{ user.pet_id }}</td>
+                      {% endif %}
+                      <td>
+                        <input type="text" id="name_{{ person.id }}" name="name" value="{{ person.name }}" required disabled>
+                      </td>
+                      <td>
+                        <input type="text" id="lastname_{{ person.id }}" name="lastname" value="{{ person.lastname }}" required disabled>
+                      </td>
+                      <td>
+                        <input type="text" id="mail_{{ person.id }}" name="mail" value="{{ person.mail }}" required disabled>
+                      </td>
+                      <td>
+                        <select id="type_{{ person.id }}" name="type" required disabled>
+                          <option value="1" {% if person.type == 1 %}selected{% endif %}>მომხმარებელი</option>
+                          <option value="2" {% if person.type == 2 %}selected{% endif %}>ადმინისტრატორი</option>
+                          <option value="3" {% if person.type == 3 %}selected{% endif %}>ვეტერინარი</option>
+                          <option value="4" {% if person.type == 4 %}selected{% endif %}>რედაქტორი</option>
+                        </select>
+                      </td>
+                      
+                      <td>{{ person.created }}</td>
+                      <td>
+                        <input type="text" id="address_{{ person.id }}" name="address" value="{{ person.address }}" required disabled>
+                      </td>
+                      <td>
+                        <input type="text" id="phone_{{ person.id }}" name="phone" value="{{ person.phone }}" required disabled>
+                      </td>
+                      <td>
+                        {% if count %}
+                          {{ count }}
+                        {% else %}
+                          0
+                        {% endif %}
+                      </td>
+                      {% if choice == 4 %}
+                      <td>
+                        <select id="type_{{ person.id }}" name="vet_speciality" required disabled>
+                          <option value="0" {% if action == None %}selected{% endif %}>სპეციალიზაცია არ არის</option>
+                          <option value="1" {% if action == 1 %}selected{% endif %}>კარდიოლოგია</option>
+                          <option value="2" {% if action == 2 %}selected{% endif %}>დერმატოლოგია</option>
+                          <option value="3" {% if action == 3 %}selected{% endif %}>ოფთალმოლოგია</option>
+                          <option value="4" {% if action == 4 %}selected{% endif %}>ორთოპედია</option>
+                          <option value="5" {% if action == 5 %}selected{% endif %}>ნევროლოგია</option>
+                          <option value="6" {% if action == 6 %}selected{% endif %}>ონკოლოგია</option>
+                          <option value="7" {% if action == 7 %}selected{% endif %}>რადიოლოგია</option>
+                          <option value="8" {% if action == 8 %}selected{% endif %}>ქირურგია</option>
+                          <option value="9" {% if action == 9 %}selected{% endif %}>შიგან სიკვდილი</option>
+                          <option value="10" {% if action == 10 %}selected{% endif %}>ქმედებითი სიკვდილი</option>
+                        </select>
+                      </td>
+                      {% endif %}
+                      <td>
+                        <div class="pet-actions">
+                          <button type="button" class="change-button" id="change_{{ person.id }}" onclick="enableEditUser('{{ person.id }}')"><i class="fa-regular fa-pen-to-square"></i></button>
+                          <button type="submit" class="saveOwner" id="save_{{ person.id }}" onsubmit="return confrm('დასტურის შემოწმება')"><i class="fa-solid fa-check"></i></button>
+                        </div>
+                      </td>
+                    </tr>
+                  </form>
+                  {% endfor %}
+                </tbody>
+              </table>
+            {% if not users %}
+              <p style="text-align:center">შედეგები ვერ მოიძებნა.</p>
+            {% endif %}
+            {% endif %}
+            {% endif %}
+            </div>
+            </div>
+            </section>
+            {% endblock %}
+            
+            {% block script %}
+              <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js" integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="crossorigin=""></script>
+              <script src="../../static/js/main.js"></script>
+            {% endblock %}
+            

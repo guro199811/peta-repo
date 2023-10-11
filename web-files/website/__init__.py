@@ -26,11 +26,12 @@ def create_app(migrate):
     app.config['MAIL_USE_TLS'] = True
     app.config['MAIL_USE_SSL'] = False
     
-
+    
     #rest of the app
-    db.init_app(app)
-    migrate.init_app(app, db)
-    mail.init_app(app)
+    with app.app_context():
+        db.init_app(app)
+        migrate.init_app(app, db)
+        mail.init_app(app)
 
     from .views import views
     from .auth import auth
