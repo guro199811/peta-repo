@@ -90,7 +90,7 @@ def register():
         elif password1 != password2:
             flash("გამეორებული პაროლი არაა სწორი", category="error")
         elif len(password1) < 6:
-            flash("პაროლის მინიმალური ზომა არის 6.", category="error")
+            flash("პაროლის მინიმალური ზომა არის 6 სიმბოლო.", category="error")
         else:
             #Adding data to database
             new_user = Person(name=name, lastname=lastname, phone=phone,
@@ -99,14 +99,13 @@ def register():
             db.session.add(new_user)
             db.session.commit()
             login_user(new_user, remember=True)
-            '''token = generate_confirmation_token(new_user.email, current_app)
+            token = generate_confirmation_token(new_user.mail, current_app)
 
             # Send a confirmation email
             confirmation_url = url_for('confirm_email', token=token, _external=True)
             message = Message('ელ.ფოსტის დასტური(Peta.ge)', recipients=[user.email])
             message.body = f'გთხოვთ დაადასტუროთ თქვენი ელ.ფოსტა მოცემული ბმულით: {confirmation_url}\n\n\nპატივისცემით, Peta-Team'
             mail.send(message)
-            flash("თქვენს ელ.ფოსტაზე გაიგზავნა დასტურის ბმული, გთხოვთ შეამოწმოთ", category="success")
-            return redirect(url_for('views.owner'))'''
+            return redirect(url_for('views.verification'))
 
     return render_template("sign-up.html", user=current_user)

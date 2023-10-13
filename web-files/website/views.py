@@ -24,28 +24,37 @@ def grant_access(user_types):
 def home():
     return render_template("main.html")
 
+@views.route('/verification')
+def verification():
+    return render_template("login/admin.html", user=current_user, 
+                           action = action)
+
 @views.route('/owner')
 @login_required
 @grant_access([1])
 def owner():
-    return render_template("login/owner.html", user=current_user, action = action)
+    return render_template("login/owner.html", user=current_user, 
+                           action = action)
 
 @views.route('/admin')
 @login_required
 @grant_access([2])
 def admin():
     choice = 8
-    return render_template("login/admin.html", user=current_user, action = action, choice = choice)
+    return render_template("login/admin.html", user=current_user, 
+                           action = action, choice = choice)
 
 @views.route('/vet')
 @login_required
 @grant_access([3])
 def vet():
     action = None
-    return render_template("login/vet.html", user=current_user, action = action)
+    return render_template("login/vet.html", user=current_user, 
+                           action = action)
 
 @views.route('/editor')
 @login_required
 @grant_access([4])
 def editor():
-    return render_template("login/editor.html", user=current_user, action = action)
+    return render_template("login/editor.html", user=current_user, 
+                           action = action)

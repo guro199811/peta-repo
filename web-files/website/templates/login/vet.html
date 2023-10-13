@@ -50,13 +50,6 @@
       </a>
       <span class="tooltip">კლინიკის ვიზიტები</span>
     </li>
-    <!--li>
-      <a href="{{ url_for('general_logic.vet_logic', choice=7, action = 0) }}">
-        <i class='bx bxs-dog'></i>
-        <span class="link_name">Visited Pets</span>
-      </a>
-      <span class="tooltip">Visited Pets</span>
-    </li-->
     <li>
       <a href="{{ url_for('general_logic.vet_logic', choice=1, action = 0) }}">
         <i class='bx bx-home' ></i>
@@ -464,46 +457,25 @@
         </form>
       </div>
       {% endif %}
-<!--      {% elif choice == 7 %}
-      <h2 style="text-align:center"> Visited Pets </h2>
-      {% if pets %}
-        <table class="table table-sortable">
-          <thead>
-            <tr>
-              <th>Pet id</th>
-              <th>Owner</th>
-              <th>Pet Name</th>
-              <th>Pet Species</th>
-              <th>Gender</th>
-              <th>Treatment</th>
-              <th>Recent Vaccination</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for pet, species, breed, owner, person in pets %}
-            <form>
-              <tr>
-                <td>{{ pet.pet_id }}</td>
-                <td>{{ owner.owner_id}} - {{ person.name }} {{ person.lastname }}</td>
-                <td>{{ pet.name }}</td>
-                <td>{{ species.species }} - {{ breed.breed }}</td>
-                {% if pet.gender == "M" %}
-                <td>Male</td>
-                {% elif pet.gender =="F" %}
-                <td>Female</td>
-                {% else %}
-                <td>somethings off</td>
-                {% endif %}
-                <td>{{ pet.treatment }}</td>
-                <td>{{ pet.recent_vaccination }}</td>
-              </tr>
-            </form>
-            {% endfor %}
-          </tbody>
-        </table>
-      {% else %}
-      <p style="text-align:center">No result found.</p>
-      {% endif %}-->
+    {% elif choice == 5 %}
+    <div class="newpetbox">
+      <form action="{{ url_for('general_logic.vet_logic',choice = 2, action=1) }}" method="POST">
+
+        <label for=""></label>
+        <input type="text" id="" name="" maxlength="" required>
+    
+        <label for=""></label>
+        <input type="" id="" name="" maxlength="" required>      
+        
+        <label for=""></label>
+        <input type="" id="" name="" required>
+
+        <label for="comment">Comment</label>
+        <textarea id="comment" name="comment" style="width: 600px; 
+        height: 250px; resize: vertical; overflow-y: auto; 
+        word-wrap: break-word; max-width: 100%;" maxlength="500"></textarea>
+
+      <button type="submit" class="submit-style">Add History</button>
     
     {% elif choice == 8 %}
     <div class="user-menu">
