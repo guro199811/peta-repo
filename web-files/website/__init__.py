@@ -17,14 +17,7 @@ def create_app(migrate):
     # app.config['SERVER_NAME'] = 'localhost:8000'
     # app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
 
-
-    #Mail Services section:
-    app.config['MAIL_SERVER'] = 'smtp.gmail.com'
-    app.config['MAIL_PORT'] = 587  # Use the appropriate port for your email service
-    app.config['MAIL_USERNAME'] = 'guro.sivs@gmail.com'
-    app.config['MAIL_PASSWORD'] = '8niwmcsw'
-    app.config['MAIL_USE_TLS'] = True
-    app.config['MAIL_USE_SSL'] = False
+    app.config.from_pyfile('mail_config.cfg')
     
     
     #rest of the app

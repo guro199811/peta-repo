@@ -24,10 +24,6 @@ def grant_access(user_types):
 def home():
     return render_template("main.html")
 
-@views.route('/verification')
-def verification():
-    return render_template("login/admin.html", user=current_user, 
-                           action = action)
 
 @views.route('/owner')
 @login_required
@@ -57,4 +53,17 @@ def vet():
 @grant_access([4])
 def editor():
     return render_template("login/editor.html", user=current_user, 
+                           action = action)
+
+
+#mail testing
+
+@views.route('/verification')
+def verification():
+    return render_template("login/owner.html", user=current_user, 
+                           action = action)
+
+@views.route('/expired-token')
+def expired_token():
+    return render_template("login/owner.html", user=current_user, 
                            action = action)

@@ -1,4 +1,5 @@
-from .tokens import generate_confirmation_token
+from .tokens import generate_confirmation_token, serializer, init_serializer
+from itsdangerous import SignatureExpired
 
 from werkzeug.security import generate_password_hash, check_password_hash
 from . import db
@@ -6,7 +7,7 @@ from .models import Person
 from datetime import datetime
 from datetime import date as dt
 
-from flask_mail import Message
+from flask_mail import Message, Mail
 
 from flask_login import (
     login_user, 
@@ -18,12 +19,13 @@ from flask import (
     Blueprint, 
     render_template, 
     request, flash, 
-    redirect, url_for,
-    current_app)
+    redirect, url_for)
+
 
 
 auth = Blueprint('auth', __name__)
-#verimail = current_app.extensions['mail']
+
+
 
 #შესვლის ფუნქცია, ამოწმებს მომხმარებელს ბაზაში
 @auth.route('/login', methods=['GET', 'POST'])
@@ -99,13 +101,31 @@ def register():
             db.session.add(new_user)
             db.session.commit()
             login_user(new_user, remember=True)
-            token = generate_confirmation_token(new_user.mail, current_app)
+            
 
             # Send a confirmation email
-            confirmation_url = url_for('confirm_email', token=token, _external=True)
-            message = Message('ელ.ფოსტის დასტური(Peta.ge)', recipients=[user.email])
+            from flask import current_app as app
+            
+            token = generate_confirmation_token(new_user.mail, app)
+            verimail = Mail(app)    
+
+
+            message = Message('ელ.ფოსტის დასტური(Peta.ge)', sender='noreply@peta.ge', recipients=[new_user.mail])
+            confirmation_url = url_for('auth.confirm_token', token=token, external=True)
             message.body = f'გთხოვთ დაადასტუროთ თქვენი ელ.ფოსტა მოცემული ბმულით: {confirmation_url}\n\n\nპატივისცემით, Peta-Team'
-            mail.send(message)
+            verimail.send(message)
             return redirect(url_for('views.verification'))
 
     return render_template("sign-up.html", user=current_user)
+
+@auth.route('/confirm_email/<token>')
+def confirm_token(token, expiration=3600):
+    if serializer is None:
+        init_serializer()
+    try:
+        email = serializer.loads(token, salt='email-confirm', max_age=expiration)
+        current_user.confirmed = True
+        current_user.confirmed_on = dt.today()
+        return email
+    except SignatureExpired:
+        return redirect(url_for('views.expired-token.html'))

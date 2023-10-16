@@ -1,4 +1,4 @@
-from itsdangerous import URLSafeTimedSerializer
+from itsdangerous import URLSafeTimedSerializer, SignatureExpired
 
 # Create a serializer with a secret key
 serializer = None  # Define serializer outside the functions
@@ -12,11 +12,5 @@ def generate_confirmation_token(email, current_app):
         init_serializer(current_app)
     return serializer.dumps(email, salt='email-confirm')
 
-def confirm_token(token, expiration=3600):
-    if serializer is None:
-        init_serializer()
-    try:
-        email = serializer.loads(token, salt='email-confirm', max_age=expiration)
-        return email
-    except:
-        return None
+
+

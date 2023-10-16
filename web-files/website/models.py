@@ -17,7 +17,7 @@ class Person(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False)
     lastname = db.Column(db.String(50), nullable=False)
-    phone = db.Column(db.Integer, nullable=False)
+    phone = db.Column(db.String(50), nullable=False)
     mail = db.Column(db.String(100), unique=True)
     address = db.Column(db.String(100))
     created = db.Column(db.Date)
@@ -25,7 +25,7 @@ class Person(db.Model, UserMixin):
     person_type = db.relationship(Type)
     password = db.Column(db.String(150), nullable=False)
     confirmed = db.Column(db.Boolean, nullable=False, default=False)
-    confirmed_on = db.Column(db.DateTime, nullable=True)
+    confirmed_on = db.Column(db.Date, nullable=True)
 
 
 class Owner(db.Model):
