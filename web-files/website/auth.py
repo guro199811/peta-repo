@@ -121,7 +121,7 @@ def send_confirmation(new_user):
 
     message = Message('ელ.ფოსტის დასტური(Peta.ge)', sender='noreply@peta.ge', recipients=[new_user.mail])
     confirmation_url = url_for('auth.confirm_token', token=token, _external=True)
-    message.body = f'გთხოვთ დაადასტუროთ თქვენი ელ.ფოსტა მოცემული ბმულით: {confirmation_url}\n\n\nპატივისცემით, Peta-Team'
+    message.body = f'გთხოვთ დაადასტუროთ თქვენი ელ.ფოსტა მოცემული ბმულით: {confirmation_url}\nგთხოვთ გაითვალისწინოთб, რომ თქვენი ბმული გაუქმდება 1 საათში\n\n\nპატივისცემით, Peta-Team'
     verimail.send(message)
     return render_template("verification.html", user=current_user)
 

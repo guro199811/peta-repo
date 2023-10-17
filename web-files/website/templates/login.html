@@ -4,14 +4,37 @@
 {% block content%}
 <div class="sign-container">
   <section id="login" class="main-section">
-    <h3 class="welcome-text">Please enter your data</h3>
+    <h3 class="welcome-text">შეიყვანეთ თქვენი მონაცემები</h3>
+    <br>
     <form class="login-form" method="POST">
-      <label for="email">Mail:</label>
-      <input type="email" id="email" name="email" placeholder="name@example.com" required>
-      <label for="password">Password:</label>
-      <input type="password" id="password" name="password" placeholder="******"  required>
+      <label for="email">ელ.ფოსტა</label>
+      <input type="email" id="email" name="email" placeholder="name@example.com"
+       title="ელ.ფოსტის შესაყვანი ველი" required>
+      <label for="password">პაროლი</label>
+      <input type="password" id="password" name="password" placeholder="******" 
+       title="პაროლის შესაყვანი ველი" required>
+       <input type="checkbox" id="show-password" class="show-password-checkbox" title="აჩვენოს/დამალოს პაროლი">
+      <h3></h3>
+      <h3></h3>
       <input type="submit" value="Login">
     </form>
   </section>
 </div>
 {% endblock%}
+
+{% block script %}
+
+<script>
+  const showPasswordCheckbox = document.getElementById('show-password');
+  const passwordInput = document.getElementById('password');
+
+  showPasswordCheckbox.addEventListener('change', function () {
+    if (showPasswordCheckbox.checked) {
+      passwordInput.type = 'text';
+    } else {
+      passwordInput.type = 'password';
+    }
+  });
+</script>
+
+{% endblock %}

@@ -198,7 +198,7 @@ nav{
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin-bottom: 100px;
+  margin-bottom: 85px;
 }
 
 .register-form input[type="text"],
@@ -206,12 +206,14 @@ nav{
 .register-form input[type="email"],
 .register-form input[type="tel"],
 .login-form input[type="email"],
-.login-form input[type="password"] {
+.login-form input[type="password"],
+.login-form input[type="text"] {
   border: 1px solid #ccc;
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  box-shadow:0px 0px 10px 3px rgba(0,0,0,0.26);
   padding: 8px;
   border-radius: 4px;
   margin-bottom: 10px;
+  transition: 0.3s;
 }
 
 
@@ -220,28 +222,32 @@ nav{
 .register-form input[type="email"]:hover,
 .register-form input[type="tel"]:hover,
 .login-form input[type="email"]:hover,
-.login-form input[type="password"]:hover {
+.login-form input[type="password"]:hover,
+.login-form input[type="text"]:hover {
   border-color: #999;
+  box-shadow:2px 2px 10px 3px rgba(0, 0, 0, 0.489);
 }
 
 
 
 .register-form input[type="submit"],
 .login-form input[type="submit"] {
-  background-color: #ff7300;
+  background-color: darkorange;
   color: #fff;
   font-size: 18px;
   padding: 10px 20px;
   border-radius: 4px;
   border: none;
   cursor: pointer;
-  transition: background-color 0.3s;
+  box-shadow:0px 0px 10px 3px rgba(0,0,0,0.26);
+  transition: 0.3s;
 }
 
 
 .register-form input[type="submit"]:hover,
 .login-form input[type="submit"]:hover {
-  background-color: #ffa600;
+  background-color: #ff7300;
+  box-shadow:2px 2px 10px 3px rgba(0, 0, 0, 0.489);
 }
 
 /* Register */
@@ -258,6 +264,11 @@ nav{
  }
  
 
+/* Style the checkbox itself */
+.show-password-checkbox {
+  margin-right: 5px; /* Adjust the margin as needed */
+  transform: scale(0.9); /* Make the checkbox smaller */
+}
 
 /* Footer */
 .footer {
@@ -751,16 +762,6 @@ footer {
   box-shadow:0px 0px 10px 0px #33333383;
  }
 
- 
- /* Lastname */
- #lastname{
-  box-shadow:0px 0px 10px 0px #3333337c;
- }
- 
- /* Address */
- #address{
-  box-shadow:0px 0px 10px 0px #3333337e;
- }
  
  /* Font Icon */
 .box-menu form i{

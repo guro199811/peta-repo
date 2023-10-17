@@ -20,16 +20,39 @@
       title="გთხოვთ შეიყვანოთ ვალიდური ელ.ფოსტა, მასზე გაიგზავნება დამადასტურებელი ბმული" required>
 
       <label for="password">პაროლი</label>
-      <input type="password" id="password" name="password" placeholder="******" title="უნდა შეიცავდეს მინიმუმ 6 სიმბოლოს" required>
+      <input type="password" id="password" name="password" placeholder="******" title="უნდა შეიცავდეს მინიმუმ 6 სიმბოლოს" minlength="6" required>
       <label for="repeat-password">გაიმეორეთ პაროლი</label>
-      <input type="password" id="repeat-password" name="repeat-password" placeholder="******" title="უნდა შეიცავდეს მინიმუმ 6 სიმბოლოს" required>
+      <input type="password" id="repeat-password" name="repeat-password" placeholder="******" title="გაიმეორეთ თქვენი პაროლი" minlength="6" required>
+      <input type="checkbox" id="show-password" class="show-password-checkbox" title="აჩვენოს/დამალოს პაროლი">
       <label for="phone">ტელ.ნომერი</label>
       <input type="tel" id="phone" name="phone" required value="+995" title="ტელეფონის ნომერი">
       <label for="address">Address:</label>
       <input type="text" id="address" name="address">
+      <h3></h3>
+      <h3></h3>
       <input type="submit" value="Register">
 
     </form>
   </section>
 </div>
 {% endblock%}
+
+{% block script %}
+
+<script>
+  const showPasswordCheckbox = document.getElementById('show-password');
+  const passwordInput = document.getElementById('password');
+  const repeatPasswordInput = document.getElementById('repeat-password')
+
+  showPasswordCheckbox.addEventListener('change', function () {
+    if (showPasswordCheckbox.checked) {
+      passwordInput.type = 'text';
+      repeatPasswordInput.type = 'text';
+    } else {
+      passwordInput.type = 'password';
+      repeatPasswordInput.type = 'password';
+    }
+  });
+</script>
+
+{% endblock %}
