@@ -1,4 +1,4 @@
-from .tokens import generate_confirmation_token, serializer, init_serializer
+from .tokens import generate_confirmation_token, init_serializer
 from itsdangerous import SignatureExpired
 
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -21,10 +21,9 @@ from flask import (
     request, flash, 
     redirect, url_for)
 
-
+from flask import current_app as app 
 
 auth = Blueprint('auth', __name__)
-
 
 
 #შესვლის ფუნქცია, ამოწმებს მომხმარებელს ბაზაში
@@ -40,16 +39,19 @@ def login():
                 #flash('წარმატება!', category='success')
                 #flask_login-ს ვიყენებთ რომ დავიმახსოვროთ მომხმარებელი რომ შესულია
                 login_user(user, remember=True)
-                #ვიგებთ რა ტიპის მომხმარებელია
-                type = user.type
-                if type == 1:
-                    return redirect(url_for('views.owner'))
-                elif type == 2:
-                    return redirect(url_for('views.admin'))
-                elif type == 3:
-                    return redirect(url_for('views.vet'))
-                elif type == 4:
-                    return redirect(url_for('views.editor'))
+                if user.confirmed:
+                    #ვიგებთ რა ტიპის მომხმარებელია
+                    type = user.type
+                    if type == 1:
+                        return redirect(url_for('views.owner'))
+                    elif type == 2:
+                        return redirect(url_for('views.admin'))
+                    elif type == 3:
+                        return redirect(url_for('views.vet'))
+                    elif type == 4:
+                        return redirect(url_for('views.editor'))
+                else:
+                    return render_template("verification.html", user=current_user)
             else:
                 flash('პაროლი არასწორია, გთხოვთ სცადოთ ხელახლა.', category='error')
         else:
@@ -103,29 +105,41 @@ def register():
             login_user(new_user, remember=True)
             
 
-            # Send a confirmation email
-            from flask import current_app as app
             
-            token = generate_confirmation_token(new_user.mail, app)
-            verimail = Mail(app)    
-
-
-            message = Message('ელ.ფოსტის დასტური(Peta.ge)', sender='noreply@peta.ge', recipients=[new_user.mail])
-            confirmation_url = url_for('auth.confirm_token', token=token, external=True)
-            message.body = f'გთხოვთ დაადასტუროთ თქვენი ელ.ფოსტა მოცემული ბმულით: {confirmation_url}\n\n\nპატივისცემით, Peta-Team'
-            verimail.send(message)
-            return redirect(url_for('views.verification'))
-
+            send_confirmation(new_user)
+            return render_template("verification.html", user=current_user)
     return render_template("sign-up.html", user=current_user)
 
+
+# Send a confirmation email
+@auth.route('/owner')
+def send_confirmation(new_user):
+    
+    token = generate_confirmation_token(new_user.mail, app)
+    verimail = Mail(app)    
+
+
+    message = Message('ელ.ფოსტის დასტური(Peta.ge)', sender='noreply@peta.ge', recipients=[new_user.mail])
+    confirmation_url = url_for('auth.confirm_token', token=token, _external=True)
+    message.body = f'გთხოვთ დაადასტუროთ თქვენი ელ.ფოსტა მოცემული ბმულით: {confirmation_url}\n\n\nპატივისცემით, Peta-Team'
+    verimail.send(message)
+    return render_template("verification.html", user=current_user)
+
+
+
+# Recieve a confirmation link
 @auth.route('/confirm_email/<token>')
 def confirm_token(token, expiration=3600):
+    if 'serializer' not in globals():
+        serializer = None
     if serializer is None:
-        init_serializer()
+        serializer = init_serializer(app)
     try:
         email = serializer.loads(token, salt='email-confirm', max_age=expiration)
         current_user.confirmed = True
         current_user.confirmed_on = dt.today()
-        return email
+        db.session.commit()
+        return redirect(url_for('views.owner'))
     except SignatureExpired:
-        return redirect(url_for('views.expired-token.html'))
+        return render_template('expired-token.html', user=current_user)
+    

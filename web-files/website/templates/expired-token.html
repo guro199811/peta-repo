@@ -5,6 +5,7 @@
 
 {% block content%}
 
-<h1 style="text-align:center">თქვენს დასტურის ბმულს დრო გაუვიდა<h1>
+<h1 style="text-align:center" class="verification">თქვენს დასტურის ბმულს დრო გაუვიდა 
+    <a href="{{ url_for('auth.send_confirmation', new_user = current_user )  }}">დააჭირეთ აქ რომ გაგზავნოთ ხელახლა</a></h1>
 
 {% endblock%}

@@ -1547,3 +1547,8 @@ nav{
   left:40% !important;
 }
 
+.verification {
+  text-align:center;
+  margin-top: 75px; 
+  color:white;
+}
