@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Wait for the database to start
-sleep 3
+#sleep 3
 
 # Navigate to the web-files/website directory
 cd /app
