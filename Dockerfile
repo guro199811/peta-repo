@@ -15,7 +15,7 @@ RUN chmod +x /entrypoint.sh
 
 
 ENV FLASK_APP=./main.py
-ENV FLASK_DEBUG=1
+# ENV FLASK_DEBUG=1
 
 
 CMD python3 -m flask --app ./main.py run --host=0.0.0.0
