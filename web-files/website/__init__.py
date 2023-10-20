@@ -13,7 +13,7 @@ mail = Mail()
 def create_app(migrate):
     app = Flask(__name__, static_url_path='/static', static_folder='static')
     app.config['SECRET_KEY'] = 'uwdhujiwakopdwu9faoijskpdwuahpfoijasidowiano'
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:postgres@postgres:5432/petsite'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://busxpnjrvsgejs:00de71fee0eeba69b414ec888049d15c8682e19f01479dc22487f4ab6b83c862@ec2-99-80-190-165.eu-west-1.compute.amazonaws.com:5432/d8ja1g39nrh4pl'
     # app.config['SERVER_NAME'] = 'localhost:8000'
     # app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
 
