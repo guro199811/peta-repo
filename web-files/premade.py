@@ -2,10 +2,22 @@ from website import db
 from website.models import Type, Speciality, Pet_species, Pet_breed
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
+import os
 
-engine = create_engine("postgresql://postgres:postgres@postgres:5432/petsite")
+
+try:
+    database_url = os.environ.get('DATABASE_URL1')
+except:
+    database_url = None
+
+
+if database_url == None:
+    engine = create_engine("postgresql://postgres:postgres@postgres:5432/petsite")
+else:
+    engine = create_engine(database_url)
+    
 session = Session(engine)
-
+    
 try:
     type_fixture = [
         (1, 'User'),

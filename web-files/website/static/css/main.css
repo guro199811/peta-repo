@@ -749,17 +749,22 @@ footer {
   backdrop-filter:blur(10px);
  }
  
- /* Firstname */
- #firstname{
-  box-shadow:0px 0px 10px 0px #33333385;
- }
- 
+ /* MyMenu */
+ .mymenu input[type=text] {
+  box-shadow: 0px 0px 10px 0px #33333385;
+  transition: 0.3s ease;
+}
+
+.mymenu input[type=text]:hover {
+  border-color: #999;
+}
+
  /* Change button */
  .box-menu form .change-button{
   border-color:#000000;
   border-width:1px;
   border-style:solid;
-  box-shadow:0px 0px 10px 0px #33333383;
+  box-shadow:0px 0px 15px 0px #33333383;
  }
 
  

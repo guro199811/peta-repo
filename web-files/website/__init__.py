@@ -2,18 +2,30 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_mail import Mail
+import os
+import logging
+
 
 db = SQLAlchemy()
 
 mail = Mail()
-
-
+try:
+    database_url = os.environ.get('DATABASE_URL1')
+    #logging.warning("#####################################")
+    #logging.warning(database_url)
+    #logging.warning("#####################################")
+except:
+    database_url = None
 
 
 def create_app(migrate):
     app = Flask(__name__, static_url_path='/static', static_folder='static')
     app.config['SECRET_KEY'] = 'uwdhujiwakopdwu9faoijskpdwuahpfoijasidowiano'
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://busxpnjrvsgejs:00de71fee0eeba69b414ec888049d15c8682e19f01479dc22487f4ab6b83c862@ec2-99-80-190-165.eu-west-1.compute.amazonaws.com:5432/d8ja1g39nrh4pl'
+    
+    if database_url == None:
+        app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:postgres@postgres:5432/petsite'
+    else:
+        app.config['SQLALCHEMY_DATABASE_URI'] = database_url
     # app.config['SERVER_NAME'] = 'localhost:8000'
     # app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
 

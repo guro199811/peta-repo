@@ -10,7 +10,7 @@ COPY ./web-files /app
 RUN chmod +x /entrypoint.sh
 # CMD ["python", "web-files/main.py"]
 
-# ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["/entrypoint.sh"]
 # CMD [ "python", "-m" , "flask", "run", "--host=0.0.0.0"]
 
 
@@ -18,4 +18,4 @@ ENV FLASK_APP=./main.py
 ENV FLASK_DEBUG=1
 
 
-CMD python3 -m flask --app ./main.py run --host=0.0.0.0
+CMD python3 -m flask --app ./main.py run --host=0.0.0.0 --port=$PORT
