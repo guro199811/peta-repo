@@ -3,18 +3,17 @@
 # Wait for the database to start
 #sleep 3
 
-# Navigate to the web-files/website directory
+# Navigate to the web-files/website directory inside a cointainer
 cd /app
 
 # Set the FLASK_APP environment variable
 export FLASK_APP=main.py
 
-# Check if the DYNO environment variable is set (Heroku specific)
+# Check if the DYNO environment variable is set (Heroku)
 if [ -n "$DYNO" ]; then
-  # Set the PORT to the Heroku environment variable
   export PORT=$PORT
 else
-  # Set the PORT to 5000 for local development
+#For local dev set port to 5000
   export PORT=5000
 fi
 

@@ -112,9 +112,11 @@ def register():
 
 
 # Send a confirmation email
-@auth.route('/owner')
-def send_confirmation(new_user):
-    
+@auth.route('/send_confirmation')
+def send_confirmation(new_user = current_user):
+    import logging
+    logging.warning("###############")
+    logging.warning(f"{new_user.id}")
     token = generate_confirmation_token(new_user.mail, app)
     verimail = Mail(app)    
 
@@ -123,7 +125,7 @@ def send_confirmation(new_user):
     confirmation_url = url_for('auth.confirm_token', token=token, _external=True)
     message.body = f'გთხოვთ დაადასტუროთ თქვენი ელ.ფოსტა მოცემული ბმულით: {confirmation_url}\nგთხოვთ გაითვალისწინოთб, რომ თქვენი ბმული გაუქმდება 1 საათში\n\n\nპატივისცემით, Peta-Team'
     verimail.send(message)
-    return render_template("verification.html", user=current_user)
+    return render_template("verification.html")
 
 
 
