@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %} Petta Login {% endblock %}
+
+{% block bg %}<body background="../static/images/sign-up.jpg">{% endblock %}
+
+{% block content%}
+
+<h1 class="verification">თქვენს, {{ current_user.mail }} ელ.ფოსტაზე 
+    <br> გაიგზავნა დასტურის კოდი, გთხოვთ დაადასტუროთ მისი ვალიდურობა</h1>
+
+{% endblock%}

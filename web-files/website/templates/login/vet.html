@@ -2,6 +2,8 @@
 {% block title %} Veterinary Page {% endblock %}
 <!-- ვაპირებ ადმინის ჰტმლს გადაკეთებას, ფერის შეცვლა მენიუზე, ცოტა ვიზუალის თემების მიხედვა, და იდეების გადახედვაა საჭირო -->
 
+{% block favicon %}<link rel = "icon" href = "../../static/images/favicon.ico" type = "image/x-icon">{% endblock %}
+
 {% block style %}
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI="crossorigin=""/>
   <link rel="stylesheet" href="../../static/css/main.css">
@@ -172,10 +174,10 @@
                           </div>
                         </li>
                       {% endfor %}
-                      <a class="submit-style" href="{{ url_for('general_logic.vet_logic',choice=1, action=5) }}">Add New pet</a>
+                      <a class="submit-style" href="{{ url_for('general_logic.vet_logic',choice=1, action=5) }}">ახალი შინაური ცხოველის დამატება</a>
                     </ul>
                   {% else %}
-                  <a class="novalue submit-style" href="{{ url_for('general_logic.vet_logic',choice=1, action=5) }}">You dont have pets, Click me to add them</a>
+                  <a class="novalue submit-style" href="{{ url_for('general_logic.vet_logic',choice=1, action=5) }}">თქვენ არ გყავთ შინაური ცხოველი დარეგისტრირებული, დააჭირეთ აქ რომ დაარეგისტრიროთ</a>
                   {% endif %}
                 </div>
               </div>
@@ -231,9 +233,9 @@
                   {% endfor %}
                 </tbody>
               </table>
-              <a class="submit-style" href="{{ url_for('general_logic.vet_logic',choice=1, action=6) }}">Add New History</a>
+              <a class="submit-style" href="{{ url_for('general_logic.vet_logic',choice=1, action=6) }}">ახალი ისტორიის დამატება</a>
           {% else %}
-          <a class="novalue submit-style" href="{{ url_for('general_logic.vet_logic',choice=1, action=6) }}">Your pets dont have vaccination history? Add New History</a>
+          <a class="novalue submit-style" href="{{ url_for('general_logic.vet_logic',choice=1, action=6) }}">თქვენ არ გაქვთ შინაური ცხოველების ისტორია, ისტორიის დამატება</a>
           {% endif %}
           {% elif action == 3 %}
                 <!--iframe src="https://www.google.com/maps/d/u/0/embed?mid=11ZnEvFOa3xipWz70F4d_jAo_nwrodVQ&ehbc=2E312F" width="100%" height="100%"></iframe-->
@@ -259,7 +261,7 @@
                 </ul>
               </div>
               {% else %}
-              <p style="text-align:center">No vets detected in database.</p>
+              <p style="text-align:center">ჯერჯერობით ვეტერინარები არ არიან დარეგისტრირებულნი</p>
               {% endif %}
           {% elif action == 5 %}
           <div class="newpetbox">
@@ -458,24 +460,23 @@
       </div>
       {% endif %}
     {% elif choice == 5 %}
-    <div class="newpetbox">
-      <form action="{{ url_for('general_logic.vet_logic',choice = 2, action=1) }}" method="POST">
+    <div class="newclinicbox">
+      <form action="{{ url_for('general_logic.vet_logic',choice = 5, action=0) }}" method="POST">
 
-        <label for=""></label>
-        <input type="text" id="" name="" maxlength="" required>
-    
-        <label for=""></label>
-        <input type="" id="" name="" maxlength="" required>      
+        <label for="clinic-name">კლინიკის სახელი</label>
+        <input type="text" id="clinic-name" name="clinic-name" required>
         
-        <label for=""></label>
-        <input type="" id="" name="" required>
+        <div>კლინიკის მომუშავე სტაფის სახელები და ტელ-ნომრები, დამატება</div>
+    
 
-        <label for="comment">Comment</label>
+        <label for="comment">მოკლე აღწერა</label>
         <textarea id="comment" name="comment" style="width: 600px; 
         height: 250px; resize: vertical; overflow-y: auto; 
-        word-wrap: break-word; max-width: 100%;" maxlength="500"></textarea>
+        word-wrap: break-word; max-width: 100%;" maxlength="150"></textarea>
 
-      <button type="submit" class="submit-style">Add History</button>
+        <div>რუკა</div>
+
+      <button type="submit" class="submit-style">კლინიკის დამატება</button>
     
     {% elif choice == 8 %}
     <div class="user-menu">

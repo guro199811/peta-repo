@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %} Petta Login {% endblock %}
+
+{% block bg %}<body background="../static/images/sign-up.jpg">{% endblock %}
+
+{% block content%}
+{% if expiredType = 0 %}
+<h1 style="text-align:center" class="verification">თქვენს დასტურის ბმულს დრო გაუვიდა 
+    <a href="{{ url_for('auth.send_confirmation') }}">დააჭირეთ აქ რომ გაგზავნოთ ხელახლა</a></h1>
+{% elif expiredType = 1 %}
+{% endif %}
+{% endblock%}

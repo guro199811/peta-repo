@@ -16,7 +16,12 @@
        <input type="checkbox" id="show-password" class="show-password-checkbox" title="აჩვენოს/დამალოს პაროლი">
       <h3></h3>
       <h3></h3>
-      <input type="submit" value="Login">
+      <input type="submit" value="შესვლა">
+      <br>
+      <p style="font-size: 13px;">
+        <a href="{{ url_for('auth.forgot_password') }}">პაროლი დამავიწყდა</a>
+      </p>
+    
     </form>
   </section>
 </div>

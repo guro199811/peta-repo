@@ -1,4 +1,4 @@
-from .tokens import generate_confirmation_token, init_serializer
+from .tokens import generate_token, init_serializer
 from itsdangerous import SignatureExpired
 
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -55,7 +55,7 @@ def login():
             else:
                 flash('პაროლი არასწორია, გთხოვთ სცადოთ ხელახლა.', category='error')
         else:
-            flash('ელ.ფოსტა არასწორედ წერია.', category='error')
+            flash('ელ.ფოსტა არ არის დარეგისტრირებული, გთხოვთ სცადოთ ხელახლა.', category='error')
     return render_template("login.html", user=current_user)
 
 
@@ -88,7 +88,7 @@ def register():
         if user:
             flash('ეს ელ.ფოსტა უკვე დარეგისტრირებულია.', category='error')
         elif len(mail) < 4:
-            flash("ემაილი უნდა შეიცავდეს მინიმუმ 4 ასოს.", category="error")
+            flash("ემაილი უნდა შეიცავდეს მინიმუმ 4 სიმბოლოს.", category="error")
         elif len(name) < 2:
             flash("სახელი უნდა იყოს მინიმუმ 1 ასოზე დიდი.", category="error")
         elif password1 != password2:
@@ -107,7 +107,7 @@ def register():
 
             
             send_confirmation(new_user)
-            return render_template("verification.html", user=current_user)
+            return render_template("auths/verification.html", user=current_user)
     return render_template("sign-up.html", user=current_user)
 
 
@@ -117,19 +117,20 @@ def send_confirmation(new_user = current_user):
     import logging
     logging.warning("###############")
     logging.warning(f"{new_user.id}")
-    token = generate_confirmation_token(new_user.mail, app)
+    token = generate_token(new_user.mail, app, 'email-confirm')
     verimail = Mail(app)    
 
 
-    message = Message('ელ.ფოსტის დასტური(Peta.ge)', sender='noreply@peta.ge', recipients=[new_user.mail])
+    message = Message('ელ.ფოსტის დასტური(Petaworld.com)', sender='noreply@peta.ge', recipients=[new_user.mail])
     confirmation_url = url_for('auth.confirm_token', token=token, _external=True)
-    message.body = f'გთხოვთ დაადასტუროთ თქვენი ელ.ფოსტა მოცემული ბმულით: {confirmation_url}\nგთხოვთ გაითვალისწინოთб, რომ თქვენი ბმული გაუქმდება 1 საათში\n\n\nპატივისცემით, Peta-Team'
+    message.body = f'გთხოვთ დაადასტუროთ თქვენი ელ.ფოსტა მოცემული ბმულით: {confirmation_url}\nგთხოვთ გაითვალისწინოთб, რომ თქვენი ბმული გაუქმდება გამოგზავნიდან 1 საათში\n\n\nპატივისცემით, Peta-Team'
     verimail.send(message)
-    return render_template("verification.html")
+    return render_template("auths/verification.html")
 
 
 
 # Recieve a confirmation link
+
 @auth.route('/confirm_email/<token>')
 def confirm_token(token, expiration=3600):
     if 'serializer' not in globals():
@@ -143,5 +144,73 @@ def confirm_token(token, expiration=3600):
         db.session.commit()
         return redirect(url_for('views.owner'))
     except SignatureExpired:
-        return render_template('expired-token.html', user=current_user)
+        return render_template('auths/expired-token.html', user=current_user, expiredType = 0)
     
+
+
+#Forgot Password Section
+
+@auth.route('/forgot_password', methods=['GET', 'POST'])
+def forgot_password():
+    if request.method == 'POST':
+        email = request.form.get('email')
+        user = Person.query.filter_by(mail=email).first()
+
+        if user:
+            send_password_reset_email(user)
+            flash(f'პაროლის შეცვლის იმეილი გაიგზავნა თქვენს {user.mail} ელ.ფოსტაზე', category='success')
+        else:
+            flash('ეს ელ.ფოსტა არ არის დარეგისტრირებული', category='error')
+
+    return render_template("auths/forgot_password.html", user=current_user)
+
+
+# Function to send a password reset email
+
+def send_password_reset_email(user):
+    token = generate_token(user.mail, app, 'password-reset')
+    reset_url = url_for('auth.reset_password', token=token, _external=True)
+    verimail = Mail(app) 
+
+    message = Message('პაროლის შეცვლა (Petaworld.com)', sender='noreply@peta.ge', recipients=[user.mail])
+    message.body = f'პაროლის შეცვლის ლინკი: {reset_url}\nლინკი გაუქმდება გამოგზავნიდან 1 საათში.\n\n\nPeta-Team'
+    verimail.send(message)
+    
+
+@auth.route('/reset_password/<token>', methods=['GET', 'POST'])
+def reset_password(token):
+    if request.method == 'POST':
+        import logging
+        new_password = request.form.get('password')
+        confirm_password = request.form.get('repeat-password')
+        logging.warning(f"{new_password} , {confirm_password}")
+        if new_password != confirm_password:
+            flash('პაროლები არ ემთხვევა', category='error')
+        elif len(new_password) < 6:
+            flash('პაროლი უნდა შეიცავდეს მინიმუმ 6 სიმბოლოს', category='error')
+        else:
+            email = confirm_password_token(token)
+            user = Person.query.filter_by(mail=email).first()
+
+            if user:
+                # Update the user's password
+                user.password = generate_password_hash(new_password, method='sha256')
+                db.session.commit()
+                return redirect(url_for('auth.login'))
+            else:
+                flash('ლინკი არ არის სწორი', category='error')
+
+    return render_template("auths/reset_password.html", token=token, user=current_user)
+
+
+
+def confirm_password_token(token, expiration=3600):
+    if 'serializer' not in globals():
+        serializer = None
+    if serializer is None:
+        serializer = init_serializer(app)
+    try:
+        email = serializer.loads(token, salt='password-reset', max_age=expiration)
+        return email
+    except SignatureExpired:
+        return render_template('auths/expired-token.html', user=current_user, expiredType = 1)

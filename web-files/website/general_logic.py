@@ -678,15 +678,12 @@ def vet_logic(choice, action):
                 pass
 
     if choice == 5: #Add my clinic
-        users = db.session.query(Editor, Person, func.count(Post.post_id)  # Adding the pet counter
-        ).join(Person, Editor.person_id == Person.id). \
-            outerjoin(Post, Post.editor_id == Editor.editor_id).filter(Editor.active == True). \
-            group_by(Editor, Person).all()
+        if request.method == "GET":
+            current_vet = db.session.query(Vet).filter_by(person_id = current_user.id).one()
 
-        return render_template('login/admin.html',
+            return render_template('login/vet.html',
                                 choice=choice,
-                                action=action,
-                                users=users) 
+                                action=action) 
      
     ''' if choice == 7: #Visited Pets
         

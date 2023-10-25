@@ -131,7 +131,7 @@
       </table>
       <a class="novalue submit-style" href="{{ url_for('general_logic.owner_logic', action=6) }}">ახალი ისტორიის დამატება</a>
   {% else %}
-  <a class="novalue submit-style" href="{{ url_for('general_logic.owner_logic', action=6) }}">დავამატოთ ახალი ისტორია</a>
+  <a class="novalue submit-style" href="{{ url_for('general_logic.owner_logic', action=6) }}">თქვენ არ გაქვთ შინაური ცხოველების ისტორია, ისტორიის დამატება</a>
   {% endif %}
   {% elif action == 3 %}
         <!--iframe src="https://www.google.com/maps/d/u/0/embed?mid=11ZnEvFOa3xipWz70F4d_jAo_nwrodVQ&ehbc=2E312F" width="100%" height="100%"></iframe-->
@@ -157,7 +157,7 @@
         </ul>
       </div>
       {% else %}
-      <h2 style="text-align:center"> ჯერჯერობით ვეტერინარები არ არიან დარეგისტრირებულ </h2>
+      <h2 style="text-align:center"> ჯერჯერობით ვეტერინარები არ არიან დარეგისტრირებულნი </h2>
       {% endif %}
   {% elif action == 5 %}
   <div class="newpetbox">
