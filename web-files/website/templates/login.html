@@ -1,5 +1,10 @@
 {% extends "base.html" %}
 {% block title %} Petta Login {% endblock %}
+
+{% block headscript %}
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+{% endblock %}
+
 {% block bg %}<body background="../static/images/login-bg.png">{% endblock %}
 {% block content%}
 <div class="sign-container">
@@ -13,8 +18,11 @@
       <label for="password">პაროლი</label>
       <input type="password" id="password" name="password" placeholder="******" 
        title="პაროლის შესაყვანი ველი" required>
-       <input type="checkbox" id="show-password" class="show-password-checkbox" title="აჩვენოს/დამალოს პაროლი">
+      <div>
+      <input type="checkbox" id="show-password" class="show-password-checkbox" title="აჩვენოს/დამალოს პაროლი"><label for="checkbox" style="font-size: 14px;">პაროლის ნახვა</label>
+      </div>
       <h3></h3>
+      <div class="g-recaptcha" data-sitekey="6LdmXcwoAAAAAARZJDNPt5HN8DGlyCwps6kHEa_q"></div>
       <h3></h3>
       <input type="submit" value="შესვლა">
       <br>

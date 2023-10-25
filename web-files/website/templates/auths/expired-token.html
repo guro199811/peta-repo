@@ -3,10 +3,14 @@
 
 {% block bg %}<body background="../static/images/sign-up.jpg">{% endblock %}
 
+
+    
 {% block content%}
 {% if expiredType = 0 %}
-<h1 style="text-align:center" class="verification">თქვენს დასტურის ბმულს დრო გაუვიდა 
+<h1 style="text-align:center" class="verification">თქვენს ელ.ფოსტის დასტურის ბმულს დრო გაუვიდა 
     <a href="{{ url_for('auth.send_confirmation') }}">დააჭირეთ აქ რომ გაგზავნოთ ხელახლა</a></h1>
 {% elif expiredType = 1 %}
+<h1 style="text-align:center" class="verification">თქვენს პაროლის შეცვლის ბმულს დრო გაუვიდა 
+    <a href="{{ url_for('auth.forgot_password') }}">დააჭირეთ აქ რომ გაგზავნოთ ხელახლა</a></h1>
 {% endif %}
 {% endblock%}
