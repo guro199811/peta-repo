@@ -9,7 +9,13 @@
   <link rel="stylesheet" href="../../static/css/main.css">
   <link rel="stylesheet" href="../../static/css/vet.css">
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-  
+  <!-- Leaflet EasyButton CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.css">
+
+{% endblock %}
+
+{% block headscript %}
+
 {% endblock %}
 
 {% block bg %}
@@ -459,25 +465,25 @@
         </form>
       </div>
       {% endif %}
-    {% elif choice == 5 %}
-    <div class="newclinicbox">
-      <form action="{{ url_for('general_logic.vet_logic',choice = 5, action=0) }}" method="POST">
+      {% elif choice == 5 %}
+      <div class="newclinicbox">
+        <form action="{{ url_for('general_logic.vet_logic', choice=5, action=0) }}" method="POST">
+          <label for="clinic-name">კლინიკის სახელი</label>
+          <input type="text" id="clinic-name" name="clinic-name" required>
+      
+          <label for="comment">მოკლე აღწერა</label>
+          <textarea id="comment" name="comment" style="width: 600px; 
+            max-height: 250px; min-height:200px; resize: vertical; overflow-y: auto; 
+            word-wrap: break-word; max-width: 100%;" maxlength="150"></textarea>
+      
+          <div id="clinic-map" style="width: 100%; height: 400px;"></div>
+          <input type="hidden" id="coordinates" name="coordinates">
 
-        <label for="clinic-name">კლინიკის სახელი</label>
-        <input type="text" id="clinic-name" name="clinic-name" required>
-        
-        <div>კლინიკის მომუშავე სტაფის სახელები და ტელ-ნომრები, დამატება</div>
-    
-
-        <label for="comment">მოკლე აღწერა</label>
-        <textarea id="comment" name="comment" style="width: 600px; 
-        height: 250px; resize: vertical; overflow-y: auto; 
-        word-wrap: break-word; max-width: 100%;" maxlength="150"></textarea>
-
-        <div>რუკა</div>
-
-      <button type="submit" class="submit-style">კლინიკის დამატება</button>
-    
+          <button type="submit" class="submit-style">კლინიკის დამატება</button>
+        </form>
+      </div>
+      
+      
     {% elif choice == 8 %}
     <div class="user-menu">
       <form action="{{ url_for('general_logic.vet_logic', choice = 8, action = 0) }}" class="mymenu" method="POST">
@@ -502,5 +508,6 @@
 
 {% block script %}
   <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js" integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="crossorigin=""></script>
+  <script src="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.js"></script>
   <script src="../../static/js/main.js"></script>
 {% endblock %}

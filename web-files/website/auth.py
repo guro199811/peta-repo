@@ -4,7 +4,6 @@ from itsdangerous import SignatureExpired
 from werkzeug.security import generate_password_hash, check_password_hash
 from . import db
 from .models import Person
-from datetime import datetime
 from datetime import date as dt
 
 from flask_mail import Message, Mail
@@ -180,10 +179,8 @@ def send_password_reset_email(user):
 @auth.route('/reset_password/<token>', methods=['GET', 'POST'])
 def reset_password(token):
     if request.method == 'POST':
-        import logging
         new_password = request.form.get('password')
         confirm_password = request.form.get('repeat-password')
-        logging.warning(f"{new_password} , {confirm_password}")
         if new_password != confirm_password:
             flash('პაროლები არ ემთხვევა', category='error')
         elif len(new_password) < 6:

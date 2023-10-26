@@ -1,4 +1,4 @@
-from itsdangerous import URLSafeTimedSerializer, SignatureExpired
+from itsdangerous import URLSafeTimedSerializer
 
 # Create a serializer with a secret key
 # Define serializer outside the functions

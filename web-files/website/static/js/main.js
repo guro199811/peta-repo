@@ -39,6 +39,11 @@ else{
   saveButton.style.display = "block";
 }}
 
+// map code goes here
+
+
+
+
 
 function initializeMap() {
   var map = L.map('map').setView([41.7151377, 44.827096], 8);
@@ -63,6 +68,48 @@ function initializeMap() {
 
 if (document.getElementById('map')) {
   initializeMap();
+}
+
+/* map for clinics */
+function initializeClinicMap() {
+  var map = L.map('clinic-map').setView([41.7151377, 44.827096], 8);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+  }).addTo(map);
+
+  var marker;
+
+  map.on('click', function(e) {
+    if (marker) {
+      map.removeLayer(marker);
+    }
+    marker = L.marker(e.latlng).addTo(map);
+    document.getElementById('coordinates').value = e.latlng.lat + ',' + e.latlng.lng;
+  });
+
+  // Find My Location button
+  var findMyLocationButton = L.easyButton('fa-map-marker', function() {
+    map.locate({ setView: true, maxZoom: 16 });
+  }).addTo(map);
+
+  // Add a handler for location found
+  map.on('locationfound', function(e) {
+    // Center the map on the user's location
+    map.setView(e.latlng, 16);
+
+
+    // Add a circle to represent accuracy
+    L.circle(e.latlng, {
+      radius: e.accuracy / 2,
+      fillColor: 'blue',
+      fillOpacity: 0.2,
+    }).addTo(map);
+  });
+}
+
+if (document.getElementById('clinic-map')) {
+  initializeClinicMap();
 }
 
 

@@ -7,6 +7,7 @@ from functools import wraps
 views = Blueprint('views', __name__)
 
 action = 0
+choice = 8
 
 def grant_access(user_types):
     def decorator(view_func):
@@ -39,7 +40,6 @@ def owner():
 @login_required
 @grant_access([2])
 def admin():
-    choice = 8
     return render_template("login/admin.html", user=current_user, 
                            action = action, choice = choice)
 
@@ -49,7 +49,7 @@ def admin():
 def vet():
     action = None
     return render_template("login/vet.html", user=current_user, 
-                           action = action)
+                           action = action, choice = choice)
 
 @views.route('/editor')
 @login_required

@@ -17,9 +17,14 @@ else
   export PORT=5000
 fi
 
+
 echo "-- RUN FLASK SCRIPT -- "
 # Run database migrations
 flask db init
+
+echo "--STAMPING THE HEAD--"
+#STOPPING assumtions on database
+flask db stamp head
 flask db migrate
 flask db upgrade
 
