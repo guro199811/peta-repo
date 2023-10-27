@@ -47,6 +47,7 @@ class Clinic(db.Model):
     desc = db.Column(db.String(150))
     coordinates = db.Column(db.String(75))
 
+
 class Vet(db.Model):
     __tablename__ = 'vets'
     active = db.Column(db.Boolean, default=True)
@@ -55,7 +56,19 @@ class Vet(db.Model):
     person = db.relationship(Person)
     spec_id = db.Column(db.Integer, db.ForeignKey('specialities.spec_id'))
     speciality = db.relationship(Speciality)
-    clinic_id = db.Column(db.Integer, db.ForeignKey('vets.vet_id'))
+
+
+#aimed for Vets that have multiple clinics registered, as well as staff memebers
+#Name stands for Person - Clinic - Bridge
+class P_C_bridge(db.Model):
+    __tablename__ = 'vets'
+    mix_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    person_id = db.Column(db.Integer, db.ForeignKey('persons.id'))
+    person = db.relationship(Person)
+    clinic_id = db.Column(db.Integer, db.ForeignKey('clinics.clinic_id'))
+    clinic = db.relationship(Clinic)
+    is_clinic_owner = db.Column(db.Boolean, default=False)
+    
 
 
 class Pet_species(db.Model):

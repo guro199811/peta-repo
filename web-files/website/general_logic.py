@@ -678,25 +678,48 @@ def vet_logic(choice, action):
                 pass
 
     if choice == 5: #Add my clinic
-        if request.method == "POST":
-            current_vet = db.session.query(Vet).filter_by(person_id = current_user.id).one_or_none()
-            clinic_name = request.form.get('clinic-name')
-            desc = request.form.get('comment')
-            coordinates = request.form.get('coordinates')
-            try:
-                clinic = Clinic(clinic_name = clinic_name, desc = desc, coordinates = coordinates)
-                db.session.add(clinic)
-                db.session.commit()
-                flash("კლინიკა წარმატებით დაემატა", category='success')
-            except:
-                flash("გაუთვალისწინებელი ლოგიკის პრობლემა")
+        if action == 0:
+            if request.method == "GET":
+                try:
+                    my_bridge = db.session.query(P_C_bridge).filter_by(person_id=current_user.id).all()
+                    clinics = []
+
+                    for bridge in my_bridge:
+                        clinic = db.session.query(Clinic).filter_by(clinic_id=bridge.clinic_id).one_or_none()
+                        if clinic:
+                            clinics.append(clinic)
+                except:
+                    abort(404)
+
+                return render_template('login/vet.html', action=action, clinics=clinics)
+        elif action == 1:
+            if request.method == "POST":
+                clinic_name = request.form.get('clinic-name')
+                desc = request.form.get('comment')
+                coordinates = request.form.get('coordinates')
+                try:
+                    clinic = Clinic(clinic_name = clinic_name, desc = desc, coordinates = coordinates)
+                    db.session.add(clinic)
+                    clinic_id = clinic.clinic_id
+                    #adding mixture
+                    pc_bridge = P_C_bridge(person_id = current_user.id, 
+                                           clinic_id = clinic_id, is_clinic_owner = True)
+                    db.session.add(pc_bridge)
+                    db.session.commit()
+                    flash("კლინიკა წარმატებით დაემატა", category='success')
+                except:
+                    flash("გაუთვალისწინებელი ლოგიკის პრობლემა")
 
 
-        elif request.method == "GET":
-            return render_template('login/vet.html',
-                                choice=choice,
-                                action=action) 
-     
+            elif request.method == "GET":
+                return render_template('login/vet.html',
+                                    action=action) 
+            
+
+
+        else:
+            abort(404)
+        
     ''' 
 coordinate_str = "41.7151377,44.827096"
 
