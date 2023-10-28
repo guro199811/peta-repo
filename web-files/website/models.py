@@ -44,7 +44,7 @@ class Clinic(db.Model):
     __tablename__ = 'clinics'
     clinic_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     clinic_name = db.Column(db.String(200))
-    desc = db.Column(db.String(150))
+    desc = db.Column(db.String(201))
     coordinates = db.Column(db.String(75))
 
 
@@ -58,11 +58,10 @@ class Vet(db.Model):
     speciality = db.relationship(Speciality)
 
 
-#aimed for Vets that have multiple clinics registered, as well as staff memebers
-#Name stands for Person - Clinic - Bridge
+
 class P_C_bridge(db.Model):
-    __tablename__ = 'vets'
-    mix_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    __tablename__ = 'bridges'
+    bridge_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     person_id = db.Column(db.Integer, db.ForeignKey('persons.id'))
     person = db.relationship(Person)
     clinic_id = db.Column(db.Integer, db.ForeignKey('clinics.clinic_id'))

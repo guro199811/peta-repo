@@ -679,20 +679,6 @@ def vet_logic(choice, action):
 
     if choice == 5: #Add my clinic
         if action == 0:
-            if request.method == "GET":
-                try:
-                    my_bridge = db.session.query(P_C_bridge).filter_by(person_id=current_user.id).all()
-                    clinics = []
-
-                    for bridge in my_bridge:
-                        clinic = db.session.query(Clinic).filter_by(clinic_id=bridge.clinic_id).one_or_none()
-                        if clinic:
-                            clinics.append(clinic)
-                except:
-                    abort(404)
-
-                return render_template('login/vet.html', action=action, clinics=clinics)
-        elif action == 1:
             if request.method == "POST":
                 clinic_name = request.form.get('clinic-name')
                 desc = request.form.get('comment')
@@ -700,6 +686,7 @@ def vet_logic(choice, action):
                 try:
                     clinic = Clinic(clinic_name = clinic_name, desc = desc, coordinates = coordinates)
                     db.session.add(clinic)
+                    db.session.commit()
                     clinic_id = clinic.clinic_id
                     #adding mixture
                     pc_bridge = P_C_bridge(person_id = current_user.id, 
@@ -707,30 +694,59 @@ def vet_logic(choice, action):
                     db.session.add(pc_bridge)
                     db.session.commit()
                     flash("კლინიკა წარმატებით დაემატა", category='success')
+                    return render_template('login/vet.html',
+                                           choice = choice, action = 1)
                 except:
                     flash("გაუთვალისწინებელი ლოგიკის პრობლემა")
 
-
             elif request.method == "GET":
+                logging.warning('gaeshva get')
                 return render_template('login/vet.html',
-                                    action=action) 
-            
+                                    action=action, choice = choice) 
+        elif action == 1:
+            if request.method == "GET":
+                #try:
+                    # Query P_C_bridge to get clinic and personel IDs
+                    my_bridge = db.session.query(P_C_bridge).filter_by(person_id=current_user.id).all()
+                    clinics = []
+                    personels = []
+                    logging.warning('gaeshva try block')
+                    for bridge in my_bridge:
+                        logging.warning('gaeshva forrr loppi')
+                        clinic = db.session.query(Clinic).filter_by(clinic_id=bridge.clinic_id).one_or_none()
+                        if clinic:
+                            clinics.append(clinic)
+                            
+                        # Joining P_C_bridge with persons to get personel data
+                        personel = db.session.query(Person).join(P_C_bridge).filter(
+                            P_C_bridge.person_id == Person.id,
+                            P_C_bridge.bridge_id == bridge.bridge_id,
+                            P_C_bridge.is_clinic_owner == False
+                            ).one_or_none()
 
+                        if personel:
+                            personels.append(personel)
+                    logging.warning('mivedit returnamde')
+                    return render_template('login/vet.html',
+                                           choice = choice, action = action, 
+                                           clinics = clinics, personels = personels)
 
+                #except Exception as e:
+                    # Handle any exceptions here
+                    logging.warning(e)
         else:
             abort(404)
-        
-    ''' 
-coordinate_str = "41.7151377,44.827096"
 
-# Split the string into latitude and longitude components
-latitude_str, longitude_str = coordinate_str.split(",")
+    
+ #   coordinate_str = "41.7151377,44.827096"
 
-# Convert to floating-point numbers
-latitude = float(latitude_str)
-longitude = float(longitude_str)
+    # Split the string into latitude and longitude components
+#   latitude_str, longitude_str = coordinate_str.split(",")
 
-'''
+    # Convert to floating-point numbers
+#    latitude = float(latitude_str)
+#    longitude = float(longitude_str)
+
     if choice == 8: #My Data
         if request.method =="POST":
             firstname = request.form.get('firstname')
