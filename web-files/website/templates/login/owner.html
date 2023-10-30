@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %} My Page {% endblock %}
 
-{% block bg %}<body background="../static/images/owner-bg.jpg">{% endblock %}
+{% block bg %}{% endblock %}
 
 
 {% block style %}
@@ -45,8 +45,8 @@
       {% elif action == 1 %}
       <div class="pet-list-bg">
         <div class="pets-list">
-          <h2>თქვენი შინაური ცხოველები</h2>
           {% if pets %}
+          <h2>თქვენი შინაური ცხოველები</h2>
             <ul>
               {% for pet, pet_species, pet_breed in pets %}
                 <li>
@@ -73,13 +73,14 @@
               <a class="submit-style" href="{{ url_for('general_logic.owner_logic', action=5) }}">ახალი შინაური ცხოველის დამატება</a>
             </ul>
           {% else %}
-          <a class="novalue submit-style" href="{{ url_for('general_logic.owner_logic', action=5) }}">თქვენ არ გყავთ შინაური ცხოველი დარეგისტრირებული, დააჭირეთ აქ რომ დაარეგისტრიროთ</a>
+          <h2>თქვენ არ გყავთ შინაური ცხოველები დარეგისტრირებული</h2>
+          <a class="novalue submit-style" href="{{ url_for('general_logic.owner_logic', action=5) }}">შინაური ცხოველების დამატება</a>
           {% endif %}
         </div>
       </div>
   {% elif action == 2 %}
-    <h2 style="text-align:center">შინაური ცხოველის(ების) ისტორია</h2>
     {% if pet_history %}
+    <h2 style="text-align:center">შინაური ცხოველის(ების) ისტორია</h2>
       <table class="table table-sortable">
         <thead>
           <tr>
@@ -131,7 +132,8 @@
       </table>
       <a class="novalue submit-style" href="{{ url_for('general_logic.owner_logic', action=6) }}">ახალი ისტორიის დამატება</a>
   {% else %}
-  <a class="novalue submit-style" href="{{ url_for('general_logic.owner_logic', action=6) }}">თქვენ არ გაქვთ შინაური ცხოველების ისტორია, ისტორიის დამატება</a>
+  <h2 style="text-align:center">თქვენ არ გაქვთ შინაური ცხოველების ისტორია</h2>
+  <a class="novalue submit-style" href="{{ url_for('general_logic.owner_logic', action=6) }}">ისტორიის დამატება</a>
   {% endif %}
   {% elif action == 3 %}
         <!--iframe src="https://www.google.com/maps/d/u/0/embed?mid=11ZnEvFOa3xipWz70F4d_jAo_nwrodVQ&ehbc=2E312F" width="100%" height="100%"></iframe-->
@@ -230,7 +232,7 @@
 {% endif %}
 </div>
 </div>
-
+<div class="blur-owner-bg"></div>
 {% endblock %}
 
 

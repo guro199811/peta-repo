@@ -50,7 +50,7 @@ def login():
                     elif type == 4:
                         return redirect(url_for('views.editor'))
                 else:
-                    return render_template("verification.html", user=current_user)
+                    return render_template("auths/verification.html", user=current_user)
             else:
                 flash('პაროლი არასწორია, გთხოვთ სცადოთ ხელახლა.', category='error')
         else:

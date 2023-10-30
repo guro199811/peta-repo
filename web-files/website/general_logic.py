@@ -24,7 +24,7 @@ general_logic = Blueprint('general_logic', __name__)
 
 
 #User Logics section
-
+edit_mode = False
 
 @general_logic.route('/owner/<int:action>', methods=['GET', 'POST'])
 @login_required
@@ -690,29 +690,41 @@ def vet_logic(choice, action):
                     clinic_id = clinic.clinic_id
                     #adding mixture
                     pc_bridge = P_C_bridge(person_id = current_user.id, 
-                                           clinic_id = clinic_id, is_clinic_owner = True)
+                                        clinic_id = clinic_id, is_clinic_owner = True)
                     db.session.add(pc_bridge)
                     db.session.commit()
                     flash("კლინიკა წარმატებით დაემატა", category='success')
-                    return render_template('login/vet.html',
-                                           choice = choice, action = 1)
-                except:
-                    flash("გაუთვალისწინებელი ლოგიკის პრობლემა")
+                    return redirect(url_for('general_logic.vet_logic', choice=choice, action=1))
+                except Exception as e:
+                    flash(f"გაუთვალისწინებელი ლოგიკის პრობლემა: {e}")
 
             elif request.method == "GET":
-                logging.warning('gaeshva get')
+                logging.warning('Get')
+                try:
+                    edit_mode = False
+                    logging.warning('TRY')
+                    clinic_id = request.args.get('clinic_id')
+                    logging.warning(f'{clinic_id}')
+                    if clinic_id:
+                        logging.warning("if clinic")
+                        clinic = db.session.query(Clinic).filter_by(clinic_id = clinic_id).one_or_none()
+                        if clinic:
+                            logging.warning('clinic')
+                            return render_template('login/vet.html',
+                                    action=action, choice=choice, edit_mode=True, clinic=clinic)
+                        
+                except Exception as e:
+                    logging.warning(e)
                 return render_template('login/vet.html',
-                                    action=action, choice = choice) 
+                                    action=action, choice = choice, edit_mode = edit_mode, clinic=None)
         elif action == 1:
             if request.method == "GET":
-                #try:
+                try:
                     # Query P_C_bridge to get clinic and personel IDs
                     my_bridge = db.session.query(P_C_bridge).filter_by(person_id=current_user.id).all()
                     clinics = []
                     personels = []
-                    logging.warning('gaeshva try block')
                     for bridge in my_bridge:
-                        logging.warning('gaeshva forrr loppi')
                         clinic = db.session.query(Clinic).filter_by(clinic_id=bridge.clinic_id).one_or_none()
                         if clinic:
                             clinics.append(clinic)
@@ -726,14 +738,13 @@ def vet_logic(choice, action):
 
                         if personel:
                             personels.append(personel)
-                    logging.warning('mivedit returnamde')
                     return render_template('login/vet.html',
                                            choice = choice, action = action, 
                                            clinics = clinics, personels = personels)
 
-                #except Exception as e:
-                    # Handle any exceptions here
+                except Exception as e:
                     logging.warning(e)
+              
         else:
             abort(404)
 
@@ -1090,3 +1101,26 @@ def remove_note(note_id):
 
     else:
         return redirect(url_for('general_logic.admin_logic',choice = 2, action=0))
+    
+
+
+@general_logic.route('clinic/<int:clinic_id>', methods=['GET', 'DELETE'])
+@login_required
+@grant_access([2, 3])
+def remove_clinic(clinic_id):
+    try:
+        bridge = db.session.query(P_C_bridge).filter_by(clinic_id = clinic_id, person_id = current_user.id).one_or_none()
+        if bridge:
+            clinic = db.session.query(Clinic).filter_by(clinic_id = clinic_id).one_or_none()
+            if clinic:
+                if bridge.is_clinic_owner == True:
+                    db.session.delete(bridge)
+                    db.session.delete(clinic)
+                    db.session.commit()
+                    return redirect(url_for('general_logic.vet_logic', choice = 5, action = 1))
+                elif bridge.is_clinic_owner == False:
+                    db.session.delete(bridge)
+                    db.session.commit()
+                    return redirect(url_for('general_logic.vet_logic', choice = 5, action = 1))
+    except Exception as e:
+        logging.warning(e)

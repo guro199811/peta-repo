@@ -339,6 +339,7 @@
           {%endif%}
         {% endif %}
       </div>
+    </section>
       {% elif choice == 2 %}
       <div class="dashboard">
         <div class='box1' id="piechart">
@@ -406,6 +407,7 @@
         </div>
       </div>
     </div>
+  </section>
     {% elif choice == 4 %}
      {%if action == 0%}
       <h2 style="text-align:center"> Visits </h2>
@@ -465,24 +467,25 @@
           </form>
         </div>
       {% endif %}
+    </section>
     {% elif choice == 5 %}
       {% if action == 0 %}
-      <div class="newclinicbox">
-        <form action="{{ url_for('general_logic.vet_logic', choice=5, action=0) }}" method="POST">
-          <label for="clinic-name">კლინიკის სახელი</label>
-          <input type="text" id="clinic-name" name="clinic-name" required>
-      
-          <label for="comment">მოკლე აღწერა</label>
-          <textarea id="comment" name="comment" style="width: 600px; 
-            max-height: 250px; min-height:200px; resize: vertical; overflow-y: auto; 
-            word-wrap: break-word; max-width: 100%;" maxlength="200"></textarea>
-      
-          <div id="clinic-map" style="width: 100%; height: 400px;"></div>
-          <input type="hidden" id="coordinates" name="coordinates">
+        <div class="newclinicbox">
+          <form action="{{ url_for('general_logic.vet_logic', choice=5, action=0) }}" method="POST">
+            <label for="clinic-name">კლინიკის სახელი</label>
+            <input type="text" id="clinic-name" name="clinic-name" required value="{{ clinic.clinic_name if edit_mode else '' }}" required>
+        
+            <label for="comment">მოკლე აღწერა</label>
+            <textarea id="comment" name="comment" style="width: 600px; 
+              max-height: 250px; min-height:200px; resize: vertical; overflow-y: auto; 
+              word-wrap: break-word; max-width: 100%;" maxlength="200">{{ clinic.desc if edit_mode else '' }}</textarea>
+            <h6>{{'რუკაზე ლოკაციის დასმა არ არის აუცილებელი თუ მისი შეცვლა არ გნებავთ' if edit_mode else ''}} </h6>
+            <div id="clinic-map" style="width: 100%; height: 400px;"></div>
+            <input type="hidden" id="coordinates" name="coordinates" value="{{ clinic.coordinates if edit_mode else '' }}">
 
-          <button type="submit" class="submit-style">კლინიკის დამატება</button>
-        </form>
-      </div>
+            <button type="submit" class="submit-style">{{ 'კლინიკის რედაქტირება' if edit_mode else 'კლინიკის დამატება' }}</button>
+          </form>
+        </div>
       {% elif action == 1 %} 
         {% if clinics %}
         <table class="table table-sortable">
@@ -492,6 +495,7 @@
               <th>კლინიკის სახელი</th>
               <th>მოკლე აღწერა</th>
               <th>დარეგისტრირებული პერსონალი</th>
+              <th>კოორდინატები</th>
               <th>მოქმედება</th>
             </tr>
           </thead>
@@ -511,7 +515,18 @@
                   {% endif %}
                 </td>
                 <td>
-                  
+                  {{ clinic.coordinates }}
+                </td>
+                <td>
+                  <div class="pet-actions">
+                  <form action="{{ url_for('general_logic.vet_logic', choice = choice, action = 0) }}" method="GET" onsubmit="return confirm('თქვენ გინდათ შეცვალოთ კლინიკის მონაცემები?');" >
+                    <input type="hidden" id="clinic" name="clinic_id" value="{{ clinic.clinic_id }}">
+                    <button type="submit" class="change-button" style="border: none; box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);"><i class="fa-regular fa-pen-to-square"></i></button><br>
+                  </form>
+                  <form class="None" action="{{ url_for('general_logic.remove_clinic', clinic_id = clinic.clinic_id) }}" method="DELETE" onsubmit="return confirm('დარწმუნებული ხართ რომ გნებავთ კლინიკის წაშლა');" >
+                    <button type="submit" class="change-button r-button" style="border: none; box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);"><i class="fa-solid fa-eraser"></i></button><br>
+                  </form>
+                </div>
                 </td>
               </tr>
             {% endfor %}
@@ -524,8 +539,9 @@
           <a class="submit-style" href="{{ url_for('general_logic.vet_logic',choice=5, action=0) }}">დააჭირეთ აქ რომ დაამატოთ ახალი კლინიკა</a>
           <a class="submit-style" href="{{ url_for('general_logic.vet_logic',choice=5, action=0) }}">დააჭირეთ აქ რომ გაწევრიანდეთ კლინიკაში</a>
         {% endif %}
+      {% elif action == 3 %}
       {% endif %}
-      
+    </section>
     {% elif choice == 8 %}
       <div class="user-menu">
         <form action="{{ url_for('general_logic.vet_logic', choice = 8, action = 0) }}" class="mymenu" method="POST">

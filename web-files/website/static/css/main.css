@@ -40,6 +40,22 @@ html, body {
   padding: 0 20px;
   
 }
+
+/* Login */
+#login{
+  border-style:solid;
+  border-width:1px;
+ }
+
+ 
+ #register{
+  border-style:solid;
+  border-width:1px;
+ }
+ 
+ 
+
+
 /* logo */
 .logo{
     width:126px;
@@ -250,19 +266,118 @@ nav{
   box-shadow:2px 2px 10px 3px rgba(0, 0, 0, 0.489);
 }
 
-/* Register */
 #register{
-  margin-top:44px;
-  height:776px;
-  padding-bottom:0px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 600px;
-  margin: 0 auto;
+  margin-top:0px;
  }
  
+ /* Strong Tag */
+ #register .welcome-text strong{
+  margin-top:-35px;
+ }
+
+ #register{
+  margin-bottom:70px;
+  padding-bottom:16px;
+  padding-top:44px;
+ }
+ 
+ /* Strong Tag */
+ #register .welcome-text strong{
+  font-size:26px;
+ }
+
+ #register .register-form input{
+  margin-top:-4px;
+ }
+
+
+.blur-login-bg{
+  background-image: url("../../static/images/login-bg.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  filter: blur(20px);
+}
+
+ 
+.blur-signup-bg{
+  background-image: url("../../static/images/sign-up.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  filter: blur(12px);
+}
+
+
+.blur-forgot-bg{
+  background-image: url("../../static/images/forgot.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  filter: blur(12px);
+}
+
+.blur-reset-bg{
+  background-image: url("../../static/images/reset.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  filter: blur(12px);
+}
+
+.blur-verification-bg{
+  background-image: url("../../static/images/verification.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  filter: blur(12px);
+}
+
+
+.blur-owner-bg{
+  background-image: url("../../static/images/owner-bg.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  filter: blur(7px);
+}
+
 
 /* Style the checkbox itself */
 .show-password-checkbox {
@@ -352,7 +467,22 @@ footer {
   max-width:1500px;
   transform:translatex(51px) translatey(0px);
   height:630px;
+  border-top-left-radius:10px;
+  border-top-right-radius:10px;
+  border-bottom-left-radius:10px;
+  border-bottom-right-radius:10px;
+  border-style:solid;
+  border-width:1px;
+  border-color:rgba(0,0,0,0.56);
  }
+
+
+
+ .owner-container .buttons a{
+  border-width:1px;
+  border-color:rgba(0,0,0,0.56);
+ }
+ 
 
  .box-menu {
   background-color: #f8f8f8;
@@ -378,7 +508,7 @@ footer {
 .box-menu input[type="text"],
 .box-menu select,
 .box-menu input[type="date"] {
-  width: 400px;
+  width: 27%;
   height: 45px;
   padding: 8px;
   margin-bottom: 10px;
@@ -1233,8 +1363,13 @@ body{
   transition: all .5s ease;
   z-index: 2;
   transform: translatey(-10px);
+  height:84% !important
 }
 
+
+.home-section .box-menu{
+  margin-right:150px;
+ }
 
 
 .sidebar.open ~ .home-section{
@@ -1669,3 +1804,178 @@ nav{
 }
 
  
+/* media fixes for different resolutions */
+
+@media (max-width:1700px){
+
+  /* Box menu */
+  .owner-container .box-menu{
+   height:82% !important;
+    /* Link */}
+  .buttons a{
+  font-size:14px;
+  margin-left:22px;
+  width:135px;
+  height:135px;
+  
+ }
+ 
+ /* Heading */
+ .box-menu h1{
+  font-size:35px;
+ }
+
+.box-menu input[type="text"],
+.box-menu select,
+.box-menu input[type="date"] {
+  width: 35%;
+}
+  }
+
+@media (max-width:1200px){
+
+.box-menu input[type="text"],
+.box-menu select,
+.box-menu input[type="date"] {
+  width: 50%;
+}
+}
+  
+
+
+@media (max-width:768px){
+
+    /* Box menu */
+    .box-menu{
+     margin-right:106px;
+    }
+    
+    /* Link */
+    .buttons a{
+     margin-left:15px;
+     width:100px;
+     height:100px;
+     font-size:11px;
+    }
+    
+    /* Box menu */
+    .owner-container .box-menu{
+     height:61% !important;
+    }
+    
+    /* Link */
+    .navbar-menu .navbar-item a{
+     width:143px;
+     height:47px;
+     font-size:17px;
+     text-align:center;
+    }
+    
+    /* Heading */
+    .box-menu h1{
+     font-size:24px;
+     width:100%;
+     height:360px;
+    }
+
+    .box-menu input[type="text"],
+    .box-menu select,
+    .box-menu input[type="date"] {
+      width: 75%;
+}
+
+ /* Footer */
+ footer{
+  height:50px !important;
+  padding-top:8px !important;
+  font-size:14px;
+ }
+ 
+    
+   }
+
+
+   @media (max-width:1700px){
+
+    /* Box menu */
+    .owner-container .box-menu{
+     height:565px !important;
+     margin-right:90px;
+    }
+    
+    /* Link */
+    .owner-container .buttons a{
+     margin-left:0px;
+    }
+    
+   }
+   
+   @media (max-width:1200px){
+   
+    /* Box menu */
+    .owner-container .box-menu{
+     height:565px !important;
+     max-width:850px;
+     width:702px !important;
+    }
+    
+   }
+   
+   @media (max-width:768px){
+   
+    /* Heading */
+    .owner-container .box-menu h1{
+     height:10px;
+     min-height:-4px;
+    }
+    
+    /* Link */
+    .owner-container .buttons a{
+     padding-top:38px;
+    }
+    
+    /* Box menu */
+    .owner-container .box-menu{
+     position:relative;
+     left:-70px;
+     margin-right:0px;
+     height:430px !important;
+    }
+    
+    /* Link */
+    .navbar-menu .navbar-item a{
+     font-size:14px;
+     padding-right:11px;
+     padding-left:6px;
+     margin-left:0px;
+     width:116px;
+    }
+    
+    /* Buttons */
+    .owner-container .buttons{
+     position:relative;
+     left:-49px;
+    }
+    
+   }
+
+
+   @media (max-width:1200px){
+
+    /* Submit style */
+    .owner-container .box-menu div form .submit-style{
+     width:auto !important;
+     height:auto !important;
+    }
+    
+   }
+   
+   @media (max-width:768px){
+   
+    /* Submit style */
+    .owner-container .box-menu div form .submit-style{
+     width:auto !important;
+     height:auto !important;
+    }
+    
+   }

@@ -16,7 +16,7 @@ def grant_access(user_types):
             if current_user.confirmed and current_user.type in user_types:
                 return view_func(*args, **kwargs)
             elif current_user.confirmed == False:
-                return render_template('verification.html', user=current_user)
+                return render_template('auths/verification.html', user=current_user)
             else:
                 abort(404)
         return wrapper

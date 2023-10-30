@@ -20,7 +20,7 @@ except:
 
 def create_app(migrate):
     app = Flask(__name__, static_url_path='/static', static_folder='static')
-    app.config['SECRET_KEY'] = 'uwdhujiwakopdwu9faoijskpdwuahpfoijasidowiano'
+    app.config['SECRET_KEY'] = 'asdastghjkyugu9w3ef8i9d0ejsfoi'
     
     if database_url == None:
         app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:postgres@postgres:5432/petsite'
