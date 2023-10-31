@@ -1804,7 +1804,9 @@ nav{
 }
 
  
+/* ##################################### */
 /* media fixes for different resolutions */
+/* ##################################### */
 
 @media (max-width:1700px){
 
@@ -1834,12 +1836,37 @@ nav{
 
 @media (max-width:1200px){
 
-.box-menu input[type="text"],
-.box-menu select,
-.box-menu input[type="date"] {
-  width: 50%;
-}
-}
+  .box-menu input[type="text"],
+  .box-menu select,
+  .box-menu input[type="date"] {
+    width: 50%;
+  }
+    
+    /* Box menu */
+  .owner-container .box-menu{
+    height:565px !important;
+    max-width:850px;
+    width:702px !important;
+    }
+
+    .owner-container .box-menu div form .submit-style{
+      width:auto !important;
+      height:auto !important;
+    }
+    
+  }
+
+  /* Box menu */
+  .owner-container .box-menu{
+    height:565px !important;
+    margin-right:90px;
+    }
+    
+    /* Link */
+    .owner-container .buttons a{
+    margin-left:0px;
+    }
+     
   
 
 
@@ -1884,98 +1911,182 @@ nav{
       width: 75%;
 }
 
- /* Footer */
- footer{
-  height:50px !important;
-  padding-top:8px !important;
-  font-size:14px;
- }
- 
-    
-   }
+  /* Footer */
+  footer{
+    height:50px !important;
+    padding-top:8px !important;
+    font-size:14px;
+  }
 
-
-   @media (max-width:1700px){
-
-    /* Box menu */
-    .owner-container .box-menu{
-     height:565px !important;
-     margin-right:90px;
-    }
     
-    /* Link */
-    .owner-container .buttons a{
-     margin-left:0px;
-    }
-    
-   }
-   
-   @media (max-width:1200px){
-   
-    /* Box menu */
-    .owner-container .box-menu{
-     height:565px !important;
-     max-width:850px;
-     width:702px !important;
-    }
-    
-   }
-   
-   @media (max-width:768px){
-   
     /* Heading */
     .owner-container .box-menu h1{
-     height:10px;
-     min-height:-4px;
-    }
+      height:10px;
+      min-height:-4px;
+     }
+     
+     /* Link */
+     .owner-container .buttons a{
+      padding-top:38px;
+     }
+     
+     /* Box menu */
+     .owner-container .box-menu{
+      position:relative;
+      left:-70px;
+      margin-right:0px;
+      height:430px !important;
+     }
+     
+     /* Link */
+     .navbar-menu .navbar-item a{
+      font-size:14px;
+      padding-right:11px;
+      padding-left:6px;
+      margin-left:0px;
+      width:116px;
+     }
+     
+     /* Buttons */
+     .owner-container .buttons{
+      position:relative;
+      left:-49px;
+     }
+ 
+     .owner-container .box-menu div form .submit-style{
+       width:auto !important;
+       height:auto !important;
+      }
+     
+ 
     
-    /* Link */
-    .owner-container .buttons a{
-     padding-top:38px;
-    }
-    
-    /* Box menu */
-    .owner-container .box-menu{
-     position:relative;
-     left:-70px;
-     margin-right:0px;
-     height:430px !important;
-    }
-    
-    /* Link */
-    .navbar-menu .navbar-item a{
-     font-size:14px;
-     padding-right:11px;
-     padding-left:6px;
-     margin-left:0px;
-     width:116px;
-    }
-    
-    /* Buttons */
-    .owner-container .buttons{
-     position:relative;
-     left:-49px;
-    }
-    
+ /* Link */
+ .navbar-menu .navbar-item a{
+  font-size:14px;
+  padding-right:0px;
+  padding-left:0px;
+  padding-top:14px;
+  padding-bottom:0px;
+  min-width:-3px;
+  left:-25px;
+  top:-20px;
+ }
+ 
+ /* Logo */
+ .navbar-menu a img{
+  width:100px;
+  height:100px;
+  display:inline-block;
+  transform:translatex(-21px) translatey(-6px);
+ }
+ 
+ /* Navigation */
+ nav{
+  height:73px;
+  position:sticky !important;
+ }
+ 
+ /* Strong Tag */
+ #login .welcome-text strong{
+  font-size:20px;
+ }
+ 
+ /* Label */
+ #login .login-form label{
+  font-size:12px !important;
+ }
+ 
+ /* Email */
+ #email{
+  width:80% !important;
+ }
+ 
+ /* Password */
+ #password{
+  width:80% !important;
+ }
+ 
+ /* Input */
+ #login .login-form input{
+  margin-top:8px;
+ }
+  /* Body */
+  body{
+    min-height:1px;
+    height:100%;
    }
 
+    /* Strong Tag */
+ #login .welcome-text strong{
+  font-size:18px;
+ }
+ 
+ /* Login */
+ #login{
+  margin-bottom:0px;
+  padding-left:50px;
+ }
+ 
+ /* Link */
+ .navbar-menu .navbar-item a{
+  left:0px;
+  top:0px;
+ }
+ 
+ /* List Item */
+ .navbar .navbar-menu li{
+  position:relative;
+  top:-20px;
+  left:-28px;
+ }
+ 
 
-   @media (max-width:1200px){
+ /* Link */
+ .navbar-menu .navbar-item a{
+  height:100%;
+ }
+ 
+ /* Link */
+ .navbar .navbar-menu .navbar-item a{
+  width:100% !important;
+ }
+ 
+ /* List Item */
+ .navbar .navbar-menu li{
+  width:110px;
+  height:48px;
+ }
 
-    /* Submit style */
-    .owner-container .box-menu div form .submit-style{
-     width:auto !important;
-     height:auto !important;
-    }
-    
-   }
-   
-   @media (max-width:768px){
-   
-    /* Submit style */
-    .owner-container .box-menu div form .submit-style{
-     width:auto !important;
-     height:auto !important;
-    }
-    
-   }
+
+ /* Name */
+ #name{
+  width:80% !important;
+ }
+ 
+
+ #firstname{
+  width:80% !important;
+ }
+
+ /* Lastname */
+ #lastname{
+  width:80% !important;
+ }
+ 
+ /* Repeat password */
+ #repeat-password{
+  width:80% !important;
+ }
+ 
+ /* Phone */
+ #phone{
+  width:80% !important;
+ }
+ 
+ /* Address */
+ #address{
+  width:80% !important;
+ }
+ 
+ 
+}
