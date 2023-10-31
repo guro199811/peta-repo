@@ -417,26 +417,28 @@ footer {
 }
 
 
+
 .square-button {
-  display: block;
-  align-items: flex-start;
-  width: 150px;
-  height: 150px;
   border: none;
   background-color: #ffffff;
   color: #000000;
   font-size: 16px;
   font-weight: bold;
   cursor: pointer;
-  margin-bottom: 10px;
-  margin-left:30px;
+  margin-right: 10px; /* Adjust spacing between buttons */
+  margin-top:14px;
   border-radius: 10px;
-  box-shadow:0px 2px 13px 0px rgba(0,0,0,0.50);
+  box-shadow: 0px 2px 13px 0px rgba(0, 0, 0, 0.50);
   transition: background-color 0.5s ease;
   transition: color 0.3s ease;
-  text-transform:capitalize;
-  text-align:center;
-  padding-top:55px;
+  text-transform: capitalize;
+  text-align: center;
+  display: flex;
+  align-items: center; /* Vertical alignment inside the button */
+  justify-content: center; /* Horizontal alignment inside the button */
+  width:125px;
+  height:125px;
+  margin-left:50px;
 }
 
 .square-button:hover {
@@ -1870,6 +1872,15 @@ nav{
   
 
 
+
+
+
+
+
+
+
+
+
 @media (max-width:768px){
 
     /* Box menu */
@@ -1892,10 +1903,21 @@ nav{
     
     /* Link */
     .navbar-menu .navbar-item a{
-     width:143px;
-     height:47px;
-     font-size:17px;
      text-align:center;
+     font-size:14px;
+     margin-left:0px;
+     width:116px;
+     font-size:14px;
+     padding-right:0px;
+     padding-left:0px;
+     padding-top:14px;
+     padding-bottom:0px;
+     min-width:-3px;
+     left:-25px;
+     top:-20px;
+     left:0px;
+     top:0px;
+     height:100%;
     }
     
     /* Heading */
@@ -1938,14 +1960,7 @@ nav{
       height:430px !important;
      }
      
-     /* Link */
-     .navbar-menu .navbar-item a{
-      font-size:14px;
-      padding-right:11px;
-      padding-left:6px;
-      margin-left:0px;
-      width:116px;
-     }
+
      
      /* Buttons */
      .owner-container .buttons{
@@ -1960,18 +1975,7 @@ nav{
      
  
     
- /* Link */
- .navbar-menu .navbar-item a{
-  font-size:14px;
-  padding-right:0px;
-  padding-left:0px;
-  padding-top:14px;
-  padding-bottom:0px;
-  min-width:-3px;
-  left:-25px;
-  top:-20px;
- }
- 
+
  /* Logo */
  .navbar-menu a img{
   width:100px;
@@ -1996,16 +2000,7 @@ nav{
   font-size:12px !important;
  }
  
- /* Email */
- #email{
-  width:80% !important;
- }
- 
- /* Password */
- #password{
-  width:80% !important;
- }
- 
+
  /* Input */
  #login .login-form input{
   margin-top:8px;
@@ -2027,36 +2022,35 @@ nav{
   padding-left:50px;
  }
  
- /* Link */
- .navbar-menu .navbar-item a{
-  left:0px;
-  top:0px;
- }
- 
+
  /* List Item */
  .navbar .navbar-menu li{
   position:relative;
   top:-20px;
   left:-28px;
+  width:110px;
+  height:48px;
  }
  
 
- /* Link */
- .navbar-menu .navbar-item a{
-  height:100%;
- }
- 
+
  /* Link */
  .navbar .navbar-menu .navbar-item a{
   width:100% !important;
  }
  
- /* List Item */
- .navbar .navbar-menu li{
-  width:110px;
-  height:48px;
- }
 
+
+  /* Email */
+#email{
+  width:80% !important;
+  }
+  
+  /* Password */
+  #password{
+  width:80% !important;
+  }
+   
 
  /* Name */
  #name{
@@ -2088,5 +2082,110 @@ nav{
   width:80% !important;
  }
  
+ /* Owner container */
+ .owner-container{
+  position:relative;
+  height:680px;
+  width:445px;
+  left:-66px;
+ }
+ 
+ /* Box menu */
+ .owner-container .box-menu{
+  top:107px;
+  left:-120px;
+ }
+ 
+ /* Buttons */
+ .owner-container .buttons{
+  top:-18px;
+  left:9px;
+  border-top-left-radius:0px;
+  display: flex;
+  flex-direction: row; /* Horizontal alignment */
+  align-items: center;
+ }
+ 
+ /* Link */
+ .owner-container .buttons a{
+  border-top-left-radius:50px;
+  border-top-right-radius:50px;
+  border-bottom-left-radius:50px;
+  border-bottom-right-radius:50px;
+ }
+
+ .owner-container{
+  width:100%;
+ }
+ 
+
+ .owner-container{
+  margin-right:0px;
+ }
+ 
+ /* Owner container */
+ .owner-container{
+  margin-right:0px;
+ }
+ 
+ /* Change button */
+ .box-menu form .change-button{
+  width:26px;
+  height:26px;
+  margin-left:0px;
+ }
+ 
+ /* Form Division */
+ .owner-container .box-menu form{
+  font-size:14px;
+  line-height:0.5em;
+ }
+ 
+ /* Box menu */
+ .box-menu{
+  max-width:none !important;
+  width: auto !important;
+ }
+
+ .owner-container .box-menu{
+  left:-130px;
+  margin-right:-57px;
+  top:156px;
+ }
+ 
+ /* Link */
+ .owner-container .buttons a{
+  position:relative;
+  padding-top:0px;
+  top:50px;
+  left:16px;
+ }
+ 
+
+  /* Buttons */
+  .owner-container .buttons{
+    transform:translatex(0px) translatey(0px);
+    height:100px;
+    top:5% !important;
+    width:400px;
+    left:9%;
+   }
+   
+   /* Link */
+   .owner-container .buttons a{
+    top:0px;
+    left:0px;
+    width:90px;
+    height:90px;
+   }
+   
+   /* Box menu */
+   .owner-container .box-menu{
+    margin-right:-57px;
+    margin-left:-302px;
+   }
+   
+
  
 }
+ 
