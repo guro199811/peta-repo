@@ -1066,12 +1066,6 @@ footer {
   cursor: default;
 }
 
-.home-section .owner-container .buttons a{
-  padding-bottom:35% !important;
-  padding-top:35% !important;
-  margin-top:0px;
-  margin-bottom:21px;
- }
 
 
 /* admin stylings start from here */
@@ -2114,11 +2108,16 @@ nav{
     width: auto !important;
   }
 
+  .square-button {
+    top:550px !important;
+    }
     
+  .box-menu{
+    top:39px !important;
+    }
     
-
-  
-  }
+    }
+    
 @media (max-width: 415px) {
   .owner-container .buttons {
     flex-wrap: wrap;
@@ -2144,7 +2143,9 @@ nav{
     margin-right:-58px;
     left:-60px;
     margin-left:-258px;
-   }
+    height:465px !important;
+  }
+ 
    
    /* Link */
    .owner-container .buttons a{
@@ -2182,7 +2183,9 @@ nav{
  }
  
 
- 
+ .owner-container .buttons a{
+  margin-left:14px;
+  margin-top:-5px;
+ } 
    
   }
- 
