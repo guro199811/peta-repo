@@ -1069,6 +1069,8 @@ footer {
 .home-section .owner-container .buttons a{
   padding-bottom:35% !important;
   padding-top:35% !important;
+  margin-top:0px;
+  margin-bottom:21px;
  }
 
 
@@ -1834,6 +1836,14 @@ nav{
 .box-menu input[type="date"] {
   width: 35%;
 }
+.owner-container .buttons a{
+  width:120px;
+  height:120px;
+  position:relative;
+  top:-12px;
+  margin-bottom:26px;
+ }
+ 
   }
 
 @media (max-width:1200px){
@@ -1883,54 +1893,59 @@ nav{
 
 @media (max-width:768px){
 
-    /* Box menu */
-    .box-menu{
-     margin-right:106px;
-    }
-    
-    /* Link */
-    .buttons a{
-     margin-left:15px;
-     width:100px;
-     height:100px;
-     font-size:11px;
-    }
-    
-    /* Box menu */
-    .owner-container .box-menu{
-     height:61% !important;
-    }
-    
-    /* Link */
-    .navbar-menu .navbar-item a{
-     text-align:center;
-     font-size:14px;
-     margin-left:0px;
-     width:116px;
-     font-size:14px;
-     padding-right:0px;
-     padding-left:0px;
-     padding-top:14px;
-     padding-bottom:0px;
-     min-width:-3px;
-     left:-25px;
-     top:-20px;
-     left:0px;
-     top:0px;
-     height:100%;
-    }
-    
-    /* Heading */
-    .box-menu h1{
-     font-size:24px;
-     width:100%;
-     height:360px;
-    }
+  /* Box menu */
+  .box-menu{
+    margin-right:106px;
+  }
+  
+  /* Link */
+  .buttons a{
+    margin-left:15px;
+    width:100px;
+    height:100px;
+    font-size:11px;
+  }
+  
 
-    .box-menu input[type="text"],
-    .box-menu select,
-    .box-menu input[type="date"] {
-      width: 75%;
+  .owner-container .box-menu{
+    position:relative;
+    left:-130px;
+    top:156px;
+    margin-left:-313px;
+    margin-right:-69px;
+    height:533px !important;
+  }
+  
+  /* Link */
+  .navbar-menu .navbar-item a{
+    text-align:center;
+    font-size:14px;
+    margin-left:0px;
+    width:116px;
+    font-size:14px;
+    padding-right:0px;
+    padding-left:0px;
+    padding-top:14px;
+    padding-bottom:0px;
+    min-width:-3px;
+    left:-25px;
+    top:-20px;
+    left:0px;
+    top:0px;
+    height:100%;
+  }
+  
+  /* Heading */
+  .box-menu h1{
+    font-size:24px;
+    width:100%;
+    height:360px;
+  }
+
+  .box-menu input[type="text"],
+  .box-menu select,
+  .box-menu input[type="date"] {
+    width: 75%;
 }
 
   /* Footer */
@@ -1940,39 +1955,41 @@ nav{
     font-size:14px;
   }
 
+  
+  /* Heading */
+  .owner-container .box-menu h1{
+    height:10px;
+    min-height:-4px;
+    }
     
-    /* Heading */
-    .owner-container .box-menu h1{
-      height:10px;
-      min-height:-4px;
-     }
-     
-     /* Link */
-     .owner-container .buttons a{
-      padding-top:38px;
-     }
-     
-     /* Box menu */
-     .owner-container .box-menu{
-      position:relative;
-      left:-70px;
-      margin-right:0px;
-      height:430px !important;
-     }
-     
 
-     
-     /* Buttons */
-     .owner-container .buttons{
-      position:relative;
-      left:-49px;
-     }
- 
-     .owner-container .box-menu div form .submit-style{
-       width:auto !important;
-       height:auto !important;
-      }
-     
+    .owner-container .buttons a{
+    border-top-left-radius:50px;
+    border-top-right-radius:50px;
+    border-bottom-left-radius:50px;
+    border-bottom-right-radius:50px;
+    position:relative;
+    padding-top:0px;
+    top:0px;
+    left:0px;
+    width:90px;
+    height:90px;
+    }
+    
+    
+
+    
+    /* Buttons */
+    .owner-container .buttons{
+    position:relative;
+    left:-49px;
+    }
+
+    .owner-container .box-menu div form .submit-style{
+      width:auto !important;
+      height:auto !important;
+    }
+    
  
     
 
@@ -2001,20 +2018,7 @@ nav{
  }
  
 
- /* Input */
- #login .login-form input{
-  margin-top:8px;
- }
-  /* Body */
-  body{
-    min-height:1px;
-    height:100%;
-   }
 
-    /* Strong Tag */
- #login .welcome-text strong{
-  font-size:18px;
- }
  
  /* Login */
  #login{
@@ -2034,158 +2038,151 @@ nav{
  
 
 
- /* Link */
- .navbar .navbar-menu .navbar-item a{
-  width:100% !important;
- }
- 
-
-
-  /* Email */
-#email{
-  width:80% !important;
+  /* Link */
+  .navbar .navbar-menu .navbar-item a{
+    width:100% !important;
   }
   
-  /* Password */
-  #password{
-  width:80% !important;
+
+  #email,
+  #password,
+  #name,
+  #firstname,
+  #lastname,
+  #repeat-password,
+  #phone,
+  #address {
+    width: 80% !important;
   }
-   
+  
 
- /* Name */
- #name{
-  width:80% !important;
- }
- 
+  #login .login-form input{
+    margin-top:8px;
+  }
 
- #firstname{
-  width:80% !important;
- }
+    body{
+      min-height:1px;
+      height:100%;
+    }
 
- /* Lastname */
- #lastname{
-  width:80% !important;
- }
- 
- /* Repeat password */
- #repeat-password{
-  width:80% !important;
- }
- 
- /* Phone */
- #phone{
-  width:80% !important;
- }
- 
- /* Address */
- #address{
-  width:80% !important;
- }
- 
- /* Owner container */
- .owner-container{
-  position:relative;
-  height:680px;
-  width:445px;
-  left:-66px;
- }
- 
- /* Box menu */
- .owner-container .box-menu{
-  top:107px;
-  left:-120px;
- }
- 
- /* Buttons */
- .owner-container .buttons{
-  top:-18px;
-  left:9px;
-  border-top-left-radius:0px;
-  display: flex;
-  flex-direction: row; /* Horizontal alignment */
-  align-items: center;
- }
- 
- /* Link */
- .owner-container .buttons a{
-  border-top-left-radius:50px;
-  border-top-right-radius:50px;
-  border-bottom-left-radius:50px;
-  border-bottom-right-radius:50px;
- }
 
- .owner-container{
-  width:100%;
- }
- 
+  #login .welcome-text strong{
+    font-size:18px;
+  }
 
- .owner-container{
-  margin-right:0px;
- }
- 
- /* Owner container */
- .owner-container{
-  margin-right:0px;
- }
- 
- /* Change button */
- .box-menu form .change-button{
-  width:26px;
-  height:26px;
-  margin-left:0px;
- }
- 
- /* Form Division */
- .owner-container .box-menu form{
-  font-size:14px;
-  line-height:0.5em;
- }
- 
- /* Box menu */
- .box-menu{
-  max-width:none !important;
-  width: auto !important;
- }
 
- .owner-container .box-menu{
-  left:-130px;
-  margin-right:-57px;
-  top:156px;
- }
- 
- /* Link */
- .owner-container .buttons a{
-  position:relative;
-  padding-top:0px;
-  top:50px;
-  left:16px;
- }
- 
+  .owner-container{
+    position:relative;
+    height:680px;
+    left:-66px;
+    width:100%;
+    margin-right:0px;
+  }
+  
 
-  /* Buttons */
+  
+
   .owner-container .buttons{
+    border-top-left-radius:0px;
+    display: flex;
+    flex-direction: row; /* Horizontal alignment */
+    align-items: center;
     transform:translatex(0px) translatey(0px);
     height:100px;
     top:5% !important;
     width:400px;
-    left:9%;
+    left:11px;
+  }
+  
+
+  
+  .box-menu form .change-button{
+    width:26px;
+    height:26px;
+    margin-left:0px;
+  }
+  
+
+  .owner-container .box-menu form{
+    font-size:14px;
+    line-height:0.5em;
+  }
+  
+
+  .box-menu{
+    max-width:none !important;
+    width: auto !important;
+  }
+
+    
+    
+
+  
+  }
+@media (max-width: 415px) {
+  .owner-container .buttons {
+    flex-wrap: wrap;
+    width: 100%;
+    margin: 25px;
+    top:-38px !important;
+    margin-top:0px;
+    margin-right:0px;
+    margin-bottom:0px;
+    width:94%;
+    left:0px;
+    position:relative;
+
+    .button {
+      flex: 0 0 calc(50% - 10px); 
+    }
+  }
+
+   
+   /* Box menu */
+   .owner-container .box-menu{
+    top:177px;
+    margin-right:-58px;
+    left:-60px;
+    margin-left:-258px;
    }
    
    /* Link */
    .owner-container .buttons a{
-    top:0px;
-    left:0px;
-    width:90px;
-    height:90px;
+    margin-left:39px;
+    margin-right:-24px;
+    margin-bottom:0px;
+    left:45px;
    }
-   
-   /* Box menu */
-   .owner-container .box-menu{
-    margin-right:-57px;
-    margin-left:-302px;
-   }
-   
+
+
+ /* Owner container */
+ .owner-container{
+  transform:translatex(0px) translatey(0px);  
+ }
+
+
 
  
-}
+ /* List */
+ .navbar ul{
+  position:relative;
+  left:-27px;
+  width:100% !important;
+ }
+ 
+ /* Link */
+ .navbar-menu .navbar-item a{
+  left:25px;
+ }
+ 
+ /* Logo */
+ .navbar-menu a img{
+  position:relative;
+  left:21px;
+ }
+ 
+
+ 
+   
+  }
  
