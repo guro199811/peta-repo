@@ -448,9 +448,9 @@ footer {
 }
 
 .box-menu {
-  width: auto !important;
-  flex: 1;
+  width: 100% !important;
   padding: 20px;
+  display:block;
   background-color: #F5F5F5;
   border-radius: 10px;
   box-shadow:0px 2px 50px 0px rgba(0, 0, 0, 0.5);
@@ -1801,7 +1801,17 @@ nav{
   top: 49px;
 }
 
+
+ /* Select */
+ .owner-container .box-menu .table-sortable tbody tr td select{
+  width:100% !important;
+ }
  
+ /* Input */
+ .owner-container .box-menu .table-sortable tbody tr td input[type=date]{
+  width:100% !important;
+ }
+
 /* ##################################### */
 /* media fixes for different resolutions */
 /* ##################################### */
@@ -2115,7 +2125,38 @@ nav{
   .box-menu{
     top:39px !important;
     }
-    
+  
+ .owner-container .buttons{
+  top:578px !important;
+  transform:translatex(0px) translatey(0px);
+ }
+ 
+ /* Link */
+ .owner-container .buttons a{
+  top:0px !important;
+ }
+  /* Owner container */
+  .owner-container{
+    flex-direction:column;
+    flex-wrap:nowrap;
+    justify-content:center;
+    align-items:center;
+   }
+   
+   /* Box menu */
+   .owner-container .box-menu{
+    left:-50px;
+    top:-110px !important;
+    width:90% !important;
+    margin-right:0px;
+    margin-left:0px;
+   }
+   
+   /* Buttons */
+   .owner-container .buttons{
+    top:540px !important;
+   }
+ 
     }
     
 @media (max-width: 415px) {
@@ -2187,5 +2228,74 @@ nav{
   margin-left:14px;
   margin-top:-5px;
  } 
+
+ .owner-container .buttons{
+  top:578px !important;
+  transform:translatex(0px) translatey(0px);
+ }
+ 
+ /* Link */
+ .owner-container .buttons a{
+  top:0px !important;
+ }
+ 
    
   }
+
+
+  @media (max-width:1200px){
+
+    /* Box menu */
+    .owner-container .box-menu{
+     width:100% !important;
+    }
+    
+   }
+   
+   @media (max-width:768px){
+   
+    /* Box menu */
+    .owner-container .box-menu{
+     width:90% !important;
+    }
+     /* Pet info */
+ .pet-actions form .pet-info{
+  line-height:17px;
+ }
+ 
+ /* Link */
+ .owner-container .box-menu .pet-list-bg .pets-list ul a{
+  width:54% !important;
+  height:auto !important;
+ }
+ 
+}
+    
+   
+   @media (max-width:415px){
+   
+    /* Box menu */
+    .owner-container .box-menu{
+     margin-left:0px;
+     margin-right:0px;
+     width:90%;
+     top:-145px !important;
+     left:14px;
+    }
+    
+    /* Buttons */
+    .owner-container .buttons{
+     top:440px !important;
+     transform:translatex(0px) translatey(0px);
+     justify-content:center;
+    }
+    
+    /* Link */
+    .owner-container .buttons a{
+     margin-left:17px;
+    }
+    footer{
+      height:67px !important;
+     }
+    
+   }

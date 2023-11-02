@@ -17,9 +17,9 @@
     <!-- ბმული 2: ჩემი ცხოველების ჩამონათვალი -->
     <a href="{{ url_for('general_logic.owner_logic', action=2) }}" class="square-button">ჩემი შინაური ცხოველების ისტორია</a>
     <!-- ბმული 3: ვეტერინარული კლინიკები ჩემს ახლოს -->
-    <a href="{{ url_for('general_logic.owner_logic', action=3) }}" class="square-button">რუკა</a>
+    <a href="{{ url_for('general_logic.owner_logic', action=3) }}" class="square-button">კლინიკების რუკა</a>
     <!-- ბმული 4: ვეტერინარების ტელეფონის ნომრები -->
-    <a href="{{ url_for('general_logic.owner_logic', action=4) }}" class="square-button">ვეტ.ექიმების ტელ.ნომრები</a>
+    <a href="{{ url_for('general_logic.owner_logic', action=4) }}" class="square-button">ვეტ.ექიმების ნომრები</a>
   </div>      
   <!-- აქ არის box-menu ლოგიკა -->
   <div class="box-menu">
@@ -46,7 +46,7 @@
       <div class="pet-list-bg">
         <div class="pets-list">
           {% if pets %}
-          <h2>თქვენი შინაური ცხოველები</h2>
+          <h3>თქვენი შინაური ცხოველები</h3>
             <ul>
               {% for pet, pet_species, pet_breed in pets %}
                 <li>
@@ -70,17 +70,17 @@
                   </div>
                 </li>
               {% endfor %}
-              <a class="submit-style" href="{{ url_for('general_logic.owner_logic', action=5) }}">ახალი შინაური ცხოველის დამატება</a>
+              <a class="submit-style" href="{{ url_for('general_logic.owner_logic', action=5) }}">დამატება</a>
             </ul>
           {% else %}
-          <h2>თქვენ არ გყავთ შინაური ცხოველები დარეგისტრირებული</h2>
+          <h3>თქვენ არ გყავთ შინაური ცხოველები დარეგისტრირებული</h3>
           <a class="novalue submit-style" href="{{ url_for('general_logic.owner_logic', action=5) }}">შინაური ცხოველების დამატება</a>
           {% endif %}
         </div>
       </div>
   {% elif action == 2 %}
     {% if pet_history %}
-    <h2 style="text-align:center">შინაური ცხოველის(ების) ისტორია</h2>
+    <h3 style="text-align:center">ისტორია</h3>
       <table class="table table-sortable">
         <thead>
           <tr>
@@ -130,7 +130,7 @@
           {% endfor %}
         </tbody>
       </table>
-      <a class="novalue submit-style" href="{{ url_for('general_logic.owner_logic', action=6) }}">ახალი ისტორიის დამატება</a>
+      <a class="submit-style" href="{{ url_for('general_logic.owner_logic', action=6) }}">ახალი ისტორიის დამატება</a>
   {% else %}
   <h2 style="text-align:center">თქვენ არ გაქვთ შინაური ცხოველების ისტორია</h2>
   <a class="novalue submit-style" href="{{ url_for('general_logic.owner_logic', action=6) }}">ისტორიის დამატება</a>
