@@ -23,7 +23,6 @@ except:
 def create_app(migrate):
     app = Flask(__name__, static_url_path='/static', static_folder='static')
     secret_key = os.environ.get('SECRET_KEY') or secrets.token_hex(16)
-    logging.warning(secret_key)
     app.config['SECRET_KEY'] = secret_key
     
     if database_url == None:
