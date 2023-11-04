@@ -3,12 +3,14 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_mail import Mail
 import os
+import secrets
+import logging
 
 
 
 db = SQLAlchemy()
-
 mail = Mail()
+
 try:
     database_url = os.environ.get('DATABASE_URL1')
     #logging.warning("#####################################")
@@ -20,7 +22,9 @@ except:
 
 def create_app(migrate):
     app = Flask(__name__, static_url_path='/static', static_folder='static')
-    app.config['SECRET_KEY'] = 'asdastghjkyugu9w3ef8i9d0ejsfoi'
+    secret_key = os.environ.get('SECRET_KEY') or secrets.token_hex(16)
+    logging.warning(secret_key)
+    app.config['SECRET_KEY'] = secret_key
     
     if database_url == None:
         app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:postgres@postgres:5432/petsite'

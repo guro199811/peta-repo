@@ -70,14 +70,12 @@
    left:0px;
    width: 100%;
    transition: all .5s ease;
-   height:84% !important
+   height:84% !important;
+   background-color: transparent;
  }
  
  
- .home-section .box-menu{
-   margin-right:150px;
-  }
- 
+
  
  .sidebar.open ~ .home-section{
    left:0px;
@@ -130,11 +128,7 @@
      left:0px;
     }
     
-    /* Box menu */
-    .home-section .box-menu{
-     margin-right:-68px;
-    }
-    
+
   /* Link */
   .home-section .owner-container .buttons a{
     width:90px !important;
@@ -157,13 +151,8 @@
  }
 
 
- .home-section .box-menu{
-  top:43px;
- }
 
- .box-menu{
-  top:150px !important;
- }
+
 
  .buttons{
   top:52px !important;
@@ -174,16 +163,9 @@
   top:0px !important;
  }
  
- /* Buttons */
- .home-section .buttons{
-  left:340px;
-  position:sticky;
-  top:138px !important;
- }
 
- .home-section .box-menu{
-  top:65px !important;
- }
+
+
  
  .home-section .box-menu h1{
   height:30%;
@@ -192,27 +174,79 @@
 }
 
  
+
+
+
  @media (max-width:415px){
- 
-  /* Box menu */
-  .home-section .owner-container .box-menu{
-   width:100% !important;
-  }
-  
+
   /* Box menu */
   .home-section .box-menu{
-   left:-200px;
-   margin-left:-266px;
-   margin-right:-137px;
+   left:-50px;
+  }
+  
+  /* Buttons */
+  .home-section .buttons{
+   margin-left:0px;
+   flex:0 1 auto;
   }
   
   /* Link */
   .home-section .buttons a{
-   margin-right:-8px;
-   left:-15px;
-   position:relative;
-   font-size:11px;
+   margin-left:24px !important;
+   left:-25px;
+   flex-wrap:nowrap;
   }
   
  }
 
+
+ @media (max-width:768px){
+
+  /* Home section */
+  .home-section{
+   overflow:auto;
+   padding-bottom:7px;
+   margin-top:60px;
+   margin-bottom:70px;
+   min-height: 79%;
+   height:auto !important;
+  }
+  
+  /* Table Row */
+  .table thead tr{
+   position:relative;
+  }
+  
+ }
+ 
+ @media (max-width:415px){
+ 
+  /* Home section */
+  .home-section{
+   height:auto !important;
+   margin-top:80px;
+   margin-bottom:85px;
+   visibility:visible;
+  }
+  
+ }
+
+ @media (max-width:415px){
+
+  /* Home section */
+  .home-section{
+   margin-bottom:70px;
+  }
+  
+  /* Box menu */
+  .home-section .box-menu{
+   top:-124px !important;
+   box-shadow:0px 2px 12px 0px rgba(0,0,0,0.5);
+  }
+  
+  /* Buttons */
+  .home-section .buttons{
+   top:457px !important;
+  }
+  
+ }

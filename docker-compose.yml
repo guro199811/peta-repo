@@ -11,9 +11,12 @@ services:
     volumes:
       - ./web-files:/app
       - ./postgres-data:/var/lib/postgresql/data
+    environment:
+      - SECRET_KEY
     depends_on:
       - db
     entrypoint: /entrypoint.sh
+
 
   db:
     image: postgres:latest
