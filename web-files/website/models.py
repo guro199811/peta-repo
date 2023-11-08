@@ -130,6 +130,8 @@ class Editor(db.Model):
 class Visit(db.Model):
     __tablename__ = 'visits'
     visit_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    clinic_id = db.Column(db.Integer, db.ForeignKey('clinics.clinic_id'))
+    clinic = db.relationship(Clinic)
     vet_id = db.Column(db.Integer, db.ForeignKey('vets.vet_id'))
     vet = db.relationship(Vet)
     pet_id = db.Column(db.Integer, db.ForeignKey('pets.pet_id'))

@@ -1,0 +1,12 @@
+<input type="hidden" name="ownerId" value="{{ owner.owner_id }}" id="ownerId">
+<p>შინაური ცხოველის პატრონი მოიძებნა: {{ person.name }} {{ person.lastname }}</p>
+
+<select id="petSelection" name="petId">
+{% if pets %}
+    {% for pet in pets %}
+        <option value="{{ pet.pet_id }}">{{ pet.name }}</option>
+    {% endfor %}
+{% else %}
+    <option>მოცემულ მომხმარებელს ცხოველები არ ყავს დარეგისტრირებული</option>
+{% endif %}
+</select>

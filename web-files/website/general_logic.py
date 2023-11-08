@@ -101,7 +101,43 @@ def owner_logic(action):
                                     action = action,
                                     pet_history = None)
         elif action == 3:
-            return render_template('login/owner.html', action=action)
+            try:
+                clinics_data = db.session.query(Clinic).all()
+            except:
+                clinics_data = None
+            if clinics_data:   
+                clinics = []
+                for clinic in clinics_data:
+                    # Check if coordinates is a non-empty string and contains a comma
+                    if isinstance(clinic.coordinates, str) and ',' in clinic.coordinates:
+                        try:
+                            latitude_str, longitude_str = clinic.coordinates.split(",")
+                            latitude = float(latitude_str)
+                            longitude = float(longitude_str)
+                        except ValueError as e:
+                            # Log the error and the offending coordinates string
+                            logging.warning(f"Invalid coordinates format for clinic {clinic.clinic_name}: {clinic.coordinates}")
+                            logging.warning(e)
+                            # Skip this clinic and continue with the next
+                            continue
+                    else:
+                        # Log a warning for clinics without valid coordinates
+                        logging.warning(f"No valid coordinates provided for clinic {clinic.clinic_name}")
+                        # Skip this clinic and continue with the next
+                        continue
+
+                    clinic_info = {
+                        'clinic_name': clinic.clinic_name,
+                        'description': clinic.desc,
+                        'clinic_id': clinic.clinic_id,
+                        'latitude': latitude,
+                        'longitude': longitude
+                    }
+                    clinics.append(clinic_info)
+                # Now pass 'clinics' to your template
+                logging.warning(clinics)
+                return render_template('login/owner.html', clinics=clinics, action=action)
+
         
         elif action == 4:
             vets = db.session.query(Vet, Person).join(Person, Vet.person_id == Person.id).filter(Vet.active == True).all()
@@ -245,8 +281,43 @@ def admin_logic(choice, action):
 
         
         elif action == 3:
-            return render_template('login/admin.html',
-                                   choice  = choice, action=action)
+            try:
+                clinics_data = db.session.query(Clinic).all()
+            except:
+                clinics_data = None
+            if clinics_data:   
+                clinics = []
+                for clinic in clinics_data:
+                    # Check if coordinates is a non-empty string and contains a comma
+                    if isinstance(clinic.coordinates, str) and ',' in clinic.coordinates:
+                        try:
+                            latitude_str, longitude_str = clinic.coordinates.split(",")
+                            latitude = float(latitude_str)
+                            longitude = float(longitude_str)
+                        except ValueError as e:
+                            # Log the error and the offending coordinates string
+                            logging.warning(f"Invalid coordinates format for clinic {clinic.clinic_name}: {clinic.coordinates}")
+                            logging.warning(e)
+                            # Skip this clinic and continue with the next
+                            continue
+                    else:
+                        # Log a warning for clinics without valid coordinates
+                        logging.warning(f"No valid coordinates provided for clinic {clinic.clinic_name}")
+                        # Skip this clinic and continue with the next
+                        continue
+
+                    clinic_info = {
+                        'clinic_name': clinic.clinic_name,
+                        'description': clinic.desc,
+                        'clinic_id': clinic.clinic_id,
+                        'latitude': latitude,
+                        'longitude': longitude
+                    }
+                    clinics.append(clinic_info)
+                # Now pass 'clinics' to your template
+                logging.warning(clinics)
+                return render_template('login/admin.html', clinics=clinics, action=action, choice=choice)
+
         
         elif action == 4:
             vets = db.session.query(Vet, Person).join(Person, Vet.person_id == Person.id).filter(Vet.active == True).all()
@@ -533,8 +604,43 @@ def vet_logic(choice, action):
 
         
         elif action == 3:
-            return render_template('login/vet.html',
-                                   choice  = choice, action=action)
+            try:
+                clinics_data = db.session.query(Clinic).all()
+            except:
+                clinics_data = None
+            if clinics_data:   
+                clinics = []
+                for clinic in clinics_data:
+                    # Check if coordinates is a non-empty string and contains a comma
+                    if isinstance(clinic.coordinates, str) and ',' in clinic.coordinates:
+                        try:
+                            latitude_str, longitude_str = clinic.coordinates.split(",")
+                            latitude = float(latitude_str)
+                            longitude = float(longitude_str)
+                        except ValueError as e:
+                            # Log the error and the offending coordinates string
+                            logging.warning(f"Invalid coordinates format for clinic {clinic.clinic_name}: {clinic.coordinates}")
+                            logging.warning(e)
+                            # Skip this clinic and continue with the next
+                            continue
+                    else:
+                        # Log a warning for clinics without valid coordinates
+                        logging.warning(f"No valid coordinates provided for clinic {clinic.clinic_name}")
+                        # Skip this clinic and continue with the next
+                        continue
+
+                    clinic_info = {
+                        'clinic_name': clinic.clinic_name,
+                        'description': clinic.desc,
+                        'clinic_id': clinic.clinic_id,
+                        'latitude': latitude,
+                        'longitude': longitude
+                    }
+                    clinics.append(clinic_info)
+                # Now pass 'clinics' to your template
+                logging.warning(clinics)
+                return render_template('login/vet.html', clinics=clinics, action=action, choice=choice)
+
         
         elif action == 4:
             vets = db.session.query(Vet, Person).join(Person, Vet.person_id == Person.id).filter(Vet.active == True).all()
@@ -654,6 +760,61 @@ def vet_logic(choice, action):
         
     if choice == 4: #My visits
         if action == 0:
+            if request.method == "POST":
+                clinic = request.form.get('clinic')
+                vet_id = request.form.get('vet')
+                owner_id = request.form.get('ownerId')
+                pet_id = request.form.get('petId')
+                diagnosis = request.form.get('diagnosis')
+                treatment = request.form.get('treatment')
+                date = request.form.get('date')
+                if not date:
+                    date = dt.today()
+                comment = request.form.get('comment')
+
+                visit = Visit(clinic_id = clinic, vet_id = vet_id,
+                              owner_id = owner_id, pet_id = pet_id,
+                              diagnosis = diagnosis, treatment = treatment,
+                              comment = comment, date = date)
+
+                db.session.add(visit)
+                db.session.commit()
+
+            elif request.method == "GET":
+                try:
+                    # Querying bridges and getting clinics to work with
+                    # Js catches data and responsively gives out options
+                    my_clinics = db.session.query(
+                        P_C_bridge.clinic_id).filter_by(
+                        person_id=current_user.id).all()
+
+                    clinic_ids = [bridge.clinic_id for bridge in my_clinics]
+
+                    staff_members_by_clinic = {}
+                    for clinic_id in clinic_ids:
+                        # Query for staff members at this clinic
+                        staff_members = db.session.query(Person).join(
+                            P_C_bridge, P_C_bridge.person_id == Person.id).filter(
+                            P_C_bridge.clinic_id == clinic_id,
+                            P_C_bridge.person_id != current_user.id).all()
+
+                        # Add the staff members to the dictionary, keyed by clinic_id
+                        staff_members_by_clinic[clinic_id] = staff_members
+
+                    clinics = db.session.query(Clinic).filter(Clinic.clinic_id.in_(clinic_ids)).all()
+
+                                        
+                    return render_template('login/vet.html',action=action, choice=choice,
+                                clinics=clinics,
+                                staff_members_by_clinic=staff_members_by_clinic)
+
+                except Exception as e:
+                    logging.warning(e)
+                return render_template('login/vet.html',
+                            action=action, choice=choice, clinics = None, staff_members = None)
+            
+                
+        if action == 1:
             vet_person = aliased(Person)
             owner_person = aliased(Person)
             vet = db.session.query(Vet).filter_by(person_id = current_user.id).one_or_none()
@@ -671,7 +832,7 @@ def vet_logic(choice, action):
             else:
                 return render_template('login/vet.html', choice=choice, action=action, visits=None)
 
-        if action == 1:
+        if action == 0:
             if request.method == "GET":
                 return render_template('login/vet.html', choice=choice, action=action)
             elif request.method == "POST":
@@ -699,24 +860,19 @@ def vet_logic(choice, action):
                     flash(f"გაუთვალისწინებელი ლოგიკის პრობლემა: {e}")
 
             elif request.method == "GET":
-                logging.warning('Get')
                 try:
                     edit_mode = False
-                    logging.warning('TRY')
                     clinic_id = request.args.get('clinic_id')
-                    logging.warning(f'{clinic_id}')
                     if clinic_id:
-                        logging.warning("if clinic")
                         clinic = db.session.query(Clinic).filter_by(clinic_id = clinic_id).one_or_none()
                         if clinic:
-                            logging.warning('clinic')
                             return render_template('login/vet.html',
                                     action=action, choice=choice, edit_mode=True, clinic=clinic)
                         
                 except Exception as e:
                     logging.warning(e)
                 return render_template('login/vet.html',
-                                    action=action, choice = choice, edit_mode = edit_mode, clinic=None)
+                                    action=action, choice = choice, edit_mode = False, clinic=None)
         elif action == 1:
             if request.method == "GET":
                 try:
@@ -748,15 +904,6 @@ def vet_logic(choice, action):
         else:
             abort(404)
 
-    
- #   coordinate_str = "41.7151377,44.827096"
-
-    # Split the string into latitude and longitude components
-#   latitude_str, longitude_str = coordinate_str.split(",")
-
-    # Convert to floating-point numbers
-#    latitude = float(latitude_str)
-#    longitude = float(longitude_str)
 
     if choice == 8: #My Data
         if request.method =="POST":

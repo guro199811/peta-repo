@@ -46,12 +46,40 @@ else{
 
 
 function initializeMap() {
+  
   var map = L.map('map').setView([41.7151377, 44.827096], 8);
   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
   }).addTo(map);
 
+
+  // Retrieve clinic data passed from Flask
+try {
+  var clinicsDataElement = document.getElementById('map');
+/*  
+  console.log('##############')
+  console.log(clinicsDataElement)
+  console.log('##############')
+*/
+  var clinicsData = JSON.parse(clinicsDataElement.dataset.clinics);
+} catch (e) {
+  console.error('Error parsing clinics data:', e);
+}
+
+
+  // Loop through the clinics and add a marker for each
+clinicsData.forEach(function(clinic) {
+  var marker = L.marker([clinic.latitude, clinic.longitude]).addTo(map);
+
+  // Creating a custom popup content
+  var popupContent = '<strong>' + clinic.clinic_name + '</strong><br>' + clinic.description;
+
+  // Bind the popup with a small offset to the marker
+  marker.bindPopup(popupContent, {
+      offset: L.point(0, -20)
+  });
+});
   map.locate({ setView: true, maxZoom: 16 });
 
   // Add a marker at the user's location
@@ -300,4 +328,25 @@ searchForm.classList.toggle('show-search');
 });
 
 
+function searchOwner() {
+  var searchInput = document.getElementById('searchInput').value;
+  var request = new XMLHttpRequest();
+  request.open('POST', '/search_owner', true);
+  request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+  request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+  request.onload = function() {
+      if (this.status >= 200 && this.status < 400) {
+          // Success!
+          var resp = JSON.parse(this.response);
+          document.getElementById('searchResults').innerHTML = resp.html;
+      } else {
+          // We reached our target server, but it returned an error
+      }
+  };
 
+  request.onerror = function() {
+      // There was a connection error of some sort
+  };
+
+  request.send('searchInput=' + encodeURIComponent(searchInput));
+}

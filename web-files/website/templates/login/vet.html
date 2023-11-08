@@ -44,15 +44,9 @@
       </a>
     <span class="tooltip">ჩემი კლინიკა</span>
   </li>
+
     <li>
-      <a href="{{ url_for('general_logic.vet_logic', choice=2, action = 0) }}">
-        <i class='bx bx-grid-alt'></i>
-        <span class="link_name">შეჯამების დაფა</span>
-      </a>
-      <span class="tooltip">შეჯამების დაფა</span>
-    </li>
-    <li>
-      <a href="{{ url_for('general_logic.vet_logic', choice=4, action = 0) }}">
+      <a href="{{ url_for('general_logic.vet_logic', choice=4, action = 1) }}">
         <i class='bx bx-clinic'></i>
         <span class="link_name">კლინიკის ვიზიტები</span>
       </a>
@@ -245,7 +239,10 @@
           {% endif %}
           {% elif action == 3 %}
                 <!--iframe src="https://www.google.com/maps/d/u/0/embed?mid=11ZnEvFOa3xipWz70F4d_jAo_nwrodVQ&ehbc=2E312F" width="100%" height="100%"></iframe-->
-                <div id="map"></div>
+                
+                <div id="map"
+                    data-clinics='{{ clinics | tojson | safe }}'>
+                </div>
       
           {% elif action == 4 %}
               {% if vets %}
@@ -340,88 +337,66 @@
         {% endif %}
       </div>
     </section>
-      {% elif choice == 2 %}
-      <div class="dashboard">
-        <div class='box1' id="piechart">
-        </div>
-        <div class="box2" id="chart_div">
-        </div>
-        <div class="box3" id="table_div">
-        </div>
-        <div class="box4" style=" margin-left:50px; margin-bottom:20px; display:flex; overflow:scroll">
-          <div>
-          {% if action == 0 %}
-          {% if notes %}
-          <table class="table table-sortable">
-            <thead>
-              <tr>
-                <th>Admin Notes</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-            {% for note in notes %}
-            <form action="{{ url_for('general_logic.edit_note', action=0, note_id=note.note_id) }}" method="POST">
-            <tr>
-              <td>
-              <textarea name="comment" id='comment_{{ note.note_id }}' style="width: 700px; 
-              min-height: 90px; resize: vertical; overflow-y: auto; 
-              word-wrap: break-word; max-width: 100%;" maxlength="500" disabled>{{ note.content }}</textarea>
-              </td>
-              <td>
-              <div class="pet-actions">
-                <button type="button" class="change-button" id="change_{{ note.note_id }}" 
-                onclick="enableEditNote('{{ note.note_id }}');">
-                <i class="fa-regular fa-pen-to-square"></i></button>
-                <h6></h6>
-                <input type="hidden" name="history_id" value="{{ note.note_id }}">
-                <button type="submit" class="change-button s-button" id="save_{{ note.note_id }}" disabled><i class="fa-solid fa-check"></i></button><br>
-                <h6></h6>
-                </form>
-                <form action="{{ url_for('general_logic.remove_note', note_id=note.note_id) }}" method="DELETE" onsubmit="return confirm('Confirm deletion.');" >
-                <button type="submit" class="change-button r-button" style="border: none; box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);"><i class="fa-solid fa-eraser"></i></button><br>
-                </form>
-              </div>
-            </td>
-          </tr>
-            {% endfor %}
-          </tbody>
-          </table>
-          <a class="submit-style" style="text-align: center;" href="{{ url_for('general_logic.admin_logic', choice=2, action=1) }}">Add New Note</a>
-          {% else %}
-          <a class="submit-style" style="text-align: center;" href="{{ url_for('general_logic.admin_logic', choice=2, action=1) }}">Add a Note</a>
-          {%endif%}
-          {%endif%}
-          {% if action == 1 %}
-            <form action="{{ url_for('general_logic.add_note') }}" method="POST">
-
-              <label for="note"></label>
-              <textarea id="note" name="note" style="width: 600px; 
-              height: 200px; resize: vertical; overflow-y: auto; 
-              word-wrap: break-word; max-width: 100%;" maxlength="500" placeholder="You can write notes here"></textarea>
-
-              <button type="submit" class="submit-style">Add Note</button>
-            </form>
-          
-          {% endif %}
-        </div>
-      </div>
-    </div>
-  </section>
     {% elif choice == 4 %}
-     {%if action == 0%}
-      <h2 style="text-align:center"> Visits </h2>
+    {% if action == 0 %}
+    <form action="{{ url_for('general_logic.vet_logic', action=0, choice = 4) }}" method="POST">
+      <div class="visitaddition">
+        <label for="clinic">კლინიკა:</label>
+        <select id="clinic" name="clinic" onchange="updateVetDropdown()">
+          {% for clinic in clinics %}
+            <option value="{{ clinic.clinic_id }}">{{ clinic.clinic_name }}</option>
+          {% endfor %}
+        </select>
+        <label for="vet">ვეტერინარი / მიმღები:</label>
+        <select id="vet" name="vet">
+          <!-- Options are being populated by JavaScript -->
+        </select>
+        
+        <label>შინაური ცხოველის პატრონი</label>
+        <div class="search-container">
+        <input type="text" id="searchInput" placeholder="შეიყვანეთ ID ან ელ.ფოსტა">
+        <button type="button" onclick="searchOwner()">ძიება</button>
+        </div>
+        <div id="searchResults">
+            <!-- Search results will be displayed here -->
+        </div>
+
+
+
+
+        <label for="diagnosis">დიაგნოზი</label>
+        <input type="text" id="diagnosis" name="diagnosis" maxlength="100" required>
+    
+        <label for="treatment">მკურნალობა</label>
+        <input type="text" id="treatment" name="treatment" maxlength="50" required>      
+        
+        <label for="date">ვიზიტის რიცხვი <h6 style="font-size:small">(არ მითითების შემთხვევაში ვიზიტის ჩანაწერის დღე მიითითება)</h6></label>
+        <input type="date" id="date" name="date">
+
+        <label for="comment">დანიშნულება</label>
+        <textarea id="comment" name="comment" style="width: 600px; 
+        height: 250px; resize: vertical; overflow-y: auto; 
+        word-wrap: break-word; max-width: 100%;" maxlength="500"></textarea>
+
+        <button type="submit" class="submit-style">ვიზიტის დამატება</button>
+        
+      </div>
+    </form>
+     {%elif action == 1%}
+      <h2 style="text-align:center"> ვიზიტები </h2>
       {% if visits %}
         <table class="table table-sortable">
           <thead>
             <tr>
-              <th>Visit id</th>
-              <th>Vet</th>
-              <th>Pet Owner</th>
-              <th>Pet</th>
-              <th>Diagnosis</th>
-              <th>Treatment</th>
-              <th>Visit Date</th>
+              <th>ვიზიტის - ID</th>
+              <th>ვეტერინარი</th>
+              <th>ცხოველის პატრონი</th>
+              <th>შინაური ცხოველის სახელი</th>
+              <th>დიაგნოზი</th>
+              <th>მკურნალობა</th>
+              <th>ვიზიტის რიცხვი</th>
+              <th>დანიშნულება</th>
+              <th>მოქმედება</th>
             </tr>
           </thead>
           <tbody>
@@ -436,36 +411,17 @@
                 <td>{{ visit.diagnosis }}</td>
                 <td>{{ visit.treatment }}</td>
                 <td>{{ visit.date.strftime('%Y-%m-%d') }}</td>
+                <th>{{ visit.comment }}</th>
+                <th><h1></h1></th>
               </tr>
             </form>
             {% endfor %}
           </tbody>
         </table>
+        <a class="submit-style" style="text-align:center" href="{{ url_for('general_logic.vet_logic',choice=4, action=0) }}">ახალი ვიზიტის დამატება</a>
       {% else %}
-      <a class="novalue submit-style" style="text-align:center" href="{{ url_for('general_logic.vet_logic',choice=4, action=1) }}">No Visits found, Click here to add one</a>
+      <a class="novalue submit-style" style="text-align:center" href="{{ url_for('general_logic.vet_logic',choice=4, action=0) }}">ვიზიტები არ არის, ვიზიტის დამატება</a>
       {% endif %}
-
-      {% elif action == 1 %}
-        <div class="newpetbox">
-          <form action="{{ url_for('general_logic.vet_logic',choice = 2, action=1) }}" method="POST">
-
-            <label for="diagnosis">Diagnosis</label>
-            <input type="text" id="diagnosis" name="diagnosis" maxlength="100" required>
-        
-            <label for="treatment">Treatment</label>
-            <input type="text" id="treatment" name="treatment" maxlength="50" required>      
-            
-            <label for="date">Visit Date(By default its Today)</label>
-            <input type="date" id="date" name="date" required>
-
-            <label for="comment">Comment</label>
-            <textarea id="comment" name="comment" style="width: 600px; 
-            height: 250px; resize: vertical; overflow-y: auto; 
-            word-wrap: break-word; max-width: 100%;" maxlength="500"></textarea>
-
-            <button type="submit" class="submit-style">Add History</button>
-          </form>
-        </div>
       {% endif %}
     </section>
     {% elif choice == 5 %}
@@ -568,4 +524,56 @@
   <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js" integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="crossorigin=""></script>
   <script src="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.js"></script>
   <script src="../../static/js/main.js"></script>
+
+  {% if staff_members_by_clinic %}
+  <script>
+    //this function wont work in js file because jinja2 syntax wont integrate in there
+    
+    var staffMembersByClinic = '{{ staff_members_by_clinic|tojson }}'
+
+    function updateVetDropdown() {
+      var clinicId = document.getElementById('clinic').value;
+      var vetSelect = document.getElementById('vet');
+      vetSelect.innerHTML = '';
+  
+      var clinicStaff = staffMembersByClinic[clinicId];
+  
+      // Add an option for the current user
+      var option = document.createElement('option');
+      option.value = "{{ current_user.id }}";
+      option.text = "* {{ current_user.name }} {{ current_user.lastname }}";
+      vetSelect.appendChild(option);
+  
+      // Add options for other staff members in the selected clinic
+      if (clinicStaff && clinicStaff.length > 0) {
+          clinicStaff.forEach(function(staff) {
+              var option = document.createElement('option');
+              option.value = staff.id;
+              option.text = staff.name + ' ' + staff.lastname;
+              vetSelect.appendChild(option);
+          });
+      } else {
+          // If no staff members are found, add a disabled option
+          var option = document.createElement('option');
+          option.value = "";
+          option.text = "No other staff available";
+          option.disabled = true;
+          vetSelect.appendChild(option);
+      }
+  }
+    
+    // Initialize the vet dropdown on page load
+    document.addEventListener('DOMContentLoaded', updateVetDropdown);
+    document.getElementById('petSelection').addEventListener('change', function() {
+      var selectedPetId = this.value;
+      // You can now use selectedPetId to make another AJAX call to fetch details
+      // about the selected pet or perform other actions as needed.
+    });
+  </script>
+  {% else %}
+  <script>
+  var staffMembersByClinic = {}; 
+  </script>
+  {% endif %}
+      
 {% endblock %}

@@ -136,8 +136,10 @@
   <a class="novalue submit-style" href="{{ url_for('general_logic.owner_logic', action=6) }}">ისტორიის დამატება</a>
   {% endif %}
   {% elif action == 3 %}
-        <!--iframe src="https://www.google.com/maps/d/u/0/embed?mid=11ZnEvFOa3xipWz70F4d_jAo_nwrodVQ&ehbc=2E312F" width="100%" height="100%"></iframe-->
-        <div id="map"></div>
+
+    <div id="map"
+    data-clinics='{{ clinics | tojson | safe }}'>
+    </div>
 
   {% elif action == 4 %}
       {% if vets %}

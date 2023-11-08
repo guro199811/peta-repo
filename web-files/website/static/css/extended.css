@@ -1,3 +1,109 @@
+.visitaddition {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Two columns of equal width */
+  gap: 20px; /* Space between grid items */
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 800px;
+  margin: 20px auto;
+  font-family: 'Arial', sans-serif;
+}
+
+.visitaddition label {
+  margin-bottom: 8px; /* Space below the label */
+}
+
+.visitaddition select,
+.visitaddition input[type="text"],
+.visitaddition input[type="date"],
+.visitaddition textarea,
+.visitaddition button[type="button"],
+.visitaddition button[type="submit"] {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+/* Search input and button on the same row */
+.visitaddition .search-container {
+  display: flex;
+  gap: 10px;
+  grid-column: 1 / -1; /* Span across all columns */
+}
+
+.visitaddition #searchInput {
+  flex-grow: 1; /* Input takes up remaining space */
+}
+
+.visitaddition button[type="button"] {
+  white-space: nowrap; /* Prevents text wrapping in button */
+}
+
+/* All inputs and selects span across both columns except search */
+.visitaddition select,
+.visitaddition input[type="text"]:not(#searchInput),
+.visitaddition input[type="date"],
+.visitaddition textarea {
+  grid-column: 1 / -1; /* Span across all columns */
+}
+
+.visitaddition #searchResults {
+  grid-column: 1 / -1; /* Search results span all columns */
+}
+
+.visitaddition button[type="submit"] {
+  grid-column: 1 / -1; /* Submit button spans all columns */
+  padding: 10px 0;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.visitaddition button[type="submit"]:hover {
+  background-color: #45a049;
+}
+
+/* Adjust comment textarea size */
+#comment {
+  height: 150px; /* Adjusted height */
+}
+
+@media (max-width: 768px) {
+  .visitaddition {
+      grid-template-columns: 1fr; /* Stack elements in one column on smaller screens */
+  }
+
+  .visitaddition .search-container {
+      flex-direction: column; /* Stack search input and button on top of each other */
+  }
+
+  .visitaddition button[type="button"] {
+      width: 100%; /* Button takes full width */
+  }
+}
+
+/* Form Division */
+.home-section form{
+  height:100%;
+ }
+ 
+ /* Division */
+ .home-section form > div{
+  height:96%;
+  overflow:auto;
+ }
+
+ .home-section form > div{
+  margin-top:0px;
+  margin-bottom:0px;
+  padding-right:64px;
+  padding-left:64px;
+ }
+ 
+
 @media (max-width:768px){
 
   .buttons{

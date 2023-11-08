@@ -22,7 +22,8 @@ except:
 
 def create_app(migrate):
     app = Flask(__name__, static_url_path='/static', static_folder='static')
-    secret_key = os.environ.get('SECRET_KEY') or secrets.token_hex(16)
+    secret_key = 'asiudhw9opaisndoihwap0osnid[owa]'
+    #secret_key = os.environ.get('SECRET_KEY') or secrets.token_hex(16)
     app.config['SECRET_KEY'] = secret_key
     
     if database_url == None:
@@ -44,10 +45,12 @@ def create_app(migrate):
     from .views import views
     from .auth import auth
     from .general_logic import general_logic
+    from .ajax_logic import ajax_logic
 
     app.register_blueprint(views, url_prefix='/')
     app.register_blueprint(auth, url_prefix='/')
     app.register_blueprint(general_logic, url_prefix="/")
+    app.register_blueprint(ajax_logic, url_prefix='/')
 
     # ვეუბნებით ფლასკს როგორ ჩავტვირთოთ მომხმარებელი (Primary key)-ით
     from .models import Person
