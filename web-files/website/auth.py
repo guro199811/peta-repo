@@ -3,7 +3,7 @@ from itsdangerous import SignatureExpired
 
 from werkzeug.security import generate_password_hash, check_password_hash
 from . import db
-from .models import Person
+from .models import *
 from datetime import date as dt
 
 from flask_mail import Message, Mail
@@ -20,12 +20,15 @@ from flask import (
     request, flash, 
     redirect, url_for)
 
+from .views import grant_access
+import logging
+
 from flask import current_app as app 
 
 auth = Blueprint('auth', __name__)
 
 
-#შესვლის ფუნქცია, ამოწმებს მომხმარებელს ბაზაში
+#LogIN
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -50,7 +53,7 @@ def login():
                     elif type == 4:
                         return redirect(url_for('views.editor'))
                 else:
-                    return render_template("auths/verification.html", user=current_user)
+                    return render_template("auths/verification.html", user=current_user, verification_type = 0)
             else:
                 flash('პაროლი არასწორია, გთხოვთ სცადოთ ხელახლა.', category='error')
         else:
@@ -58,7 +61,7 @@ def login():
     return render_template("login.html", user=current_user)
 
 
-#გამოსვლის ფუნქცია
+#Logout
 @auth.route('/logout')
 @login_required
 def logout():
@@ -67,7 +70,7 @@ def logout():
     return redirect(url_for('auth.login'))
 
 
-#რეგისტრაციის ფუნქცია
+#Registration Function
 @auth.route("/register", methods=['GET', 'POST'])
 def register():
     if request.method =="POST":
@@ -106,16 +109,16 @@ def register():
 
             
             send_confirmation(new_user)
-            return render_template("auths/verification.html", user=current_user)
+            return render_template("auths/verification.html", user=current_user, verification_type = 0)
     return render_template("sign-up.html", user=current_user)
 
+#####################
+#Email Confirmations
+#####################
 
 # Send a confirmation email
 @auth.route('/send_confirmation')
 def send_confirmation(new_user = current_user):
-    import logging
-    logging.warning("###############")
-    logging.warning(f"{new_user.id}")
     token = generate_token(new_user.mail, app, 'email-confirm')
     verimail = Mail(app)    
 
@@ -124,7 +127,7 @@ def send_confirmation(new_user = current_user):
     confirmation_url = url_for('auth.confirm_token', token=token, _external=True)
     message.body = f'გთხოვთ დაადასტუროთ თქვენი ელ.ფოსტა მოცემული ბმულით: {confirmation_url}\nგთხოვთ გაითვალისწინოთб, რომ თქვენი ბმული გაუქმდება გამოგზავნიდან 1 საათში\n\n\nპატივისცემით, Peta-Team'
     verimail.send(message)
-    return render_template("auths/verification.html")
+    return render_template("auths/verification.html", verification_type = 0)
 
 
 
@@ -146,8 +149,9 @@ def confirm_token(token, expiration=3600):
         return render_template('auths/expired-token.html', user=current_user, expiredType = 0)
     
 
-
-#Forgot Password Section
+##########################################
+# Functions to send a password reset email
+##########################################
 
 @auth.route('/forgot_password', methods=['GET', 'POST'])
 def forgot_password():
@@ -164,7 +168,6 @@ def forgot_password():
     return render_template("auths/forgot_password.html", user=current_user)
 
 
-# Function to send a password reset email
 
 def send_password_reset_email(user):
     token = generate_token(user.mail, app, 'password-reset')
@@ -211,3 +214,125 @@ def confirm_password_token(token, expiration=3600):
         return email
     except SignatureExpired:
         return render_template('auths/expired-token.html', user=current_user, expiredType = 1)
+    
+
+########################################
+#Functions for Confirming Clinic removal
+########################################
+
+'''@auth.route('r_clinic/<int:clinic_id>', methods=['GET', 'DELETE'])
+@login_required
+@grant_access([2, 3])
+def remove_clinic(clinic_id):
+    try:
+        bridge = db.session.query(P_C_bridge).filter_by(clinic_id = clinic_id, person_id = current_user.id).one_or_none()
+        if bridge:
+            clinic = db.session.query(Clinic).filter_by(clinic_id = clinic_id).one_or_none()
+            if clinic:
+                if bridge.is_clinic_owner == True:
+                    #try:
+                    visits = db.session.query(Visit).filter_by(clinic_id = clinic.clinic_id).all()
+                    for visit in visits:
+                        db.session.delete(visit)
+                        db.session.commit()
+                    #except Exception as e:
+                        #logging.warning(e)
+                    db.session.delete(bridge)
+                    db.session.delete(clinic)
+                    db.session.commit()
+                    return redirect(url_for('general_logic.vet_logic', choice = 5, action = 1))
+                elif bridge.is_clinic_owner == False:
+                    db.session.delete(bridge)
+                    db.session.commit()
+                    return redirect(url_for('general_logic.vet_logic', choice = 5, action = 1))
+    except Exception as e:
+        logging.warning(e)
+'''
+
+#sending clinic removal email
+@login_required
+@grant_access([2, 3])
+@auth.route('/send_clinic_deletion/<int:clinic_id>')
+def clinic_removal_email(clinic_id):
+    user = current_user
+    token = generate_token(user.mail, app, 'remove-clinic')
+    remove_url = url_for('auth.confirm_clinic_removal', clinic_id = clinic_id , token=token, _external=True)
+    r_mail = Mail(app) 
+
+    #checking if user is owner of that clinic for different messege
+    try:
+        person = db.session.query(P_C_bridge).\
+            filter_by(clinic_id = clinic_id, \
+            person_id = current_user.id).one_or_none()
+        clinic = db.session.query(Clinic).filter_by(clinic_id = clinic_id).one()
+        if person.is_clinic_owner:
+            message = Message('დასტური კლინიკის წაშლაზე (Petaworld.com)', sender='noreply@peta.ge', recipients=[user.mail])
+            message.body = f'მოგესალმებით, გთხოვთ წაიკითხოთ!\n\nთქვენ ხართ მოცემული კლინიკის "{clinic.clinic_name}" დამრეგისტრირებელი,\n\n\
+                მოცემული კლინიკის წაშლით,ანუ ბმულზე გადასვლის შედეგად თქვენ დარწმუნებული ხართ რომ შლით:\n\n\
+                    • ყველა კავშირს მოცემულ კლინიკასთან (აღდგენა შეუძლებელია)\n\
+                    • ყველა ვიზიტს რომელიც მოცემულ კლინიკაშია დარეგისტრირებული (აღდგენა შეუძლებელია)\n\
+                    • ყველა თანამშრომლების კავშირებს კლინიკასთან (აღდგენა შეუძლებელია)\n\n\n\
+                      {remove_url}\nლინკი გაუქმდება გამოგზავნიდან 1 საათში.\n\n\nPeta-Team'
+        else:
+            message = Message('დასტური კლინიკასთან კავშირის გაწყვეტაზე (Petaworld.com)', sender='noreply@peta.ge', recipients=[user.mail])
+            message.body = f'თუ დარწმუნებული ხართ რომ გნებავთ კავშირის გაწყვეტა კლინიკასთან სახელად "{clinic.clinic_name}", გადადით მოცემულ ბმულზე: {remove_url}\nლინკი გაუქმდება გამოგზავნიდან 1 საათში.\n\n\nPeta-Team'
+    except Exception as e:
+        flash('შეცდომა')
+        logging.log(e)
+
+    r_mail.send(message)
+    return render_template("auths/verification.html", verification_type = 1)
+    
+
+
+#confirming clinic removal token
+@auth.route('r_clinic/<int:clinic_id>/<token>', methods=['GET', 'DELETE'])
+@login_required
+@grant_access([2, 3])
+def confirm_clinic_removal(clinic_id, token, expiration=3600):
+    if 'serializer' not in globals():
+        serializer = None
+    if serializer is None:
+        serializer = init_serializer(app)
+    try:
+        email = serializer.loads(token, salt='remove-clinic', max_age=expiration)
+        try:
+            bridge = db.session.query(P_C_bridge).filter_by(clinic_id = clinic_id, person_id = current_user.id).one_or_none()
+            if bridge:
+                clinic = db.session.query(Clinic).filter_by(clinic_id = clinic_id).one_or_none()
+                if clinic:
+                    if bridge.is_clinic_owner == True:
+                        try:
+                            visits = db.session.query(Visit).filter_by(clinic_id = clinic.clinic_id).all()
+                            for visit in visits:
+                                db.session.delete(visit)
+                                db.session.commit()
+                        except Exception as e:
+                            logging.warning(e)
+
+
+                        try:
+                            all_bridges = db.session.query(P_C_bridge).filter_by(clinic_id = clinic_id).all()
+                            for a in all_bridges:
+                                db.session.delete(a)
+                                db.session.commit()
+                        except Exception as e:
+                            logging.warning(e)
+
+
+                        db.session.delete(bridge)
+                        db.session.delete(clinic)
+                        db.session.commit()
+                        return redirect(url_for('general_logic.vet_logic', choice = 5, action = 1))
+                    elif bridge.is_clinic_owner == False:
+                        db.session.delete(bridge)
+                        db.session.commit()
+            
+            return redirect(url_for('general_logic.vet_logic', choice = 5, action = 1))
+        except Exception as e:
+            logging.warning(e)
+        return email
+    except SignatureExpired:
+        return render_template('auths/expired-token.html', user=current_user,
+                                clinic_id = clinic_id, expiredType = 2)
+

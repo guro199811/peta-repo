@@ -5,8 +5,14 @@
 
 {% block content%}
 
+{% if verification_type == 0 %}
 <h1 class="verification">თქვენს, {{ current_user.mail }} ელ.ფოსტაზე 
-    <br> გაიგზავნა დასტურის კოდი, გთხოვთ დაადასტუროთ მისი ვალიდურობა</h1>
-    <div class="blur-verification-bg"></div>
-
+<br> გაიგზავნა დასტურის კოდი, გთხოვთ დაადასტუროთ მისი ვალიდურობა.</h1>
+<div class="blur-verification-bg"></div>
+{% elif verification_type == 1 %}
+<h1 class="verification">თუ დარწმუნებული ხართ კლინიკის წაშლაზე, თქვენს ელ.ფოსტაზე {{ current_user.mail }}-ზე
+    გაიგზავნა წასაშლელი ბმული, გთხოვთ გაეცნოთ მას.
+</h1>
+<div class="blur-verification-bg"></div>
+{% endif %}
 {% endblock%}

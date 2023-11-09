@@ -136,7 +136,7 @@
           <!-- ბმული 2: ჩემი ცხოველების ჩამონათვალი -->
           <a href="{{ url_for('general_logic.vet_logic',choice=1, action=2) }}" class="square-button">ჩემი ცხოველების ისტორია</a>
           <!-- ბმული 3: ვეტერინარული კლინიკები ჩემს ახლოს -->
-          <a href="{{ url_for('general_logic.vet_logic',choice=1, action=3) }}" class="square-button">რუკა</a>
+          <a href="{{ url_for('general_logic.vet_logic',choice=1, action=3) }}" class="square-button">კლინიკების რუკა</a>
           <!-- ბმული 4: ვეტერინარების ტელეფონის ნომრები -->
           <a href="{{ url_for('general_logic.vet_logic',choice=1, action=4) }}" class="square-button">ვეტერინარების ტელეფონის ნომრები</a>
         </div>    
@@ -430,7 +430,12 @@
           <form action="{{ url_for('general_logic.vet_logic', choice=5, action=0) }}" method="POST">
             <label for="clinic-name">კლინიკის სახელი</label>
             <input type="text" id="clinic-name" name="clinic-name" required value="{{ clinic.clinic_name if edit_mode else '' }}" required>
-        
+            
+            {% if edit_mode %}
+            <input type="hidden" name="edit_mode" required value="{{ edit_mode }}">
+            <input type="hidden" name="clinic_id" required value="{{ clinic.clinic_id }}">
+            {% endif %}
+
             <label for="comment">მოკლე აღწერა</label>
             <textarea id="comment" name="comment" style="width: 600px; 
               max-height: 250px; min-height:200px; resize: vertical; overflow-y: auto; 
@@ -479,7 +484,7 @@
                     <input type="hidden" id="clinic" name="clinic_id" value="{{ clinic.clinic_id }}">
                     <button type="submit" class="change-button" style="border: none; box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);"><i class="fa-regular fa-pen-to-square"></i></button><br>
                   </form>
-                  <form class="None" action="{{ url_for('general_logic.remove_clinic', clinic_id = clinic.clinic_id) }}" method="DELETE" onsubmit="return confirm('დარწმუნებული ხართ რომ გნებავთ კლინიკის წაშლა');" >
+                  <form class="None" action="{{ url_for('auth.clinic_removal_email', clinic_id = clinic.clinic_id, user=current_user) }}" method="DELETE" onsubmit="return confirm('დარწმუნებული ხართ რომ გნებავთ კლინიკის წაშლა,\n თუ დარწმუნებული ხართ წაშლის თაობაზე, მეილზე მოგივათ დასტურის URL');" >
                     <button type="submit" class="change-button r-button" style="border: none; box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);"><i class="fa-solid fa-eraser"></i></button><br>
                   </form>
                 </div>
@@ -493,7 +498,7 @@
         {% else %}
           <h3 style="text-align:center">თქვენ არ ხართ არცერთ კლინიკაში გაწევრიანებული</h3>
           <a class="submit-style" href="{{ url_for('general_logic.vet_logic',choice=5, action=0) }}">დააჭირეთ აქ რომ დაამატოთ ახალი კლინიკა</a>
-          <a class="submit-style" href="{{ url_for('general_logic.vet_logic',choice=5, action=0) }}">დააჭირეთ აქ რომ გაწევრიანდეთ კლინიკაში</a>
+          <!--a class="submit-style" href="{{ url_for('general_logic.vet_logic',choice=5, action=0) }}">დააჭირეთ აქ რომ გაწევრიანდეთ კლინიკაში</a-->
         {% endif %}
       {% elif action == 3 %}
       {% endif %}

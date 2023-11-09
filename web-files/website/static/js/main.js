@@ -91,12 +91,15 @@ clinicsData.forEach(function(clinic) {
   }
 
   map.on('locationfound', onLocationFound);
+
+  
 }
 
 
 if (document.getElementById('map')) {
   initializeMap();
 }
+
 
 /* map for clinics */
 function initializeClinicMap() {

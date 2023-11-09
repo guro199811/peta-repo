@@ -314,8 +314,7 @@ def admin_logic(choice, action):
                         'longitude': longitude
                     }
                     clinics.append(clinic_info)
-                # Now pass 'clinics' to your template
-                logging.warning(clinics)
+                # pass ing'clinics' to your template
                 return render_template('login/admin.html', clinics=clinics, action=action, choice=choice)
 
         
@@ -814,7 +813,7 @@ def vet_logic(choice, action):
                             action=action, choice=choice, clinics = None, staff_members = None)
             
                 
-        if action == 1:
+        elif action == 1:
             vet_person = aliased(Person)
             owner_person = aliased(Person)
             vet = db.session.query(Vet).filter_by(person_id = current_user.id).one_or_none()
@@ -832,11 +831,7 @@ def vet_logic(choice, action):
             else:
                 return render_template('login/vet.html', choice=choice, action=action, visits=None)
 
-        if action == 0:
-            if request.method == "GET":
-                return render_template('login/vet.html', choice=choice, action=action)
-            elif request.method == "POST":
-                pass
+
 
     if choice == 5: #Add my clinic
         if action == 0:
@@ -844,6 +839,19 @@ def vet_logic(choice, action):
                 clinic_name = request.form.get('clinic-name')
                 desc = request.form.get('comment')
                 coordinates = request.form.get('coordinates')
+                try:
+                    edit_mode = request.form.get('edit_mode')
+                    clinic_id = request.form.get('clinic_id')
+                    clinic = db.session.query(Clinic).filter_by(clinic_id = clinic_id).one_or_none()
+                    if edit_mode:
+                        if clinic:
+                            clinic.clinic_name = clinic_name
+                            clinic.desc = desc
+                            clinic.coordinates = coordinates
+                            db.session.commit()
+                            return redirect(url_for('general_logic.vet_logic', choice=choice, action=1))
+                except:
+                    logging.warning('Editmode is False or nonexistant')
                 try:
                     clinic = Clinic(clinic_name = clinic_name, desc = desc, coordinates = coordinates)
                     db.session.add(clinic)
@@ -861,7 +869,6 @@ def vet_logic(choice, action):
 
             elif request.method == "GET":
                 try:
-                    edit_mode = False
                     clinic_id = request.args.get('clinic_id')
                     if clinic_id:
                         clinic = db.session.query(Clinic).filter_by(clinic_id = clinic_id).one_or_none()
@@ -1251,23 +1258,3 @@ def remove_note(note_id):
     
 
 
-@general_logic.route('clinic/<int:clinic_id>', methods=['GET', 'DELETE'])
-@login_required
-@grant_access([2, 3])
-def remove_clinic(clinic_id):
-    try:
-        bridge = db.session.query(P_C_bridge).filter_by(clinic_id = clinic_id, person_id = current_user.id).one_or_none()
-        if bridge:
-            clinic = db.session.query(Clinic).filter_by(clinic_id = clinic_id).one_or_none()
-            if clinic:
-                if bridge.is_clinic_owner == True:
-                    db.session.delete(bridge)
-                    db.session.delete(clinic)
-                    db.session.commit()
-                    return redirect(url_for('general_logic.vet_logic', choice = 5, action = 1))
-                elif bridge.is_clinic_owner == False:
-                    db.session.delete(bridge)
-                    db.session.commit()
-                    return redirect(url_for('general_logic.vet_logic', choice = 5, action = 1))
-    except Exception as e:
-        logging.warning(e)

@@ -12,5 +12,8 @@
 {% elif expiredType = 1 %}
 <h1 style="text-align:center" class="verification">თქვენს პაროლის შეცვლის ბმულს დრო გაუვიდა 
     <a href="{{ url_for('auth.forgot_password') }}">დააჭირეთ აქ რომ გაგზავნოთ ხელახლა</a></h1>
+{% elif expiredType = 2 %}
+<h1 style="text-align:center" class="verification">თქვენს კლინიკის წაშლის ბმულს დრო გაუვიდა 
+    <a href="{{ url_for('auth.clinic_removal_email', clinic_id = clinic_id, user = user) }}">დააჭირეთ აქ რომ გაგზავნოთ ხელახლა</a></h1>
 {% endif %}
 {% endblock%}
