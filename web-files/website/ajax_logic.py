@@ -16,7 +16,8 @@ def search_owner():
         search_input = request.form['searchInput']
         person = None
         if search_input.isdigit():
-            person = db.session.query(Person).filter_by(id=int(search_input)).one_or_none()
+            owner = db.session.query(Owner).filter_by(owner_id=int(search_input)).one_or_none()
+            person = db.session.query(Person).filter_by(id = owner.person_id).one_or_none()
         else:
             person = db.session.query(Person).filter_by(mail=search_input).one_or_none()
 

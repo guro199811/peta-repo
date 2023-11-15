@@ -71,10 +71,28 @@ def owner_logic(action):
                 pet_history = db.session.query(Pet_history, Pet).\
                     join(Pet, Pet_history.pet_id == Pet.pet_id).\
                     filter(Pet.owner_id == owner.owner_id).all()
+                try:
+                    vet_person = aliased(Person)
+                    owner_person = aliased(Person)
+                    visits = db.session.query(
+                    Visit, Clinic, Vet, Owner, Pet, vet_person.name.label('vet_name'), vet_person.lastname.label('vet_lastname'),
+                    owner_person.name.label('owner_name'), owner_person.lastname.label('owner_lastname'), Pet.name.label('pet_name'))\
+                        .join(Clinic, Clinic.clinic_id == Visit.clinic_id)\
+                        .join(Vet, Vet.vet_id == Visit.vet_id) \
+                        .join(Owner, Owner.owner_id == Visit.owner_id) \
+                        .join(Pet, Pet.pet_id == Visit.pet_id) \
+                        .join(vet_person, vet_person.id == Vet.person_id) \
+                        .join(owner_person, owner_person.id == Owner.person_id)\
+                        .filter(Owner.person_id == current_user.id).all()
+                except Exception as e:
+                    visits = None
+                    logging.warning(e)
+
                 if request.method == "GET":
                     return render_template('login/owner.html',
                         action = action, 
-                        pet_history = pet_history)
+                        pet_history = pet_history,
+                        visits = visits)
                 elif request.method == "POST":
                     history_id = request.form.get('history_id')
                     treatment = request.form.get('treatment')
@@ -137,7 +155,7 @@ def owner_logic(action):
                 # Now pass 'clinics' to your template
                 logging.warning(clinics)
                 return render_template('login/owner.html', clinics=clinics, action=action)
-
+            return render_template('login/owner.html', clinics=None, action=action)
         
         elif action == 4:
             vets = db.session.query(Vet, Person).join(Person, Vet.person_id == Person.id).filter(Vet.active == True).all()
@@ -251,10 +269,27 @@ def admin_logic(choice, action):
                 pet_history = db.session.query(Pet_history, Pet).\
                     join(Pet, Pet_history.pet_id == Pet.pet_id).\
                     filter(Pet.owner_id == owner.owner_id).all()
+                try:
+                    vet_person = aliased(Person)
+                    owner_person = aliased(Person)
+                    visits = db.session.query(
+                        Visit, Vet, Owner, Pet, vet_person.name.label('vet_name'), vet_person.lastname.label('vet_lastname'),
+                        owner_person.name.label('owner_name'), owner_person.lastname.label('owner_lastname'), Pet.name.label('pet_name')
+                        ).join(Vet, Vet.vet_id == Visit.vet_id) \
+                        .join(Owner, Owner.owner_id == Visit.owner_id) \
+                        .join(Pet, Pet.pet_id == Visit.pet_id) \
+                        .join(vet_person, vet_person.id == Vet.person_id) \
+                        .join(owner_person, owner_person.id == Owner.person_id)\
+                        .filter(Owner.person_id == current_user.id).all()
+                except Exception as e:
+                    visits = None
+                    logging.warning(e)
+
                 if request.method == "GET":
                     return render_template('login/admin.html',
                         choice = choice, action = action, 
-                        pet_history = pet_history)
+                        pet_history = pet_history,
+                        visits = visits)
                 elif request.method == "POST":
                     history_id = request.form.get('history_id')
                     treatment = request.form.get('treatment')
@@ -316,7 +351,7 @@ def admin_logic(choice, action):
                     clinics.append(clinic_info)
                 # pass ing'clinics' to your template
                 return render_template('login/admin.html', clinics=clinics, action=action, choice=choice)
-
+            return render_template('login/admin.html', clinics=None, action=action, choice=choice)
         
         elif action == 4:
             vets = db.session.query(Vet, Person).join(Person, Vet.person_id == Person.id).filter(Vet.active == True).all()
@@ -518,6 +553,13 @@ def admin_logic(choice, action):
                 flash('მონაცემები წარმატებით შეიცვალა.', category='success')
             return render_template('login/admin.html',choice = choice, action = action)
 
+    if choice == 9:
+        clinics = db.session.query(Clinic, Person).join(P_C_bridge, Clinic.clinic_id == P_C_bridge.clinic_id)\
+        .join(Person, Person.id == P_C_bridge.person_id).filter(P_C_bridge.is_clinic_owner == True).all()
+        
+        return render_template('login/admin.html', choice = choice, 
+                               action = action, clinics = clinics)
+
     return render_template('login/admin.html', choice = choice)
 
 
@@ -573,10 +615,28 @@ def vet_logic(choice, action):
                 pet_history = db.session.query(Pet_history, Pet).\
                     join(Pet, Pet_history.pet_id == Pet.pet_id).\
                     filter(Pet.owner_id == owner.owner_id).all()
+                try:
+                    vet_person = aliased(Person)
+                    owner_person = aliased(Person)
+                    visits = db.session.query(
+                    Visit, Clinic, Vet, Owner, Pet, vet_person.name.label('vet_name'), vet_person.lastname.label('vet_lastname'),
+                    owner_person.name.label('owner_name'), owner_person.lastname.label('owner_lastname'), Pet.name.label('pet_name'))\
+                        .join(Clinic, Clinic.clinic_id == Visit.clinic_id)\
+                        .join(Vet, Vet.vet_id == Visit.vet_id) \
+                        .join(Owner, Owner.owner_id == Visit.owner_id) \
+                        .join(Pet, Pet.pet_id == Visit.pet_id) \
+                        .join(vet_person, vet_person.id == Vet.person_id) \
+                        .join(owner_person, owner_person.id == Owner.person_id)\
+                        .filter(Owner.person_id == current_user.id).all()
+                except Exception as e:
+                    visits = None
+                    logging.warning(e)
+
                 if request.method == "GET":
                     return render_template('login/vet.html',
                         choice = choice, action = action, 
-                        pet_history = pet_history)
+                        pet_history = pet_history,
+                        visits = visits)
                 elif request.method == "POST":
                     history_id = request.form.get('history_id')
                     treatment = request.form.get('treatment')
@@ -639,7 +699,7 @@ def vet_logic(choice, action):
                 # Now pass 'clinics' to your template
                 logging.warning(clinics)
                 return render_template('login/vet.html', clinics=clinics, action=action, choice=choice)
-
+            return render_template('login/vet.html', clinics=None, action=action, choice=choice)
         
         elif action == 4:
             vets = db.session.query(Vet, Person).join(Person, Vet.person_id == Person.id).filter(Vet.active == True).all()
@@ -668,7 +728,7 @@ def vet_logic(choice, action):
                     flash('თქვენი ცხოველი ვერ დარეგისტრირდა', category='error')    
 
             return redirect(url_for('general_logic.vet_logic', choice=choice, action=1))
-
+        
         elif action == 6: #needs pets from current user
             if request.method == "GET":    
                 owner = db.session.query(Owner).filter_by(person_id = current_user.id).one_or_none()
@@ -691,79 +751,24 @@ def vet_logic(choice, action):
         else:
             return render_template('login/vet.html', choice=1, action=None)
 
-    if choice == 2: #dashboard
-        owner_count = db.session.query(Owner).count()
-        vet_count = db.session.query(Vet).filter_by(active = True).count()
-        editor_count = db.session.query(Editor).filter_by(active = True).count()
-        admin_count = db.session.query(Admin).count()
 
-
-        # Subquery to find the IDs of owners, vets, and editors
-        owner_ids = db.session.query(Owner.person_id)
-        vet_ids = db.session.query(Vet.person_id)
-        editor_ids = db.session.query(Editor.person_id)
-
-        other_users = db.session.query(Person).filter(
-            and_(
-                Person.id.notin_(owner_ids),
-                Person.id.notin_(vet_ids),
-                Person.id.notin_(editor_ids)
-            )
-        ).count()
-
-        owners = db.session.query(
-            Owner, Person, func.count(Pet.pet_id)
-        ).join(Person, Owner.person_id == Person.id). \
-        outerjoin(Pet, Owner.owner_id == Pet.owner_id). \
-        group_by(Owner, Person).all()
-
-        #google charts table data here
-        owner_data = []
-        for owner in owners:
-            owner_id = owner[0].owner_id
-            name = f"{owner.Person.name} {owner.Person.lastname}"
-            pet_count = owner[2]
-            owner_data.append([owner_id, name, int(pet_count)])
-
-        #Google charts trend data here
-        
-        persons = db.session.query(Person).all()
-        
-        trend_data = [{'created': str(person.created), 'count': 1} for person in persons]
-        current_date = dt.today()
-        min_date = current_date - timedelta(days=4 * 30) 
-
-
-        #Piechart data
-
-        data = [
-            ['Users', 'User count chart'],
-            ['Owners', owner_count],
-            ['Vets', vet_count],
-            ['Editors', editor_count],
-            ['Admins', admin_count],
-            ['Regular users', other_users]
-        ]
-
-        #Admin notes
-        notes = db.session.query(Note).filter_by(person_id = current_user.id).all()
-        return render_template('login/admin.html',
-                            choice = choice,
-                            action=action,
-                            data = data,
-                            owner_data = owner_data,
-                            trend_data = trend_data,
-                            current_date = current_date,
-                            min_date = min_date,
-                            notes = notes)
-        
     if choice == 4: #My visits
         if action == 0:
             if request.method == "POST":
                 clinic = request.form.get('clinic')
-                vet_id = request.form.get('vet')
+                person = request.form.get('vet')
+                try:
+                    vet = db.session.query(Vet).filter_by(person_id = person).one()
+                except:
+                    flash("ვეტერინარი არ არის დარეგისტრირებული ვეტერინარულ ბაზაში\n\
+                          გთხოვთ მიმართოს ადმინისტრაციას")
+                
                 owner_id = request.form.get('ownerId')
                 pet_id = request.form.get('petId')
+                if owner_id == None:
+                    flash('გთხოვთ მიუთითოთ შინაური ცხოველის პატრონი.')
+                if pet_id == None:
+                    flash('გთხოვთ მიუთითოთ შინაური ცხოველი.')
                 diagnosis = request.form.get('diagnosis')
                 treatment = request.form.get('treatment')
                 date = request.form.get('date')
@@ -771,13 +776,41 @@ def vet_logic(choice, action):
                     date = dt.today()
                 comment = request.form.get('comment')
 
-                visit = Visit(clinic_id = clinic, vet_id = vet_id,
+                try:
+                    edit_mode = request.form.get('edit_mode')
+                    if edit_mode:
+                        visit_id = request.form.get('visit_id')
+                        visit = db.session.query(Visit).filter_by(visit_id = visit_id).one_or_none()
+                        if visit:
+                            visit.clinic_id = clinic
+                            visit.vet_id = vet.vet_id
+                            visit.owner_id = owner_id
+                            try:
+                                visit.pet_id = pet_id
+                            except:
+                                flash('გთხოვთ მიუთითოთ შინაური ცხოველის მფლობელი და შინაური ცხოველი.')
+                            visit.diagnosis = diagnosis
+                            visit.treatment = treatment
+                            visit.date = date
+                            visit.comment = comment
+                            db.session.commit()
+                            return redirect(url_for('general_logic.vet_logic', action = 1, choice = 4))
+
+                except:
+                    logging.warning('Editmode is False or nonexistant')
+
+
+                try:
+                    visit = Visit(clinic_id = clinic, vet_id = vet.vet_id,
                               owner_id = owner_id, pet_id = pet_id,
                               diagnosis = diagnosis, treatment = treatment,
                               comment = comment, date = date)
+                    db.session.add(visit)
+                    db.session.commit()
+                except Exception as e:
+                    logging.warning(f'Crash at visits: {e}')
 
-                db.session.add(visit)
-                db.session.commit()
+                
 
             elif request.method == "GET":
                 try:
@@ -802,15 +835,31 @@ def vet_logic(choice, action):
 
                     clinics = db.session.query(Clinic).filter(Clinic.clinic_id.in_(clinic_ids)).all()
 
-                                        
+                    
+                    try:
+                        visit_id = request.args.get('visit_id')
+                        if visit_id:
+                            visit = db.session.query(Visit).filter_by(visit_id = visit_id).one_or_none()
+                            if visit:
+                                return render_template('login/vet.html',
+                                        action=action, choice=choice, edit_mode=True,
+                                        visit = visit,
+                                        clinics=clinics, 
+                                        staff_members_by_clinic=staff_members_by_clinic)
+                    except Exception as e:
+                        logging.warning(e)
+
                     return render_template('login/vet.html',action=action, choice=choice,
+                                edit_mode=False,
                                 clinics=clinics,
+                                visit = None,
                                 staff_members_by_clinic=staff_members_by_clinic)
 
                 except Exception as e:
                     logging.warning(e)
                 return render_template('login/vet.html',
-                            action=action, choice=choice, clinics = None, staff_members = None)
+                        action=action, choice=choice,
+                        clinics = None, staff_members = None)
             
                 
         elif action == 1:
@@ -819,9 +868,10 @@ def vet_logic(choice, action):
             vet = db.session.query(Vet).filter_by(person_id = current_user.id).one_or_none()
             if vet:
                 visits = db.session.query(
-                Visit, Vet, Owner, Pet, vet_person.name.label('vet_name'), vet_person.lastname.label('vet_lastname'),
-                owner_person.name.label('owner_name'), owner_person.lastname.label('owner_lastname'), Pet.name.label('pet_name')
-                ).join(Vet, Vet.vet_id == Visit.vet_id) \
+                Visit, Clinic, Vet, Owner, Pet, vet_person.name.label('vet_name'), vet_person.lastname.label('vet_lastname'),
+                owner_person.name.label('owner_name'), owner_person.lastname.label('owner_lastname'), Pet.name.label('pet_name'))\
+                .join(Clinic, Clinic.clinic_id == Visit.clinic_id)\
+                .join(Vet, Vet.vet_id == Visit.vet_id) \
                 .join(Owner, Owner.owner_id == Visit.owner_id) \
                 .join(Pet, Pet.pet_id == Visit.pet_id) \
                 .join(vet_person, vet_person.id == Vet.person_id) \
@@ -830,7 +880,6 @@ def vet_logic(choice, action):
                 return render_template('login/vet.html', choice=choice, action=action, visits=visits)
             else:
                 return render_template('login/vet.html', choice=choice, action=action, visits=None)
-
 
 
     if choice == 5: #Add my clinic
@@ -883,31 +932,45 @@ def vet_logic(choice, action):
         elif action == 1:
             if request.method == "GET":
                 try:
-                    # Query P_C_bridge to get clinic and personel IDs
-                    my_bridge = db.session.query(P_C_bridge).filter_by(person_id=current_user.id).all()
-                    clinics = []
-                    personels = []
-                    for bridge in my_bridge:
+                    # Query all bridges for the current user
+                    my_bridges = db.session.query(P_C_bridge).filter_by(person_id=current_user.id).all()
+                    
+                    # Initialize data structures
+                    clinics_info = []
+
+                    for bridge in my_bridges:
+                        # Query the clinic
                         clinic = db.session.query(Clinic).filter_by(clinic_id=bridge.clinic_id).one_or_none()
+                        
                         if clinic:
-                            clinics.append(clinic)
-                            
-                        # Joining P_C_bridge with persons to get personel data
-                        personel = db.session.query(Person).join(P_C_bridge).filter(
-                            P_C_bridge.person_id == Person.id,
-                            P_C_bridge.bridge_id == bridge.bridge_id,
-                            P_C_bridge.is_clinic_owner == False
+                            # Query the owner of the clinic
+                            owner = db.session.query(Person).join(P_C_bridge).filter(
+                                P_C_bridge.clinic_id == clinic.clinic_id,
+                                P_C_bridge.is_clinic_owner == True,
+                                P_C_bridge.person_id == Person.id
                             ).one_or_none()
 
-                        if personel:
-                            personels.append(personel)
-                    return render_template('login/vet.html',
-                                           choice = choice, action = action, 
-                                           clinics = clinics, personels = personels)
+                            # Query other personnel of the clinic
+                            personnel = db.session.query(Person).join(P_C_bridge).filter(
+                                P_C_bridge.clinic_id == clinic.clinic_id,
+                                P_C_bridge.is_clinic_owner == False,
+                                P_C_bridge.person_id != current_user.id
+                            ).all()
+
+                            # Structure data
+                            clinic_data = {
+                                'clinic': clinic,
+                                'owner': owner,
+                                'personnel': personnel
+                            }
+
+                            clinics_info.append(clinic_data)
+
+                    return render_template('login/vet.html', choice=choice, action=action, clinics_info=clinics_info)
 
                 except Exception as e:
                     logging.warning(e)
-              
+
         else:
             abort(404)
 
@@ -1257,4 +1320,16 @@ def remove_note(note_id):
         return redirect(url_for('general_logic.admin_logic',choice = 2, action=0))
     
 
+@general_logic.route('/remove_visit/<int:visit_id>', methods=['GET', 'DELETE'])
+@login_required
+@grant_access([3])
+def remove_visit(visit_id):
+    visit = db.session.query(Visit).filter_by(visit_id = visit_id).one_or_none()
+    if visit:
+        db.session.delete(visit)
+        db.session.commit()
+        return redirect(url_for('general_logic.vet_logic',choice = 4, action=1))
 
+    else:
+        return redirect(url_for('general_logic.vet_logic',choice = 4, action=1))
+    

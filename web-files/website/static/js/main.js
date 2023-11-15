@@ -46,59 +46,62 @@ else{
 
 
 function initializeMap() {
-  
   var map = L.map('map').setView([41.7151377, 44.827096], 8);
-  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
   }).addTo(map);
 
-
-  // Retrieve clinic data passed from Flask
-try {
-  var clinicsDataElement = document.getElementById('map');
-/*  
-  console.log('##############')
-  console.log(clinicsDataElement)
-  console.log('##############')
-*/
-  var clinicsData = JSON.parse(clinicsDataElement.dataset.clinics);
-} catch (e) {
-  console.error('Error parsing clinics data:', e);
-}
-
-
-  // Loop through the clinics and add a marker for each
-clinicsData.forEach(function(clinic) {
-  var marker = L.marker([clinic.latitude, clinic.longitude]).addTo(map);
-
-  // Creating a custom popup content
-  var popupContent = '<strong>' + clinic.clinic_name + '</strong><br>' + clinic.description;
-
-  // Bind the popup with a small offset to the marker
-  marker.bindPopup(popupContent, {
-      offset: L.point(0, -20)
-  });
+  var vetClinicIcon = L.ExtraMarkers.icon({
+    shape: 'square',
+    markerColor: 'orange',
+    prefix: 'fa',
+    icon: 'fa-shield-cat',
+    iconColor: '#fff',
+    iconRotate: 0,
+    extraClasses: '',
+    number: '',
+    svg: false
 });
-  map.locate({ setView: true, maxZoom: 16 });
-
-  // Add a marker at the user's location
-  function onLocationFound(e) {
-    var radius = e.accuracy / 2;
-    L.marker(e.latlng).addTo(map)
-      .bindPopup("ჩემი ლოკაცია").openPopup();
-    L.circle(e.latlng, radius).addTo(map);
+  // Retrieve clinic data passed from Flask
+  try {
+      var clinicsDataElement = document.getElementById('map');
+      var clinicsData = JSON.parse(clinicsDataElement.dataset.clinics);
+      // Loop through the clinics and add a marker for each
+      clinicsData.forEach(function(clinic) {
+          var marker = L.marker([clinic.latitude, clinic.longitude], {icon: vetClinicIcon}).addTo(map);
+          var popupContent = '<strong>' + clinic.clinic_name + '</strong><br>' + clinic.description;
+          marker.bindPopup(popupContent, {
+              offset: L.point(0, -20)
+          });
+      });
+  } catch (e) {
+      console.error('Error parsing clinics data:', e);
   }
 
+  // Function to handle location found
+  function onLocationFound(e) {
+      var radius = e.accuracy / 2;
+      L.marker(e.latlng).addTo(map)
+          .bindPopup("ჩემი ლოკაცია").openPopup();
+      L.circle(e.latlng, radius).addTo(map);
+      map.setView(e.latlng, 16);
+  }
+
+  // Try to locate the user automatically
+  map.locate({ setView: true, maxZoom: 16 });
+
+  // Add a "Locate Me" button
+  var findMyLocationButton = L.easyButton('fa-map-marker', function() {
+      map.locate({ setView: true, maxZoom: 16 });
+  }, 'სად ვარ მე').addTo(map);
+
   map.on('locationfound', onLocationFound);
-
-  
 }
-
 
 if (document.getElementById('map')) {
   initializeMap();
 }
+
 
 
 /* map for clinics */
@@ -332,6 +335,7 @@ searchForm.classList.toggle('show-search');
 
 
 function searchOwner() {
+  document.getElementById('submitBtn').disabled = false;
   var searchInput = document.getElementById('searchInput').value;
   var request = new XMLHttpRequest();
   request.open('POST', '/search_owner', true);
@@ -352,4 +356,25 @@ function searchOwner() {
   };
 
   request.send('searchInput=' + encodeURIComponent(searchInput));
+}
+
+function openTab(evt, tabName) {
+  var i, tabcontent, tablinks;
+  tabcontent = document.getElementsByClassName("tabcontent");
+  for (i = 0; i < tabcontent.length; i++) {
+    tabcontent[i].style.display = "none";
+  }
+  tablinks = document.getElementsByClassName("tablinks");
+  for (i = 0; i < tablinks.length; i++) {
+    tablinks[i].className = tablinks[i].className.replace(" active", "");
+  }
+  document.getElementById(tabName).style.display = "block";
+  evt.currentTarget.className += " active";
+
+  // Load data using AJAX
+  loadData(tabName);
+}
+
+function loadData(tabName) {
+  // Implement AJAX calls to fetch data for PetHistory or Visits
 }

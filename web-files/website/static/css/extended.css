@@ -71,6 +71,10 @@
   height: 150px; /* Adjusted height */
 }
 
+.home-section{
+  overflow:auto;
+ }
+
 @media (max-width: 768px) {
   .visitaddition {
       grid-template-columns: 1fr; /* Stack elements in one column on smaller screens */

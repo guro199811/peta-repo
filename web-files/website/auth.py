@@ -278,7 +278,7 @@ def clinic_removal_email(clinic_id):
             message.body = f'თუ დარწმუნებული ხართ რომ გნებავთ კავშირის გაწყვეტა კლინიკასთან სახელად "{clinic.clinic_name}", გადადით მოცემულ ბმულზე: {remove_url}\nლინკი გაუქმდება გამოგზავნიდან 1 საათში.\n\n\nPeta-Team'
     except Exception as e:
         flash('შეცდომა')
-        logging.log(e)
+        logging.warning(e)
 
     r_mail.send(message)
     return render_template("auths/verification.html", verification_type = 1)
@@ -302,6 +302,7 @@ def confirm_clinic_removal(clinic_id, token, expiration=3600):
                 clinic = db.session.query(Clinic).filter_by(clinic_id = clinic_id).one_or_none()
                 if clinic:
                     if bridge.is_clinic_owner == True:
+                         
                         try:
                             visits = db.session.query(Visit).filter_by(clinic_id = clinic.clinic_id).all()
                             for visit in visits:

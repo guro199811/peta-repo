@@ -22,8 +22,8 @@ except:
 
 def create_app(migrate):
     app = Flask(__name__, static_url_path='/static', static_folder='static')
-    secret_key = 'asiudhw9opaisndoihwap0osnid[owa]'
-    #secret_key = os.environ.get('SECRET_KEY') or secrets.token_hex(16)
+    #secret_key = 'shdiwkmalwdandwakjsndkwjanksjdnwkanskdwkajn'
+    secret_key = os.environ.get('SECRET_KEY') or secrets.token_hex(16)
     app.config['SECRET_KEY'] = secret_key
     
     if database_url == None:
