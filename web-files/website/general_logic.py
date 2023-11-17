@@ -751,6 +751,16 @@ def vet_logic(choice, action):
         else:
             return render_template('login/vet.html', choice=1, action=None)
 
+    if choice == 3: #Requests
+        sentRequests = db.session.query(Requests).filter_by(requester_id = current_user.id, request_type = "clinic").all()
+        recievedRequests = db.session.query(Requests).filter_by(reciever_id = current_user.id, request_type = "clinic").all()
+        
+        sent_connections = get_clinic_by_request(sentRequests)
+        received_connections = get_clinic_by_request(recievedRequests)
+
+        return render_template('login/vet.html', sentRequests = sent_connections, 
+                                recievedRequest = received_connections,
+                                action=action, choice = choice)
 
     if choice == 4: #My visits
         if action == 0:
@@ -957,9 +967,28 @@ def vet_logic(choice, action):
                                 P_C_bridge.person_id != current_user.id
                             ).all()
 
+                            if isinstance(clinic.coordinates, str) and ',' in clinic.coordinates:
+                                try:
+                                    latitude_str, longitude_str = clinic.coordinates.split(",")
+                                    latitude = float(latitude_str)
+                                    longitude = float(longitude_str)
+                                except ValueError as e:
+                                    # Log the error and the offending coordinates string
+                                    logging.warning(f"Invalid coordinates format for clinic {clinic.clinic_name}: {clinic.coordinates}")
+                                    logging.warning(e)
+                                    # Skip this clinic and continue with the next
+                                    continue
+                            else:
+                                # Log a warning for clinics without valid coordinates
+                                logging.warning(f"No valid coordinates provided for clinic {clinic.clinic_name}")
+                                # Skip this clinic and continue with the next
+                                continue
+
                             # Structure data
                             clinic_data = {
                                 'clinic': clinic,
+                                'latitude' : latitude,
+                                'longitude' : longitude,
                                 'owner': owner,
                                 'personnel': personnel
                             }
@@ -970,9 +999,97 @@ def vet_logic(choice, action):
 
                 except Exception as e:
                     logging.warning(e)
+        elif action == 3:
+            if request.method == "GET":
+                search_query = request.args.get('q', '').strip()
+                clinics_info = []
+                unique_bridges = db.session.query(P_C_bridge).filter_by(is_clinic_owner=True)
 
+                # If there is a search query, filter the results
+                if search_query:
+                    unique_bridges = unique_bridges.join(Clinic).filter(Clinic.clinic_name.like(f"%{search_query}%"))
+
+                unique_bridges = unique_bridges.all()
+
+                for bridge in unique_bridges:
+                    # Query the clinic
+                    clinic = db.session.query(Clinic).filter_by(clinic_id=bridge.clinic_id).one_or_none()
+                    
+                    if clinic:
+                        # Query the owner of the clinic
+                        owner = db.session.query(Person).join(P_C_bridge).filter(
+                            P_C_bridge.clinic_id == clinic.clinic_id,
+                            P_C_bridge.is_clinic_owner == True,
+                            P_C_bridge.person_id == Person.id
+                        ).one_or_none()
+
+                        if isinstance(clinic.coordinates, str) and ',' in clinic.coordinates:
+                            try:
+                                latitude_str, longitude_str = clinic.coordinates.split(",")
+                                latitude = float(latitude_str)
+                                longitude = float(longitude_str)
+                            except ValueError as e:
+                                # Log the error and the offending coordinates string
+                                logging.warning(f"Invalid coordinates format for clinic {clinic.clinic_name}: {clinic.coordinates}")
+                                logging.warning(e)
+                                # Skip this clinic and continue with the next
+                                continue
+                        else:
+                            # Log a warning for clinics without valid coordinates
+                            logging.warning(f"No valid coordinates provided for clinic {clinic.clinic_name}")
+                            # Skip this clinic and continue with the next
+                            continue
+
+                        # Structure data
+                        clinic_data = {
+                            'clinic': clinic,
+                            'latitude': latitude,
+                            'longitude': longitude,
+                            'owner': owner
+                        }
+
+                        clinics_info.append(clinic_data)
+
+                return render_template('login/vet.html', choice=choice, action=action, 
+                                       clinics_info=clinics_info)
+            
+            #sending the request for clinic approval
+            elif request.method == "POST":
+                clinic_id = request.form.get('clinic_id')
+                if clinic_id is not None:
+                    clinic_id = int(clinic_id)
+
+                    bridge = db.session.query(P_C_bridge).join(
+                        Person, Person.id == P_C_bridge.person_id
+                    ).filter(
+                        P_C_bridge.clinic_id == clinic_id,
+                        P_C_bridge.is_clinic_owner == True
+                    ).one_or_none()
+
+                    if bridge:
+                        send_request = Requests(
+                            requester_id=current_user.id,
+                            reciever_id=bridge.person_id,  # Assuming there's a person_id field on the P_C_bridge model
+                            request_type="clinic",
+                            request_sent = dt.today(),
+                            ref = clinic_id
+                        )
+                        db.session.add(send_request)
+                        try:
+                            db.session.commit()
+                            return redirect(url_for('general_logic.vet_logic', choice=3, action=0))
+                        except Exception as e:
+                            db.session.rollback()
+                            logging.warning(e)
+                    else:
+                        logging.warning('No Bridge was found')
+                        return render_template('login/vet.html', choice=8, action=0)
+                else:
+                    logging.warning('clinic_id is None or invalid')
+                    return render_template('login/vet.html', choice=8, action=0)
         else:
             abort(404)
+
 
 
     if choice == 8: #My Data
@@ -1256,6 +1373,48 @@ def edit_note(note_id):
     return redirect(url_for('general_logic.admin_logic', choice = 2, action=0))
 
 
+#clinic requests are controlled here
+@general_logic.route('request_control/<int:action>/<int:request_id>', methods=['GET', 'POST'])
+@login_required
+@grant_access([3])
+def clinic_request_control(action, request_id):
+    request_data = db.session.query(Requests).filter_by(request_id = request_id).one_or_none()
+    if request_data:
+        if action == 0: #delete
+            db.session.delete(request_data)
+            db.session.commit()
+            return redirect(url_for('general_logic.vet_logic',choice = 3, action=action))
+        elif action == 1: #approve
+            legit = db.session.query(Vet).filter_by(person_id = request_data.reciever_id, has_license = True).one_or_none()
+            if legit:
+                clinic_data = db.session.query(Clinic).filter_by(clinic_id = request_data.ref).one_or_none()
+                if clinic_data:
+                    check_bridge = db.session.query(P_C_bridge).filter_by(
+                        person_id = request_data.requester_id, 
+                        clinic_id = clinic_data.clinic_id).one_or_none()
+                    
+                    if check_bridge == None:
+                        new_bridge = P_C_bridge(person_id = request_data.requester_id, 
+                                                clinic_id = clinic_data.clinic_id,
+                                                is_clinic_owner = False)
+                        request_data.approved = True
+                        db.session.add(new_bridge)
+                        db.session.commit()
+                        flash('წარმატება')
+                    else:
+                        flash("თქვენ უკვე გაწევრიანებული ხართ მოცემულ კლინიკაში", category='error')
+                        db.session.delete(request_data)
+                        db.session.commit()
+                return redirect(url_for('general_logic.vet_logic',choice = 3, action=action))
+            else:
+                abort(404)
+        else:
+            abort(404)
+    else:
+        return redirect(url_for('general_logic.vet_logic',choice = 3, action=action))
+   
+
+
 #Removing functions section
 
 
@@ -1333,3 +1492,18 @@ def remove_visit(visit_id):
     else:
         return redirect(url_for('general_logic.vet_logic',choice = 4, action=1))
     
+
+
+#requests
+def get_clinic_by_request(requests):
+    connections = []
+    for request in requests:
+        clinic_id = request.ref  # Assuming 'ref' is your clinic ID in the Requests model
+        clinic = db.session.query(Clinic).filter_by(clinic_id = clinic_id).one_or_none()
+        if clinic:
+            connection = {
+                'request': request,
+                'clinic': clinic
+            }
+            connections.append(connection)
+    return connections

@@ -102,6 +102,51 @@ if (document.getElementById('map')) {
   initializeMap();
 }
 
+function initializeMiniMap(mapId, latitude, longitude) {
+  var map = L.map(mapId, {
+      center: [latitude, longitude],
+      zoom: 15,
+      dragging: true,
+      touchZoom: false,
+      scrollWheelZoom: true,
+      doubleClickZoom: false,
+      boxZoom: false,
+      tap: false,
+      keyboard: false,
+      zoomControl: false
+  });
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+  }).addTo(map);
+
+  // Define an icon for the marker
+  var vetClinicIcon = L.ExtraMarkers.icon({
+      shape: 'square',
+      markerColor: 'orange',
+      prefix: 'fa',
+      icon: 'fa-shield-cat',
+      iconColor: '#fff',
+      iconRotate: 0,
+      extraClasses: '',
+      number: '',
+      svg: false
+  });
+
+  // Add a marker at the given coordinates
+  var marker = L.marker([latitude, longitude], {icon: vetClinicIcon}).addTo(map);
+}
+
+// Call the function with specific coordinates
+document.addEventListener('DOMContentLoaded', function() {
+  var miniMaps = document.querySelectorAll('.mini-map');
+  miniMaps.forEach(function(miniMap) {
+      var latitude = parseFloat(miniMap.dataset.latitude);
+      var longitude = parseFloat(miniMap.dataset.longitude);
+      initializeMiniMap(miniMap.id, latitude, longitude);
+  });
+});
+
+
 
 
 /* map for clinics */
@@ -376,5 +421,5 @@ function openTab(evt, tabName) {
 }
 
 function loadData(tabName) {
-  // Implement AJAX calls to fetch data for PetHistory or Visits
+  // Implement AJAX If nessesery
 }

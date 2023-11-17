@@ -151,7 +151,7 @@ nav{
 }
 
 .section-title {
-  font-size: 36px;
+  font-size: 24px;
   font-weight: bold;
   margin-bottom: 30px;
   text-align: center;
@@ -1913,6 +1913,82 @@ padding-top:10px;
  .nav-list a .bx-add-to-queue{
   color:#000000;
  }
+
+ .mini-map{
+  width:200px;
+  height:90px;
+ }
+ 
  
 
 
+/* Tablinks */
+.newclinicbox .tab .tablinks{
+  align-items:normal;
+  flex-direction:column;
+  border-top-left-radius:10px;
+  border-top-right-radius:10px;
+  border-bottom-left-radius:10px;
+  border-bottom-right-radius:10px;
+  margin-bottom:7px;
+  margin-right:5px;
+  margin-left:5px;
+ }
+ 
+ /* Tab */
+ .home-section .newclinicbox .tab{
+  display:flex;
+  justify-content:center;
+ }
+ .home-section .newclinicbox #recievedRequest .table-sortable tbody tr th form{
+  height:auto !important;
+ } 
+
+ .home-section .newclinicbox #sentRequest .table-sortable tbody tr th form{
+  height:auto !important;
+ }
+ 
+ /* Pet actions */
+#recievedRequest tr .pet-actions{
+  flex-wrap:nowrap;
+  flex-direction:row;
+ }
+ 
+ /* Pet actions */
+ .home-section .newclinicbox #recievedRequest .table-sortable tbody tr th .pet-actions{
+  width:auto !important;
+ }
+ 
+ /* Form Division */
+ .home-section .newclinicbox #recievedRequest .table-sortable tbody tr th .pet-actions form{
+  width:auto !important;
+ }
+ 
+ /* Th */
+ .home-section .newclinicbox #recievedRequest .table-sortable tbody tr th{
+  width:auto !important;
+  height:auto !important;
+ }
+ 
+
+ /* Pet actions */
+.home-section .newclinicbox #sentRequest .table-sortable tbody tr th .pet-actions{
+  width:auto !important;
+ }
+ 
+ /* Th */
+ .home-section .newclinicbox #sentRequest .table-sortable tbody tr th{
+  width:auto !important;
+ }
+ 
+ /* Form Division */
+ .home-section .newclinicbox #sentRequest .table-sortable tbody tr th .pet-actions form{
+  width:auto !important;
+ }
+ 
+ /* Change button */
+#recievedRequest tr .change-button{
+  margin-left:5px;
+  margin-right:5px;
+ }
+ 

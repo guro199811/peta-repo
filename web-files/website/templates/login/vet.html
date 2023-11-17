@@ -42,12 +42,12 @@
     <li>
       <a href="{{ url_for('general_logic.vet_logic', choice=5, action = 1) }}">
         <i class='bx bx-message-alt-add'></i>
-       <span class="link_name">კლინიკები</span>
+       <span class="link_name">კლინიკების მენიუ</span>
       </a>
-    <span class="tooltip">კლინიკები</span>
+    <span class="tooltip">კლინიკების მენიუ</span>
   </li>
   <li>
-    <a href="#">
+    <a href="{{ url_for('general_logic.vet_logic', choice=3, action = 0) }}">
       <i class='bx bx-add-to-queue'></i>
       <span class="link_name">კლინიკასთან შეერთება</span>
     </a>
@@ -385,6 +385,87 @@
         {% endif %}
       </div>
     </section>
+
+    {% elif choice == 3 %}
+    <div class="newclinicbox">
+      <div class="tab">
+        <button class="tablinks" onclick="openTab(event, 'recievedRequest')">მიღებული მოთხოვნები</button>
+        <button class="tablinks" onclick="openTab(event, 'sentRequest')">გაგზავნილი მოთხოვნები</button>
+      </div>
+      <div id="recievedRequest" class="tabcontent">
+      {% if recievedRequest %}
+        <table class="table table-sortable">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>გამომგზავნი</th>
+            <th>მოთხოვნის აღწერა</th>
+            <th>გამოგზავნის თარიღი</th>
+            <th>მოთხოვნის კონტროლი</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for connection in recievedRequest %}
+            <tr>
+              <td>{{ connection.request.request_id }}</td>
+              <td>{{ connection.request.requester.name }} {{ connection.request.requester.lastname }}</td>
+              <td>მომხმარებელი <strong>{{ connection.request.requester.name }}</strong> ითხოვს თქვენს კლინიკაში <strong>"{{ connection.clinic.clinic_name }}"</strong> გაწევრიანებას</td>
+              <td>{{ connection.request.request_sent }}</td>
+              <th>
+                <div class="pet-actions">
+                <form action="{{ url_for('general_logic.clinic_request_control', action = 1, request_id = connection.request.request_id) }}" method="GET" onsubmit="return confirm('ამ მოქმედებით თქვენ ეთანხმებით მოცემული პირის მოთხოვნას კლინიკასთან შეერთების თაობაზე.');" >
+                  <button type="submit" class="change-button s-button" style="border: none; box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); " title="მოთხოვნის დადასტურება"><i class="fa-solid fa-check"></i></button><br>
+                </form>
+                <form action="{{ url_for('general_logic.clinic_request_control', action = 0, request_id = connection.request.request_id) }}" method="GET" onsubmit="return confirm('ამ მოქმედებით თქვენ უარყოფთ მოცემული პირის მოთხოვნას კლინიკასთან შეერთების თაობაზე.');" >
+                  <button type="submit" class="change-button r-button" style="border: none; box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);" title="მოთხოვნის უარყოფა"><i class="fa-solid fa-x"></i></button><br>
+                </form>
+              </div>
+              </th>
+            </tr>
+            {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <h2 style="text-align:center">ახალი მოთხოვნები არ არის</h2>
+      {% endif %}
+    </div>
+    <div id="sentRequest" class="tabcontent" style="display:none">
+      {% if sentRequests %}
+        <table class="table table-sortable">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>მიმღები</th>
+            <th>მოთხოვნის აღწერა</th>
+            <th>გაგზავნის თარიღი</th>
+            <th>მოთხოვნის გაუქმება</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for connection in sentRequests %}
+          <tr>
+            <td>{{ connection.request.request_id }}</td>
+            <td>{{ connection.request.reciever.name }} {{ connection.request.reciever.lastname }}</td>
+            <td>გაიგზავნა მოთხოვნა <strong>{{ connection.request.reciever.name }} {{connection.request.reciever.lastname}}</strong>-სთან კლინიკა სახელად:<strong>"{{connection.clinic.clinic_name}}"</strong>-ში გაწევრიანების თაობაზე</td>
+            <td>{{ connection.  request.request_sent }}</td>
+            <th>
+              <div class="pet-actions">
+              <form action="{{ url_for('general_logic.clinic_request_control', action = 0, request_id = connection.request.request_id) }}" method="GET" onsubmit="return confirm('მოთხოვნის გაუქმება.');" >
+                <button type="submit" class="change-button r-button" style="border: none; box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);" title="მოთხოვნის გაუქმება"><i class="fa-solid fa-x"></i></button><br>
+              </form>
+            </div>
+            </th>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <h2 style="text-align:center">გაგზავნილი მოთხოვნები არ არის დაფიქსირებული</h2>
+      {% endif %}
+    </div>
+    </div>
+    </section>
+
     {% elif choice == 4 %}
     {% if action == 0 %}
     <form action="{{ url_for('general_logic.vet_logic', action=0, choice = 4) }}" method="POST">
@@ -492,9 +573,18 @@
       {% endif %}
       {% endif %}
     </section>
-    {% elif choice == 5 %}
+  {% elif choice == 5 %}
+      <div class="tab">
+      <form action="{{ url_for('general_logic.vet_logic', choice=5, action=3) }}" method="GET">
+        <button class="tablinks" onclick="openTab(event, 'joinClinic')">კლინიკაში გაწევრიანება</button>
+      </form>
+      <form action="{{ url_for('general_logic.vet_logic', choice=5, action=0) }}" method="GET">
+        <button class="tablinks" onclick="openTab(event, 'newClinic')">ახალი კლინიკის დამატება</button>
+      </form>
+      </div>
+      <div id="newClinic" class="tabcontent">
       {% if action == 0 %}
-        <div class="newclinicbox">
+      <div class="newclinicbox">
           <form action="{{ url_for('general_logic.vet_logic', choice=5, action=0) }}" method="POST">
             <label for="clinic-name">კლინიკის სახელი</label>
             <input type="text" id="clinic-name" name="clinic-name" required value="{{ clinic.clinic_name if edit_mode else '' }}" required>
@@ -515,6 +605,7 @@
             <button type="submit" class="submit-style">{{ 'კლინიკის რედაქტირება' if edit_mode else 'კლინიკის დამატება' }}</button>
           </form>
         </div>
+      </div>
       {% elif action == 1 %} 
         {% if clinics_info %}
         <table class="table table-sortable">
@@ -550,7 +641,7 @@
                   {% endif %}
                 </td>
                 <td>
-                  {{ clinic_data.clinic.coordinates }}
+                  <div class='mini-map' id="map-{{ clinic_data.clinic.clinic_id }}" data-latitude="{{ clinic_data.latitude }}" data-longitude="{{ clinic_data.longitude }}"></div>
                 </td>
                 <td>
                   {% if clinic_data.owner.id == current_user.id %}
@@ -578,7 +669,7 @@
             {% endfor %}
             
             </tbody>
-          </table>
+        </table>
 
         <a class="submit-style" style="text-align:center" href="{{ url_for('general_logic.vet_logic',choice=5, action=0) }}">ახალი კლინიკის დამატება</a>
         {% else %}
@@ -586,8 +677,55 @@
           <a class="submit-style" href="{{ url_for('general_logic.vet_logic',choice=5, action=0) }}">დააჭირეთ აქ რომ დაამატოთ ახალი კლინიკა</a>
           <!--a class="submit-style" href="{{ url_for('general_logic.vet_logic',choice=5, action=0) }}">დააჭირეთ აქ რომ გაწევრიანდეთ კლინიკაში</a-->
         {% endif %}
-        {% endif %}
     </section>
+    <div id="joinClinic" class="tabcontent">
+      {% elif action == 3 %}
+      <form id="search-form" action="{{ url_for('general_logic.vet_logic', choice=5, action=3) }}" method="GET">
+        <input type="hidden" name="search_mode" value="True">
+        <input type="text" name="q" placeholder="ძიება კლინიკის სახელით">
+        <button class="change-button" style="color:black"><i class="fa-solid fa-magnifying-glass"></i></button>
+      </form>
+      {% if clinics_info %}
+      <table class="table table-sortable">
+        <thead>
+          <tr>
+            <th>კლინიკის - ID</th>
+            <th>კლინიკის სახელი</th>
+            <th>კლინიკის მფლობელი</th>
+            <th>მოკლე აღწერა</th>
+            <th>კოორდინატები</th>
+            <th>გაწევრიანება</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for clinic_data in clinics_info %}
+            <tr>
+              <td>{{ clinic_data.clinic.clinic_id }}</td>
+              <td>{{ clinic_data.clinic.clinic_name }}</td>
+              <td>{{ clinic_data.owner.name }} {{ clinic_data.owner.lastname }}</td>
+              <td>{{ clinic_data.clinic.desc }}</td>
+              <td>
+                <div class='mini-map' id="map-{{ clinic_data.clinic.clinic_id }}" data-latitude="{{ clinic_data.latitude }}" data-longitude="{{ clinic_data.longitude }}"></div>
+              </td>
+              <th>
+                <div class="pet-actions">
+                <form action="{{ url_for('general_logic.vet_logic', choice=choice, action=3) }}" method="POST" 
+                onsubmit="return confirm('ამ მოქმედებით თქვენ გაუგზავნით კლინიკაში გაწევრიანების მოთხოვნას მოცემული კლინიკის დამმარეგისტრირებელს.');">
+                  <input type="hidden" id="clinic" name="clinic_id" value="{{ clinic_data.clinic.clinic_id }}">
+                  <button type="submit" class="change-button" style="border: none; box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);"><i class="fa-solid fa-check"></i></button><br>
+                </form>
+                </div>
+              </th>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <h3 style="text-align:center">შედეგი ვერ მოიძებნნა</h3>
+      {% endif %}
+      {% endif %}
+    </section>
+    </div>
     {% elif choice == 8 %}
       <div class="user-menu">
         <form action="{{ url_for('general_logic.vet_logic', choice = 8, action = 0) }}" class="mymenu" method="POST">
