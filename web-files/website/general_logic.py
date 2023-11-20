@@ -832,20 +832,31 @@ def vet_logic(choice, action):
 
                     clinic_ids = [bridge.clinic_id for bridge in my_clinics]
 
-                    staff_members_by_clinic = {}
+                    staff_members_by_c = {}
                     for clinic_id in clinic_ids:
                         # Query for staff members at this clinic
-                        staff_members = db.session.query(Person).join(
+                        staff_members_query = db.session.query(Person).join(
                             P_C_bridge, P_C_bridge.person_id == Person.id).filter(
                             P_C_bridge.clinic_id == clinic_id,
                             P_C_bridge.person_id != current_user.id).all()
 
                         # Add the staff members to the dictionary, keyed by clinic_id
-                        staff_members_by_clinic[clinic_id] = staff_members
+                        staff_member_dicts = [
+                            {
+                                'id': member.id,
+                                'name': member.name,
+                                'lastname': member.lastname,
+                                'phone': member.phone,
+                            }
+                            for member in staff_members_query]
 
+                        # Add the list of dictionaries to the staff_members_by_clinic dictionary
+                        staff_members_by_c[clinic_id] = staff_member_dicts
+
+                    staff_members_by_clinic = json.dumps(staff_members_by_c)
                     clinics = db.session.query(Clinic).filter(Clinic.clinic_id.in_(clinic_ids)).all()
 
-                    
+
                     try:
                         visit_id = request.args.get('visit_id')
                         if visit_id:
@@ -866,7 +877,7 @@ def vet_logic(choice, action):
                                 staff_members_by_clinic=staff_members_by_clinic)
 
                 except Exception as e:
-                    logging.warning(e)
+                    raise
                 return render_template('login/vet.html',
                         action=action, choice=choice,
                         clinics = None, staff_members = None)
@@ -894,6 +905,7 @@ def vet_logic(choice, action):
 
     if choice == 5: #Add my clinic
         if action == 0:
+            vet_data = db.session.query(Vet).filter_by(person_id = current_user.id).one_or_none()
             if request.method == "POST":
                 clinic_name = request.form.get('clinic-name')
                 desc = request.form.get('comment')
@@ -927,18 +939,23 @@ def vet_logic(choice, action):
                     flash(f"გაუთვალისწინებელი ლოგიკის პრობლემა: {e}")
 
             elif request.method == "GET":
-                try:
-                    clinic_id = request.args.get('clinic_id')
-                    if clinic_id:
-                        clinic = db.session.query(Clinic).filter_by(clinic_id = clinic_id).one_or_none()
-                        if clinic:
-                            return render_template('login/vet.html',
-                                    action=action, choice=choice, edit_mode=True, clinic=clinic)
-                        
-                except Exception as e:
-                    logging.warning(e)
-                return render_template('login/vet.html',
-                                    action=action, choice = choice, edit_mode = False, clinic=None)
+                vet_data = db.session.query(Vet).filter_by(person_id = current_user.id).one_or_none()
+                if vet_data:
+                    try:
+                        clinic_id = request.args.get('clinic_id')
+                        if clinic_id:
+                            clinic = db.session.query(Clinic).filter_by(clinic_id = clinic_id).one_or_none()
+                            if clinic:
+                                return render_template('login/vet.html',
+                                        action=action, choice=choice, edit_mode=True, clinic=clinic, vet_data = vet_data)
+                            
+                    except Exception as e:
+                        logging.warning(e)
+                    return render_template('login/vet.html',
+                        action=action, choice = choice, edit_mode = False, clinic=None, vet_data = vet_data)
+                else:
+                    return render_template('login/vet.html',
+                        action=action, choice = choice, edit_mode = False, clinic=None, vet_data = None)
         elif action == 1:
             if request.method == "GET":
                 try:
@@ -994,8 +1011,11 @@ def vet_logic(choice, action):
                             }
 
                             clinics_info.append(clinic_data)
-
-                    return render_template('login/vet.html', choice=choice, action=action, clinics_info=clinics_info)
+                    vet_data = db.session.query(Vet).filter_by(person_id = current_user.id).one_or_none()
+                    if vet_data:
+                        return render_template('login/vet.html', choice=choice, action=action, clinics_info=clinics_info, vet_data = vet_data)
+                    else:
+                        return render_template('login/vet.html', choice=choice, action=action, clinics_info=clinics_info, vet_data = None)
 
                 except Exception as e:
                     logging.warning(e)
@@ -1405,6 +1425,26 @@ def clinic_request_control(action, request_id):
                         flash("თქვენ უკვე გაწევრიანებული ხართ მოცემულ კლინიკაში", category='error')
                         db.session.delete(request_data)
                         db.session.commit()
+                return redirect(url_for('general_logic.vet_logic',choice = 3, action=action))
+            else:
+                abort(404)        
+        elif action == 2: #deny
+            legit = db.session.query(Vet).filter_by(person_id = request_data.reciever_id, has_license = True).one_or_none()
+            if legit:
+                try:
+                    request_data.approved = None
+                    db.session.commit()
+                    clinic_data = db.session.query(Clinic).filter_by(clinic_id = request_data.ref).one_or_none()
+                    if clinic_data:
+                        check_bridge = db.session.query(P_C_bridge).filter_by(
+                            person_id = request_data.requester_id, 
+                            clinic_id = clinic_data.clinic_id).one_or_none()
+                        if check_bridge:
+                            db.session.delete(check_bridge)
+                            db.session.commit()
+                except Exception as e:
+                    logging.warning(e)
+                
                 return redirect(url_for('general_logic.vet_logic',choice = 3, action=action))
             else:
                 abort(404)

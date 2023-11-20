@@ -177,4 +177,4 @@ class Requests(db.Model):
 
     reciever = db.relationship('Person', foreign_keys=[reciever_id], backref='received_requests')
 
-    approved = db.Column(db.Boolean, default=False, nullable=False)
+    approved = db.Column(db.Boolean, default=False, nullable=True)

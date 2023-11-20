@@ -983,7 +983,10 @@ footer {
   border: 2px solid #ccc; /* Light gray border */
   border-radius: 10px; /* Rounded corners */
   overflow: hidden; /* Hide the overflow to avoid glitches with rounded corners */
+  text-align: center;
+  vertical-align: middle;
 }
+
 
 /* Table Header */
 .table-sortable tr th {
@@ -1850,13 +1853,13 @@ padding-top:10px;
 
 /* Change background color of buttons on hover */
 .tab button:hover {
-  background-color: rgb(255, 197, 122);
+  background-color: lightgreen;
 }
 
 /* Create an active/current tablink class */
 .tab button.active {
-  background-color: #ff7200;
-
+  background-color: green;
+  color:white;
 }
 
 
@@ -1934,6 +1937,14 @@ padding-top:10px;
   margin-right:5px;
   margin-left:5px;
  }
+
+ .newclinicbox .tab .tablinks:hover{
+  background-color: lightgreen;
+ }
+
+ .newclinicbox .tab .tablinks button{
+  background-color: green !important;
+ }
  
  /* Tab */
  .home-section .newclinicbox .tab{
@@ -1992,3 +2003,74 @@ padding-top:10px;
   margin-right:5px;
  }
  
+
+ /* Form Division */
+.home-section .tab form{
+  display:flex;
+  flex-direction:row;
+  justify-content:center;
+  margin-top:19px;
+ }
+ 
+ /* Tablinks */
+ .home-section form .tablinks{
+  border-top-left-radius:14px;
+  border-top-right-radius:14px;
+  border-bottom-left-radius:14px;
+  border-bottom-right-radius:14px;
+
+ }
+
+ .home-section form .tablinks:hover{
+  background-color: green;
+  color: white;
+  border-top-left-radius:14px;
+  border-top-right-radius:14px;
+  border-bottom-left-radius:14px;
+  border-bottom-right-radius:14px;
+ }
+ 
+
+ /* Search form */
+ .join-clinic-search #search-form {
+  display:flex;
+  justify-content:center;
+ }
+ 
+ /* Input */
+.join-clinic-search #search-form input[type=text] {
+  margin-top:14px;
+  margin-bottom:14px;
+  width:340px;
+  height:30px;
+  border-style:solid;
+  border-color:rgba(0,0,0,0.14);
+  border-top-left-radius:12px;
+  border-top-right-radius:12px;
+  border-bottom-left-radius:12px;
+  border-bottom-right-radius:12px;
+ }
+ 
+ /* Change button */
+ #search-form .change-button{
+  margin-top:14px;
+ }
+ 
+
+.red-background {
+  background-color: red !important;
+}
+
+.green-background {
+  background-color: lightgreen !important;
+}
+
+.disabled-button{
+  background-color: lightgray;
+
+}
+
+.disabled-button:hover{
+  background-color: darkgray;
+
+}

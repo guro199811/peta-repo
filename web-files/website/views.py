@@ -3,6 +3,8 @@ from flask_login import (
     login_required,
     current_user)
 from functools import wraps
+from . import db
+from .models import *
 
 views = Blueprint('views', __name__)
 
@@ -40,6 +42,12 @@ def owner():
 @login_required
 @grant_access([2])
 def admin():
+    check = db.session.query(Admin).filter_by(person_id = current_user.id).one_or_none()
+    if check == None:
+        new_admin = Admin(person_id = current_user.id)
+        db.session.add(new_admin)
+        db.session.commit()
+
     return render_template("login/admin.html", user=current_user, 
                            action = action, choice = choice)
 
@@ -47,6 +55,11 @@ def admin():
 @login_required
 @grant_access([3])
 def vet():
+    check = db.session.query(Vet).filter_by(person_id = current_user.id).one_or_none()
+    if check == None:
+        new_vet = Vet(person_id = current_user.id)
+        db.session.add(new_vet)
+        db.session.commit()
     action = None
     return render_template("login/vet.html", user=current_user, 
                            action = action, choice = choice)
@@ -55,6 +68,11 @@ def vet():
 @login_required
 @grant_access([4])
 def editor():
+    check = db.session.query(Editor).filter_by(person_id = current_user.id).one_or_none()
+    if check == None:
+        new_editor = Editor(person_id = current_user.id)
+        db.session.add(new_editor)
+        db.session.commit()
     return render_template("login/editor.html", user=current_user, 
                            action = action)
 
