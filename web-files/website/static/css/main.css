@@ -2074,3 +2074,11 @@ padding-top:10px;
   background-color: darkgray;
 
 }
+
+.table tbody tr td > div{
+  flex-wrap:wrap;
+ }
+
+ .transparent-background{
+  opacity: 0.5;
+ }

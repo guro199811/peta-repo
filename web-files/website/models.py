@@ -46,6 +46,7 @@ class Clinic(db.Model):
     clinic_name = db.Column(db.String(200))
     desc = db.Column(db.String(201))
     coordinates = db.Column(db.String(75))
+    visibility = db.Column(db.Boolean, default = True)
 
 
 class Vet(db.Model):

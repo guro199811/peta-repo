@@ -1019,6 +1019,26 @@ def vet_logic(choice, action):
 
                 except Exception as e:
                     logging.warning(e)
+
+        elif action == 2:
+            if request.method == "POST":
+                clinic_id = request.form.get('clinic_id')
+                visibility = request.form.get('visibility')
+                
+                success = clinic_visibility_toggler(clinic_id, visibility)
+                if success:
+                    return redirect(url_for('general_logic.vet_logic', 
+                    choice = choice, action=1))
+                else:
+                    flash('პრობლემა, კლინიკის დამალვა ვერ მოხერხდა პრობლემის გამო')
+                    return redirect(url_for('general_logic.vet_logic', choice = choice, 
+                        action=1))
+            else:
+                logging.warning('its not a post?')
+                return redirect(url_for('general_logic.vet_logic', choice = choice, 
+                        action=1))
+
+
         elif action == 3:
             if request.method == "GET":
                 search_query = request.args.get('q', '').strip()
@@ -1107,6 +1127,27 @@ def vet_logic(choice, action):
                 else:
                     logging.warning('clinic_id is None or invalid')
                     return render_template('login/vet.html', choice=8, action=0)
+        elif action == 4:
+            if request.method == "GET":
+                clinic_id = request.form.get('clinic_id')
+                staff_members_query = db.session.query(Person).join(
+                            P_C_bridge, P_C_bridge.person_id == Person.id).filter(
+                            P_C_bridge.clinic_id == clinic_id).all()
+
+                staff_member_dicts = [
+                    {
+                        'id': member.id,
+                        'name': member.name,
+                        'lastname': member.lastname,
+                        'phone': member.phone,
+                    }
+                    for member in staff_members_query]
+
+                staff_members_by_c[clinic_id] = staff_member_dicts
+
+                staff_members_by_clinic = json.dumps(staff_members_by_c)
+            return render_template('login/vet.html', choice = choice, 
+                                   action = action, staffs = staff_members_by_clinic)
         else:
             abort(404)
 
@@ -1227,10 +1268,10 @@ def edit_pet(action, pet_id):
     return redirect(url_for('general_logic.owner_logic', action=action))
 
 
-@general_logic.route('/admin/edit_user/<int:person_id>', methods=['GET', 'POST'])
+@general_logic.route('/admin/edit_user/<int:choice>/<int:person_id>', methods=['GET', 'POST'])
 @login_required
 @grant_access([2])
-def edit_user(person_id):
+def edit_user(person_id, choice):
     if request.method == 'POST':
         name = request.form.get('name')
         lastname = request.form.get('lastname')
@@ -1238,7 +1279,8 @@ def edit_user(person_id):
         type = request.form.get('type')
         address = request.form.get('address')
         phone = request.form.get('phone')
-        choice = 0
+
+        choice == 0
 
         try:
             person = db.session.query(Person).filter_by(id=person_id).one()
@@ -1302,8 +1344,14 @@ def edit_user(person_id):
                 try:
                     vet = db.session.query(Vet).filter_by(person_id=person_id).one()
                     vet_speciality = request.form.get('vet_speciality')
+                    li = request.form.get('license')
+                    if li:
+                        vet = db.session.query(Vet).filter_by(person_id = person_id).one_or_none()
+                        if vet:
+                            vet.has_license = bool(li)
                     if vet_speciality != None or vet_speciality != 0 or vet_speciality != '0':
-                        vet.spec_id = vet_speciality
+                        logging.warning(vet_speciality)
+                        vet.spec_id = int(vet_speciality)
                     vet.active = True
                     action = vet_speciality
                 except NoResultFound:
@@ -1354,7 +1402,10 @@ def edit_user(person_id):
         except NoResultFound:
             flash("მომხმარებელი ვერ მოიძებნა.", category='error')
         action = request.form.get('action')
-        action = int(action)
+        if action:
+            action = int(action)
+        else:
+            action = 0
         return redirect(url_for('general_logic.admin_logic', choice=choice, action=action))
 
 
@@ -1547,3 +1598,32 @@ def get_clinic_by_request(requests):
             }
             connections.append(connection)
     return connections
+
+
+def clinic_visibility_toggler(clinic_id, visibility):
+    try:
+        # Convert v to boolean and log
+        logging.warning(f"Input visibility: {visibility}")
+
+        # Retrieve clinic by clinic_id
+        clinic = db.session.query(Clinic).filter_by(clinic_id=clinic_id).one_or_none()
+
+        if clinic:
+            # Toggle the visibility
+            if visibility == "False":
+                clinic.visibility = True
+                logging.warning('false')
+            if visibility == "True":
+                logging.warning('true')
+                clinic.visibility = False
+
+            db.session.commit()
+
+            return True
+        else:
+            logging.warning(f"No clinic found with id {clinic_id}")
+            return False
+    except Exception as e:
+        logging.warning(f"Failed to toggle visibility for clinic {clinic_id}: {e}")
+        return False
+

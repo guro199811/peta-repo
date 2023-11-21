@@ -212,7 +212,7 @@
         </thead>
         <tbody>
           {% for person in result %}
-            <form action="{{ url_for('general_logic.edit_user',action = 0, person_id=person.id) }}" method="POST">
+            <form action="{{ url_for('general_logic.edit_user',action = 0, person_id=person.id, choice = choice) }}" method="POST">
               <tr>
                 {% if action == 0 %}
                 <input type="hidden" name="action" value="0">
@@ -691,13 +691,14 @@
                       {{ clinic.coordinates }}
                     </td>
                   </tr>
-                  
                 {% endfor %}
+              </tbody>
+            </table>
               {% else %}
               <p style="text-align:center">კლინიკები ვერ მოიძებნა.</p>
               {% endif %}
+            </section>
             {% else %}
-            <!--აქ მგონი გამეორებული მაქვს კოდი, კარგად გადავხედო!-->
               {% set header_text = {
                 3: "მფლობელების ჩამონათვალი",
                 4: "ვეტერინარების ჩამონათვალი",
@@ -724,6 +725,7 @@
                     {% elif choice == 4 %}
                     <th>ვიზიტების რაოდენობა</th>
                     <th>სპეციალობა</th>
+                    <th>კლინიკის დამატების<br>უფლებამოსილება</th>
                     {% elif choice == 5 %}
                     <th>პოსტების რაოდენობა</th>
                     {% endif %}
@@ -732,7 +734,7 @@
                 </thead>
                 <tbody>
                   {% for user, person, count in users %}
-                  <form action="{{ url_for('general_logic.edit_user', person_id=person.id) }}" method="POST">
+                  <form action="{{ url_for('general_logic.edit_user', person_id=person.id, choice = choice) }}" method="POST">
                     <tr>
                       {% if choice == 3 %}
                       <td>{{ user.owner_id }}</td>
@@ -780,24 +782,30 @@
                       {% if choice == 4 %}
                       <td>
                         <select id="type_{{ person.id }}" name="vet_speciality" required disabled>
-                          <option value="0" {% if action == None %}selected{% endif %}>სპეციალიზაცია არ არის</option>
-                          <option value="1" {% if action == 1 %}selected{% endif %}>კარდიოლოგია</option>
-                          <option value="2" {% if action == 2 %}selected{% endif %}>დერმატოლოგია</option>
-                          <option value="3" {% if action == 3 %}selected{% endif %}>ოფთალმოლოგია</option>
-                          <option value="4" {% if action == 4 %}selected{% endif %}>ორთოპედია</option>
-                          <option value="5" {% if action == 5 %}selected{% endif %}>ნევროლოგია</option>
-                          <option value="6" {% if action == 6 %}selected{% endif %}>ონკოლოგია</option>
-                          <option value="7" {% if action == 7 %}selected{% endif %}>რადიოლოგია</option>
-                          <option value="8" {% if action == 8 %}selected{% endif %}>ქირურგია</option>
-                          <option value="9" {% if action == 9 %}selected{% endif %}>შიგან სიკვდილი</option>
-                          <option value="10" {% if action == 10 %}selected{% endif %}>ქმედებითი სიკვდილი</option>
+                          <option value="1" {% if action == 1 %}selected{% endif %}>სპეციალობა არ აქვს</option>
+                          <option value="2" {% if action == 2 %}selected{% endif %}>კარდიოლოგია</option>
+                          <option value="3" {% if action == 3 %}selected{% endif %}>დერმატოლოგია</option>
+                          <option value="4" {% if action == 4 %}selected{% endif %}>ოფთალმოლოგია</option>
+                          <option value="5" {% if action == 5 %}selected{% endif %}>ორთოპედია</option>
+                          <option value="6" {% if action == 6 %}selected{% endif %}>ნევროლოგია</option>
+                          <option value="7" {% if action == 7 %}selected{% endif %}>ონკოლოგია</option>
+                          <option value="8" {% if action == 8 %}selected{% endif %}>რადიოლოგია</option>
+                          <option value="9" {% if action == 9 %}selected{% endif %}>ქირურგია</option>
+                          <option value="10" {% if action == 10 %}selected{% endif %}>შიგან სიკვდილი</option>
+                          <option value="11" {% if action == 11 %}selected{% endif %}>ქმედებითი სიკვდილი</option>
+                        </select>
+                      </td>
+                      <td>
+                        <select id="type_{{ person.id }}" name="license" required disabled>
+                          <option value="True" {% if user.has_license %}selected{% endif %}>აქვს უფლებამოსილება</option>
+                          <option value="False" {% if user.has_license == false %}selected{% endif %}>არ აქვს უფლებამოსილება</option>
                         </select>
                       </td>
                       {% endif %}
                       <td>
                         <div class="pet-actions">
                           <button type="button" class="change-button" id="change_{{ person.id }}" onclick="enableEditUser('{{ person.id }}')"><i class="fa-regular fa-pen-to-square"></i></button>
-                          <button type="submit" class="saveOwner" id="save_{{ person.id }}" onsubmit="return confrm('დასტურის შემოწმება')"><i class="fa-solid fa-check"></i></button>
+                          <button type="submit" class="change-button s-button" style="display:none" id="save_{{ person.id }}" onsubmit="return confrm('დასტურის შემოწმება')"><i class="fa-solid fa-check"></i></button>
                         </div>
                       </td>
                     </tr>

@@ -2,6 +2,8 @@ from website import db
 from website.models import Type, Speciality, Pet_species, Pet_breed
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
+import logging
+
 import os
 
 
@@ -33,6 +35,7 @@ try:
         session.commit()
 
     specialities_fixture = [
+        ('None', 'Has no specialty selected'),
         ('Cardiology', 'Speciality in heart conditions'),
         ('Dermatology', 'Speciality in skin disorders'),
         ('Ophthalmology', 'Speciality in eye diseases'),
@@ -132,3 +135,5 @@ except Exception as e:
     print(f"An exception occurred: {str(e)}")
 finally:
     session.close()
+
+

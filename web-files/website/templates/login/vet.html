@@ -653,16 +653,20 @@
           </thead>
           <tbody>
             {% for clinic_data in clinics_info %}
+            {% set row_color = "" %}
+              {% if clinic_data.clinic.visibility == false %}
+                {% set row_color = "transparent-background" %}
+              {% endif %}
               <tr>
-                <td>{{ clinic_data.clinic.clinic_id }}
+                <td class="{{ row_color }}" >{{ clinic_data.clinic.clinic_id }}
                   {% if clinic_data.owner.id ==current_user.id %}
                   <i class="fa-solid fa-check"></i>
                   {% endif %}
                 </td>
-                <td>{{ clinic_data.clinic.clinic_name }}</td>
-                <td>{{ clinic_data.owner.name }} {{ clinic_data.owner.lastname }}</td>
-                <td>{{ clinic_data.clinic.desc }}</td>
-                <td>
+                <td class="{{ row_color }}">{{ clinic_data.clinic.clinic_name }}</td>
+                <td class="{{ row_color }}">{{ clinic_data.owner.name }} {{ clinic_data.owner.lastname }}</td>
+                <td class="{{ row_color }}">{{ clinic_data.clinic.desc }}</td>
+                <td class="{{ row_color }}">
                   {% if clinic_data.personnel %}
                     {% for person in clinic_data.personnel %}
                       {{ person.name }} {{ person.lastname }} - {{ person.phone }}<br>
@@ -671,7 +675,7 @@
                       პერსონალი არ არის დარეგისტრირებული
                   {% endif %}
                 </td>
-                <td>
+                <td class="{{ row_color }}">
                   <div class='mini-map' id="map-{{ clinic_data.clinic.clinic_id }}" data-latitude="{{ clinic_data.latitude }}" data-longitude="{{ clinic_data.longitude }}"></div>
                 </td>
                 <td>
@@ -683,6 +687,30 @@
                   </form>
                   <form action="{{ url_for('auth.clinic_removal_email', clinic_id=clinic_data.clinic.clinic_id, user=current_user) }}" method="DELETE" title="კლინიკის წაშლა" onsubmit="return confirm('დარწმუნებული ხართ რომ გნებავთ კლინიკის წაშლა?\n თუ დარწმუნებული ხართ წაშლის თაობაზე, მეილზე მოგივათ დასტურის URL');">
                     <button type="submit" class="change-button r-button" style="border: none; box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);"><i class="fa-solid fa-eraser"></i></button><br>
+                  </form>
+                  {% if clinic_data.clinic.visibility == false %}
+                  <form action="{{ url_for('general_logic.vet_logic', choice=choice, action=2) }}" method="POST" title="კლინიკის დანახვადობა">
+                    <!-- Toggle the visibility value -->
+                    <input type="hidden" id="clinic" name="visibility" value="False">
+                    <input type="hidden" id="clinic" name="clinic_id" value="{{ clinic_data.clinic.clinic_id }}">
+                    <button type="submit" class="change-button" style="border: none; box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);">
+                      <i class="fa-regular fa-eye-slash"></i>
+                    </button><br>
+                  </form>
+                {% elif clinic_data.clinic.visibility == true %}
+                  <form action="{{ url_for('general_logic.vet_logic', choice=choice, action=2) }}" method="POST" title="კლინიკის დანახვადობა">
+                    <!-- Toggle the visibility value -->
+                    <input type="hidden" id="clinic" name="visibility" value="True">
+                    <input type="hidden" id="clinic" name="clinic_id" value="{{ clinic_data.clinic.clinic_id }}">
+                    <button type="submit" class="change-button" style="border: none; box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);">
+                      <i class="fa-regular fa-eye"></i>
+                    </button><br>
+                  </form>
+                {% endif %}
+                
+                  <form action="{{ url_for('general_logic.vet_logic', choice=choice, action=4) }}" method="GET" title="კლინიკის მომუშავე პერსონალი";>
+                    <input type="hidden" id="clinic" name="clinic_id" value="{{ clinic_data.clinic.clinic_id }}">
+                    <button type="submit" class="change-button" style="border: none; box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); margin-top: 5px;"><i class="fa-solid fa-user-large"></i></button><br>
                   </form>
                   </div>
                   {% else %}
@@ -758,6 +786,10 @@
         </table>
       {% else %}
         <h3 style="text-align:center">შედეგი ვერ მოიძებნნა</h3>
+      {% endif %}
+      {% elif action == 4 %}
+      {% if staffs %}
+      {% else %}
       {% endif %}
       {% endif %}
     </section>
