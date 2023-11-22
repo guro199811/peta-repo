@@ -693,7 +693,7 @@
                     <!-- Toggle the visibility value -->
                     <input type="hidden" id="clinic" name="visibility" value="False">
                     <input type="hidden" id="clinic" name="clinic_id" value="{{ clinic_data.clinic.clinic_id }}">
-                    <button type="submit" class="change-button" style="border: none; box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);">
+                    <button type="submit" class="change-button white-button" style="border: none; box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);">
                       <i class="fa-regular fa-eye-slash"></i>
                     </button><br>
                   </form>
@@ -702,15 +702,14 @@
                     <!-- Toggle the visibility value -->
                     <input type="hidden" id="clinic" name="visibility" value="True">
                     <input type="hidden" id="clinic" name="clinic_id" value="{{ clinic_data.clinic.clinic_id }}">
-                    <button type="submit" class="change-button" style="border: none; box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);">
+                    <button type="submit" class="change-button white-button" style="border: none; box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);">
                       <i class="fa-regular fa-eye"></i>
                     </button><br>
                   </form>
                 {% endif %}
-                
-                  <form action="{{ url_for('general_logic.vet_logic', choice=choice, action=4) }}" method="GET" title="კლინიკის მომუშავე პერსონალი";>
+                  <form action="{{ url_for('general_logic.vet_logic', choice=choice, action=4) }}" method="POST" title="კლინიკის მომუშავე პერსონალი";>
                     <input type="hidden" id="clinic" name="clinic_id" value="{{ clinic_data.clinic.clinic_id }}">
-                    <button type="submit" class="change-button" style="border: none; box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); margin-top: 5px;"><i class="fa-solid fa-user-large"></i></button><br>
+                    <button type="submit" class="change-button sky-button" style="border: none; box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); margin-top: 5px;"><i class="fa-solid fa-user-large"></i></button><br>
                   </form>
                   </div>
                   {% else %}
@@ -720,6 +719,10 @@
                   </form>
                   <form action="{{ url_for('auth.clinic_removal_email', clinic_id=clinic_data.clinic.clinic_id, user=current_user) }}" method="DELETE" title="კლინიკის პერსონალის სტატუსის გაუქმება" onsubmit="return confirm('ამ მოქმედებით თქვენ კლინიკის პერსონალიდან ამოიშლებით\n თუ დარწმუნებული ხართ ამოშლის თაობაზე, მეილზე მოგივათ დასტურის URL');">
                     <button type="submit" class="change-button r-button" style="border: none; box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);"><i class="fa-regular fa-circle-xmark"></i></button><br>
+                  </form>
+                  <form action="{{ url_for('general_logic.vet_logic', choice=choice, action=4) }}" method="POST" title="კლინიკის მომუშავე პერსონალი";>
+                    <input type="hidden" id="clinic" name="clinic_id" value="{{ clinic_data.clinic.clinic_id }}">
+                    <button type="submit" class="change-button sky-button" style="border: none; box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);"><i class="fa-solid fa-user-large"></i></button><br>
                   </form>
                   </div>
                   {% endif %}
@@ -788,8 +791,66 @@
         <h3 style="text-align:center">შედეგი ვერ მოიძებნნა</h3>
       {% endif %}
       {% elif action == 4 %}
+      <div class="newclinicbox">
       {% if staffs %}
+        <table class="table table-sortable">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>სახელი</th>
+              <th>ტელეფონის ნომერი</th>
+              <th>ელ.ფოსტა</th>
+              <th>მოქმედება</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for staff, person in staffs %}
+            {% set row_color = "" %}
+            {% if staff.is_clinic_owner == true %}
+              {% set row_color = "golden-background" %}
+            {% endif %}
+            <tr>
+              <td class="{{ row_color }}">{% if staff.is_clinic_owner %}<i class="fa-solid fa-crown"></i>{% endif %}{{ person.id }}</td>
+              <td class="{{ row_color }}">{{ person.name }} {{ person.lastname }}</td>
+              <td class="{{ row_color }}">{{ person.phone }}</td>
+              <td class="{{ row_color }}">{{ person.mail }}</td>
+              <th>
+                <div class="pet-actions staff-actions">
+                {% if clinic_owner == current_user.id %}
+                <form class='staff-form' action="{{ url_for('general_logic.give_clinic_ownership', clinic_id = staff.clinic_id, person_id = person.id) }}" method="POST" title="პერსონალისთვის კლინიკის მფლობელობის მიცემა";>
+                  <button type="submit" class="change-button gold-button" style="border: none; box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); margin-top: 5px;">
+                    <i class="fa-solid fa-crown"></i></button><br>
+                </form>
+                <form class='staff-form' action="{{ url_for('general_logic.remove_staff', bridge_id=staff.bridge_id) }}" method="POST" title="კლინიკის მომუშავე პერსონალის სტატუსის გაუქმება";>
+                  <button type="submit" class="change-button r-button" style="border: none; box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); margin-top: 5px;">
+                    <i class="fa-regular fa-circle-xmark"></i></button><br>
+                </form>
+                {% else %}
+                <form class='staff-form' title="კლინიკის მომუშავე პერსონალი";>
+                  <button type="submit" class="change-button disabled-button" style="border: none; box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); margin-top: 5px;" disabled>
+                    <i class="fa-solid fa-crown"></i></button><br>
+                </form>
+                {% if person.id == current_user.id %}
+                <form class='staff-form' action="{{ url_for('general_logic.remove_staff', bridge_id=staff.bridge_id) }}" method="POST" title="კლინიკის მომუშავე პერსონალიდან საკუთარი თავის ამოშლა";>
+                  <button type="submit" class="change-button" style="border: none; box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); margin-top: 5px;">
+                    <i class="fa-solid fa-xmark"></i></button><br>
+                </form>
+                {% else %}
+                <form class='staff-form' title="პერსონალის წაშლა არ შეგიძლიათ,რადგან თქვენ არ ხართ კლინიკის მფლობელი";>
+                  <button type="submit" class="change-button disabled-button" style="border: none; box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); margin-top: 5px;" disabled>
+                    <i class="fa-regular fa-circle-xmark"></i></button><br>
+                </form>
+                {% endif %}
+                {% endif %}
+              </div>
+              </th>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
       {% else %}
+      <h3 style="text-align:center">შედეგი ვერ მოიძებნნა</h3>
       {% endif %}
       {% endif %}
     </section>

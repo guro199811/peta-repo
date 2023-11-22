@@ -2082,3 +2082,41 @@ padding-top:10px;
  .transparent-background{
   opacity: 0.5;
  }
+
+ .golden-background{
+  background-color: gold !important;
+ }
+
+ .golden-background:hover{
+  background-color: goldenrod !important;
+ }
+
+.staff-actions {
+  height: 30px;
+}
+
+.staff-form {
+  justify-content: center;
+  display: flex;
+}
+
+.gold-button{
+  transition: 0.3 all;
+}
+.gold-button:hover{
+  background-color: gold !important;
+}
+
+.white-button{
+  transition: 0.3 all;
+}
+.white-button:hover{
+  background-color: whitesmoke !important;
+}
+
+.sky-button{
+  transition: 0.3 all;
+}
+.sky-button:hover{
+  background-color: skyblue !important;
+}

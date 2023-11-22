@@ -58,6 +58,7 @@ class Vet(db.Model):
     spec_id = db.Column(db.Integer, db.ForeignKey('specialities.spec_id'))
     speciality = db.relationship(Speciality)
     has_license = db.Column(db.Boolean, default = False)
+    temporary_license = db.Column(db.Boolean, default = False)
 
 
 

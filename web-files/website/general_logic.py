@@ -959,16 +959,17 @@ def vet_logic(choice, action):
         elif action == 1:
             if request.method == "GET":
                 try:
+                    logging.warning('first')
                     # Query all bridges for the current user
                     my_bridges = db.session.query(P_C_bridge).filter_by(person_id=current_user.id).all()
                     
                     # Initialize data structures
                     clinics_info = []
-
+                    logging.warning('second')
                     for bridge in my_bridges:
                         # Query the clinic
                         clinic = db.session.query(Clinic).filter_by(clinic_id=bridge.clinic_id).one_or_none()
-                        
+                        logging.warning('third')
                         if clinic:
                             # Query the owner of the clinic
                             owner = db.session.query(Person).join(P_C_bridge).filter(
@@ -976,7 +977,7 @@ def vet_logic(choice, action):
                                 P_C_bridge.is_clinic_owner == True,
                                 P_C_bridge.person_id == Person.id
                             ).one_or_none()
-
+                            logging.warning('fourth')
                             # Query other personnel of the clinic
                             personnel = db.session.query(Person).join(P_C_bridge).filter(
                                 P_C_bridge.clinic_id == clinic.clinic_id,
@@ -1128,26 +1129,29 @@ def vet_logic(choice, action):
                     logging.warning('clinic_id is None or invalid')
                     return render_template('login/vet.html', choice=8, action=0)
         elif action == 4:
-            if request.method == "GET":
+            if request.method =="POST":
                 clinic_id = request.form.get('clinic_id')
-                staff_members_query = db.session.query(Person).join(
-                            P_C_bridge, P_C_bridge.person_id == Person.id).filter(
-                            P_C_bridge.clinic_id == clinic_id).all()
+                clinic_owner = None
 
-                staff_member_dicts = [
-                    {
-                        'id': member.id,
-                        'name': member.name,
-                        'lastname': member.lastname,
-                        'phone': member.phone,
-                    }
-                    for member in staff_members_query]
+                if clinic_id:
+                    staffs = db.session.query(P_C_bridge, Person)\
+                        .join(Person, Person.id == P_C_bridge.person_id)\
+                        .filter(P_C_bridge.clinic_id == clinic_id).all()
+                    if staffs:
+                        # Find the clinic owner among the staff
+                        for staff, person in staffs:
+                            if staff.is_clinic_owner and person.id == current_user.id:
+                                logging.warning(f"Found clinic owner: {person.id}")
+                                clinic_owner = person.id
+                                break
 
-                staff_members_by_c[clinic_id] = staff_member_dicts
-
-                staff_members_by_clinic = json.dumps(staff_members_by_c)
-            return render_template('login/vet.html', choice = choice, 
-                                   action = action, staffs = staff_members_by_clinic)
+                    return render_template('login/vet.html', choice=choice, 
+                                            action=action, staffs=staffs, clinic_owner=clinic_owner)
+                else:
+                    logging.warning(f'clinic_id is {clinic_id}')
+                    return render_template('login/vet.html', choice=choice, 
+                                            action=action, staffs=None, clinic_owner=None)
+            
         else:
             abort(404)
 
@@ -1444,6 +1448,29 @@ def edit_note(note_id):
     return redirect(url_for('general_logic.admin_logic', choice = 2, action=0))
 
 
+@general_logic.route('give_leadership/<int:clinic_id>/<int:person_id>', methods=['GET', 'POST'])
+@login_required
+@grant_access([3])
+def give_clinic_ownership(clinic_id, person_id):
+    current_owner = db.session.query(P_C_bridge).filter_by(clinic_id = clinic_id,
+    person_id = current_user.id, is_clinic_owner = True
+    ).one_or_none()
+    if current_owner:
+        new_owner = db.session.query(P_C_bridge).filter_by(clinic_id = clinic_id,
+        person_id = person_id, is_clinic_owner = False
+        ).one_or_none()
+        if new_owner:
+            vet_data = db.session.query(Vet).filter_by(person_id = person_id).one_or_none()
+            if vet_data:
+                vet_data.has_license = True
+                vet_data.temporary_license = True #maybe for later
+                current_owner.is_clinic_owner = False
+                new_owner.is_clinic_owner = True
+                db.session.commit()
+                flash('წარმატება')
+    return redirect(url_for('general_logic.vet_logic', choice = 5, action=4))
+
+
 #clinic requests are controlled here
 @general_logic.route('request_control/<int:action>/<int:request_id>', methods=['GET', 'POST'])
 @login_required
@@ -1582,6 +1609,20 @@ def remove_visit(visit_id):
 
     else:
         return redirect(url_for('general_logic.vet_logic',choice = 4, action=1))
+
+    
+@general_logic.route('/remove_staff/<int:bridge_id>', methods=['GET', 'DELETE'])
+@login_required
+@grant_access([3])
+def remove_staff(bridge_id):
+    bridge = db.session.query(P_C_bridge).filter_by(bridge_id = bridge_id).one_or_none()
+    if bridge:
+        db.session.delete(bridge)
+        db.session.commit()
+        return redirect(url_for('general_logic.vet_logic',choice = 5, action=4))
+
+    else:
+        return redirect(url_for('general_logic.vet_logic',choice = 5, action=4))
     
 
 
