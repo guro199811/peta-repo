@@ -102,8 +102,8 @@
         </thead>
         <tbody>
           {% for pet_hist, pet in pet_history %}
-          <form action="{{ url_for('general_logic.owner_logic', action = 2) }}" method="POST">
             <tr>
+              <form action="{{ url_for('general_logic.owner_logic', action = 2) }}" method="POST">
               <td>{{ pet_hist.history_id }}</td>
               <td>{{ pet.pet_id }} - {{ pet.name }}</td>
               <td>
@@ -194,11 +194,7 @@
               <strong>სახელი: </strong> {{person.name}}<br>
               <strong>გვარი: </strong> {{person.lastname}}<br>
               <strong>ტელ.ნომერი: </strong> {{person.phone}}<br>
-              {% if vet.speciality %}
-              <strong>სპეციალობა: </strong> {{vet.Speciality}}<br>
-              {% else %}
-              <strong>არ აქვს სპეციალობა დარეგისტრირებული</strong><br>
-              {% endif %}
+              <strong>ელ.ფოსტა:</strong> {{ person.mail }}
             </li>
             {% endfor %}
         </ul>

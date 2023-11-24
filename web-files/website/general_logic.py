@@ -120,7 +120,7 @@ def owner_logic(action):
                                     pet_history = None)
         elif action == 3:
             try:
-                clinics_data = db.session.query(Clinic).all()
+                clinics_data = db.session.query(Clinic).filter_by(visibility = True).all()
             except:
                 clinics_data = None
             if clinics_data:   
@@ -317,7 +317,7 @@ def admin_logic(choice, action):
         
         elif action == 3:
             try:
-                clinics_data = db.session.query(Clinic).all()
+                clinics_data = db.session.query(Clinic).filter_by(visibility = True).all()
             except:
                 clinics_data = None
             if clinics_data:   
@@ -664,7 +664,7 @@ def vet_logic(choice, action):
         
         elif action == 3:
             try:
-                clinics_data = db.session.query(Clinic).all()
+                clinics_data = db.session.query(Clinic).filter_by(visibility = True).all()
             except:
                 clinics_data = None
             if clinics_data:   
@@ -877,7 +877,7 @@ def vet_logic(choice, action):
                                 staff_members_by_clinic=staff_members_by_clinic)
 
                 except Exception as e:
-                    raise
+                    logging.warning(e)
                 return render_template('login/vet.html',
                         action=action, choice=choice,
                         clinics = None, staff_members = None)
@@ -959,17 +959,15 @@ def vet_logic(choice, action):
         elif action == 1:
             if request.method == "GET":
                 try:
-                    logging.warning('first')
                     # Query all bridges for the current user
                     my_bridges = db.session.query(P_C_bridge).filter_by(person_id=current_user.id).all()
                     
                     # Initialize data structures
                     clinics_info = []
-                    logging.warning('second')
                     for bridge in my_bridges:
                         # Query the clinic
                         clinic = db.session.query(Clinic).filter_by(clinic_id=bridge.clinic_id).one_or_none()
-                        logging.warning('third')
+                        
                         if clinic:
                             # Query the owner of the clinic
                             owner = db.session.query(Person).join(P_C_bridge).filter(
@@ -977,7 +975,6 @@ def vet_logic(choice, action):
                                 P_C_bridge.is_clinic_owner == True,
                                 P_C_bridge.person_id == Person.id
                             ).one_or_none()
-                            logging.warning('fourth')
                             # Query other personnel of the clinic
                             personnel = db.session.query(Person).join(P_C_bridge).filter(
                                 P_C_bridge.clinic_id == clinic.clinic_id,
@@ -1048,13 +1045,13 @@ def vet_logic(choice, action):
 
                 # If there is a search query, filter the results
                 if search_query:
-                    unique_bridges = unique_bridges.join(Clinic).filter(Clinic.clinic_name.like(f"%{search_query}%"))
+                    unique_bridges = unique_bridges.join(Clinic).filter(Clinic.clinic_name.like(f"%{search_query}%"), Clinic.visibility == True)
 
                 unique_bridges = unique_bridges.all()
 
                 for bridge in unique_bridges:
                     # Query the clinic
-                    clinic = db.session.query(Clinic).filter_by(clinic_id=bridge.clinic_id).one_or_none()
+                    clinic = db.session.query(Clinic).filter_by(clinic_id=bridge.clinic_id, visibility = True).one_or_none()
                     
                     if clinic:
                         # Query the owner of the clinic
@@ -1297,7 +1294,7 @@ def edit_user(person_id, choice):
             person.type = type
             person.address = address
             person.phone = phone
-            #Am using action in vets for identifiend speciality, result is needed for routing
+            
             db.session.commit()
             if int(type) == 1:  # Regular user
                 if previous_person_type == 2:
@@ -1347,17 +1344,11 @@ def edit_user(person_id, choice):
             elif int(type) == 3:  # Vet
                 try:
                     vet = db.session.query(Vet).filter_by(person_id=person_id).one()
-                    vet_speciality = request.form.get('vet_speciality')
                     li = request.form.get('license')
                     if li:
                         vet = db.session.query(Vet).filter_by(person_id = person_id).one_or_none()
                         if vet:
                             vet.has_license = bool(li)
-                    if vet_speciality != None or vet_speciality != 0 or vet_speciality != '0':
-                        logging.warning(vet_speciality)
-                        vet.spec_id = int(vet_speciality)
-                    vet.active = True
-                    action = vet_speciality
                 except NoResultFound:
                     vet = Vet(person_id=person_id, active=True)
                     db.session.add(vet)
@@ -1452,6 +1443,9 @@ def edit_note(note_id):
 @login_required
 @grant_access([3])
 def give_clinic_ownership(clinic_id, person_id):
+    if person_id == current_user.id:
+        flash('თქვენ უკვე ხართ მოცემული კლინიკის მფლობელი', category='error')
+        return redirect(url_for('general_logic.vet_logic', choice = 5, action=1))
     current_owner = db.session.query(P_C_bridge).filter_by(clinic_id = clinic_id,
     person_id = current_user.id, is_clinic_owner = True
     ).one_or_none()
@@ -1468,7 +1462,7 @@ def give_clinic_ownership(clinic_id, person_id):
                 new_owner.is_clinic_owner = True
                 db.session.commit()
                 flash('წარმატება')
-    return redirect(url_for('general_logic.vet_logic', choice = 5, action=4))
+    return redirect(url_for('general_logic.vet_logic', choice = 5, action=1))
 
 
 #clinic requests are controlled here

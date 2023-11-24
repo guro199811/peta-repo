@@ -1,5 +1,5 @@
 from website import db
-from website.models import Type, Speciality, Pet_species, Pet_breed
+from website.models import Type, Pet_species, Pet_breed, Phone_Prefixes
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 import logging
@@ -34,24 +34,21 @@ try:
             session.add(t)
         session.commit()
 
-    specialities_fixture = [
-        ('None', 'Has no specialty selected'),
-        ('Cardiology', 'Speciality in heart conditions'),
-        ('Dermatology', 'Speciality in skin disorders'),
-        ('Ophthalmology', 'Speciality in eye diseases'),
-        ('Orthopedics', 'Speciality in musculoskeletal system'),
-        ('Neurology', 'Speciality in nervous system disorders'),
-        ('Oncology', 'Speciality in cancer treatment'),
-        ('Radiology', 'Speciality in medical imaging'),
-        ('Surgery', 'Speciality in surgical procedures'),
-        ('Internal Medicine', 'Speciality in internal diseases'),
-        ('Behavioral Medicine', 'Speciality in behavioral disorders')
-    ]
 
-    if not session.query(Speciality).first():
-        for spec in specialities_fixture:
-            s = Speciality(specialty=spec[0], description=spec[1])
-            session.add(s)
+    prefix_fixture = [
+    ('+995', 6, '🇬🇪'),  # Georgia
+    ('+380', 9, '🇺🇦'),  # Ukraine
+    ('+1', 10, '🇺🇸'),   # United States & Canada
+    ('+44', 10, '🇬🇧'),  # United Kingdom
+    ('+91', 10, '🇮🇳'),  # India
+    ('+81', 10, '🇯🇵'),  # Japan
+    ('+49', 10, '🇩🇪'),  # Germany
+    ('+7', 10, '🇷🇺')    # Russia
+    ]
+    if not session.query(Phone_Prefixes).first():
+        for prefix_ in prefix_fixture:
+            p = Phone_Prefixes(prefix=prefix_[0], nums=prefix_[1], icon=prefix_[2])
+            session.add(p)
         session.commit()
 
     pet_species_fixture = [

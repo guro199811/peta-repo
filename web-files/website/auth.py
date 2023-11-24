@@ -1,10 +1,13 @@
 from .tokens import generate_token, init_serializer
 from itsdangerous import SignatureExpired
+from sqlalchemy.exc import IntegrityError
+
 
 from werkzeug.security import generate_password_hash, check_password_hash
 from . import db
 from .models import *
-from datetime import date as dt
+from datetime import datetime, timedelta, date as dt
+import re
 
 from flask_mail import Message, Mail
 
@@ -18,7 +21,8 @@ from flask import (
     Blueprint, 
     render_template, 
     request, flash, 
-    redirect, url_for)
+    redirect, url_for,
+    session)
 
 from .views import grant_access
 import logging
@@ -31,15 +35,32 @@ auth = Blueprint('auth', __name__)
 #LogIN
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
+    if 'tries' not in session:
+        session['tries'] = 0
+
     if request.method == 'POST':
         mail = request.form.get('email')
         password = request.form.get('password')
-
+        
         user = Person.query.filter_by(mail=mail).first()
         if user:
+            # Check if the account is currently blocked
+            if user.temporary_block and datetime.utcnow() < user.temporary_block:
+                flash('თქვენი აქაუნთი დროებით დაბლოკილია, გთხოვთ სცადოთ მოგვიანებით.', 'error')
+                return render_template('login.html', user=current_user, tries=session['tries'])
+
+            # Unblock the account if the block duration has passed
+            if user.temporary_block and datetime.utcnow() >= user.temporary_block:
+                user.temporary_block = None
+                user.login_attempts = 0
+                db.session.commit()
+            
+            # Check password and handle login attempts
             if check_password_hash(user.password, password):
-                #flash('წარმატება!', category='success')
-                #flask_login-ს ვიყენებთ რომ დავიმახსოვროთ მომხმარებელი რომ შესულია
+                # Reset login attempts on successful login
+                user.login_attempts = 0
+                session['tries'] = 0
+                db.session.commit()
                 login_user(user, remember=True)
                 if user.confirmed:
                     #ვიგებთ რა ტიპის მომხმარებელია
@@ -55,10 +76,24 @@ def login():
                 else:
                     return render_template("auths/verification.html", user=current_user, verification_type = 0)
             else:
-                flash('პაროლი არასწორია, გთხოვთ სცადოთ ხელახლა.', category='error')
+                # Increment login attempts
+                
+                user.login_attempts += 1
+                db.session.commit()
+                session['tries'] = user.login_attempts
+
+                if user.login_attempts >= 10:
+                    # Block the account for 30 minutes
+                    user.temporary_block = datetime.utcnow() + timedelta(minutes=30)
+                    db.session.commit()
+                    flash('10 წარუმატებელი ცდის შედეგად, აქაუნთი დაბლოკილია 30 წუთით.', 'error')
+                else:
+                    flash(f'პაროლი არასწორია, გთხოვთ სცადოთ ხელახლა. ცდების რაოდენობა = {10 - session["tries"]}', 'error')
+
+                return render_template('login.html', user=current_user, tries=session['tries'])
         else:
-            flash('ელ.ფოსტა არ არის დარეგისტრირებული, გთხოვთ სცადოთ ხელახლა.', category='error')
-    return render_template("login.html", user=current_user)
+            flash('ელ.ფოსტა არ არის დარეგისტრირებული, გთხოვთ სცადოთ ხელახლა.', 'error')
+    return render_template("login.html", user=current_user, tries=session['tries'])
 
 
 #Logout
@@ -70,15 +105,26 @@ def logout():
     return redirect(url_for('auth.login'))
 
 
-#Registration Function
+# Registration Function
 @auth.route("/register", methods=['GET', 'POST'])
 def register():
+    prefixes = db.session.query(Phone_Prefixes).all()
+    all_prefixes = []
+    for prefix in prefixes:
+        p = {
+            'prefix': prefix.prefix,  # Use dot notation instead of indexing
+            'nums': prefix.nums,      # Same here, use dot notation
+            'icon': prefix.icon
+        }
+        all_prefixes.append(p)
+
     if request.method =="POST":
         mail = request.form.get("email")
         name = request.form.get("name")
         lastname = request.form.get("lastname")
         password1 = request.form.get("password")
         password2 = request.form.get("repeat-password")
+        prefix = request.form.get('country_code')
         phone = request.form.get("phone")
         address = request.form.get("address")
         choice = 1
@@ -97,7 +143,15 @@ def register():
             flash("გამეორებული პაროლი არაა სწორი", category="error")
         elif len(password1) < 6:
             flash("პაროლის მინიმალური ზომა არის 6 სიმბოლო.", category="error")
+        elif not re.search("[a-zA-Z]", password1):
+            flash("თქვენი მაროლი უნდა შეიცავდეს მინიმუმ 1 ასოს")
+        elif not re.search("[0-9]", password1):
+            flash('თქვენი პაროლი უნდა შეიცავდეს მინიმუმ 1 ციფრს')
         else:
+            #Combining phone data
+            phone = prefix + phone
+            logging.warning(phone)
+
             #Adding data to database
             new_user = Person(name=name, lastname=lastname, phone=phone,
                             mail=mail, address=address, created=date,
@@ -110,7 +164,7 @@ def register():
             
             send_confirmation(new_user)
             return render_template("auths/verification.html", user=current_user, verification_type = 0)
-    return render_template("sign-up.html", user=current_user)
+    return render_template("sign-up.html", user=current_user, prefixes=all_prefixes)
 
 #####################
 #Email Confirmations
@@ -188,6 +242,10 @@ def reset_password(token):
             flash('პაროლები არ ემთხვევა', category='error')
         elif len(new_password) < 6:
             flash('პაროლი უნდა შეიცავდეს მინიმუმ 6 სიმბოლოს', category='error')
+        elif not re.search("[a-zA-Z]", new_password):
+            flash("თქვენი მაროლი უნდა შეიცავდეს მინიმუმ 1 ასოს")
+        elif not re.search("[0-9]", new_password):
+            flash('თქვენი პაროლი უნდა შეიცავდეს მინიმუმ 1 ციფრს')
         else:
             email = confirm_password_token(token)
             user = Person.query.filter_by(mail=email).first()

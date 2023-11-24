@@ -1,5 +1,5 @@
 from flask_login import UserMixin
-
+from sqlalchemy import DateTime
 
 from . import db
 
@@ -24,6 +24,8 @@ class Person(db.Model, UserMixin):
     password = db.Column(db.String(150), nullable=False)
     confirmed = db.Column(db.Boolean, nullable=False, default=False)
     confirmed_on = db.Column(db.Date, nullable=True)
+    login_attempts = db.Column(db.Integer, default=0)
+    temporary_block = db.Column(DateTime, nullable=True)
 
 
 class Owner(db.Model):
@@ -32,12 +34,6 @@ class Owner(db.Model):
     person_id = db.Column(db.Integer, db.ForeignKey('persons.id'))
     person = db.relationship(Person)
 
-
-class Speciality(db.Model):
-    __tablename__ = 'specialities'
-    spec_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    specialty = db.Column(db.String(50), unique=True)
-    description = db.Column(db.String(150))
 
 
 class Clinic(db.Model):
@@ -55,8 +51,6 @@ class Vet(db.Model):
     vet_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     person_id = db.Column(db.Integer, db.ForeignKey('persons.id'))
     person = db.relationship(Person)
-    spec_id = db.Column(db.Integer, db.ForeignKey('specialities.spec_id'))
-    speciality = db.relationship(Speciality)
     has_license = db.Column(db.Boolean, default = False)
     temporary_license = db.Column(db.Boolean, default = False)
 
@@ -180,3 +174,11 @@ class Requests(db.Model):
     reciever = db.relationship('Person', foreign_keys=[reciever_id], backref='received_requests')
 
     approved = db.Column(db.Boolean, default=False, nullable=True)
+
+
+class Phone_Prefixes(db.Model):
+    __tablename__ = 'phone_prefixes'
+    prefix_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    prefix = db.Column(db.String(10), unique=True)
+    nums = db.Column(db.Integer)
+    icon = db.Column(db.String(10), nullable=False, default='&#127987')

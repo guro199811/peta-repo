@@ -212,8 +212,8 @@
         </thead>
         <tbody>
           {% for person in result %}
-            <form action="{{ url_for('general_logic.edit_user',action = 0, person_id=person.id, choice = choice) }}" method="POST">
               <tr>
+                <form action="{{ url_for('general_logic.edit_user',action = 0, person_id=person.id, choice = choice) }}" method="POST">
                 {% if action == 0 %}
                 <input type="hidden" name="action" value="0">
                 {% elif action == 1 %}
@@ -249,8 +249,9 @@
                     <button type="submit" class="saveOwner" id="save_{{ person.id }}" onsubmit="return confrm('Change Confirmation')"><i class="fa-solid fa-check"></i></button>
                   </div>
                 </td>
-              </tr>
               </form>
+              </tr>
+
             {% endfor %}
           </tbody>
         </table>
@@ -328,8 +329,8 @@
               </thead>
               <tbody>
                 {% for pet_hist, pet in pet_history %}
+                <tr>
                 <form action="{{ url_for('general_logic.admin_logic',choice=1, action = 2) }}" method="POST">
-                  <tr>
                     <td>{{ pet_hist.history_id }}</td>
                     <td>{{ pet.pet_id }} - {{ pet.name }}</td>
                     <td>
@@ -388,8 +389,9 @@
               <tbody>
                 {% for visit, clinic, vet, owner, pet, vet_name, vet_lastname,
                      owner_name, owner_lastname, pet_name in visits %}
-                <form>
+                
                   <tr>
+                    <form>
                     <td>{{ visit.visit_id }}</td>
                     <td>{{ clinic.clinic_id }} - {{ clinic.clinic_name }}</td>
                     <td>{{ vet.vet_id }} - {{ vet_name }} {{ vet_lastname }}</td>
@@ -397,8 +399,9 @@
                     <td>{{ visit.diagnosis }}</td>
                     <td>{{ visit.treatment }}</td>
                     <td>{{ visit.date.strftime('%Y-%m-%d') }}</td>
+                    </form>
                   </tr>
-                </form>
+                
                 {% endfor %}
               </tbody>
             </table>
@@ -421,11 +424,7 @@
                   <strong>სახელი: </strong> {{person.name}}<br>
                   <strong>გვარი: </strong> {{person.lastname}}<br>
                   <strong>ტელ.ნომერი: </strong> {{person.phone}}<br>
-                  {% if vet.speciality %}
-                  <strong>სპეციალობა: </strong> {{vet.Speciality}}<br>
-                  {% else %}
-                  <strong>არ აქვს სპეციალობა დარეგისტრირებული</strong><br>
-                  {% endif %}
+                  <strong>ელ.ფოსტა:</strong> {{ person.mail }}
                 </li>
               {% endfor %}
             </ul>
@@ -525,8 +524,9 @@
                 </thead>
                 <tbody>
                 {% for note in notes %}
-                <form action="{{ url_for('general_logic.edit_note', action=0, note_id=note.note_id) }}" method="POST">
                 <tr>
+                <form action="{{ url_for('general_logic.edit_note', action=0, note_id=note.note_id) }}" method="POST">
+                
                   <td>
                   <textarea name="comment" id='comment_{{ note.note_id }}' style="width: 700px; 
                   min-height: 90px; resize: vertical; overflow-y: auto; 
@@ -588,8 +588,9 @@
                 <tbody>
                   {% for visit, vet, owner, pet, vet_name, vet_lastname,
                        owner_name, owner_lastname, pet_name in visits %}
-                  <form>
+                  
                     <tr>
+                      <form>
                       <td>{{ visit.visit_id }}</td>
                       <td>{{ vet.vet_id }} - {{ vet_name }} {{ vet_lastname }}</td>
                       <td>{{ owner.owner_id }} - {{ owner_name }} {{ owner_lastname }}</td>
@@ -597,8 +598,9 @@
                       <td>{{ visit.diagnosis }}</td>
                       <td>{{ visit.treatment }}</td>
                       <td>{{ visit.date.strftime('%Y-%m-%d') }}</td>
+                      </form>
                     </tr>
-                  </form>
+                  
                   {% endfor %}
                 </tbody>
               </table>
@@ -623,8 +625,9 @@
                 </thead>
                 <tbody>
                   {% for pet, species, breed, owner, person in pets %}
-                  <form>
+                  
                     <tr>
+                      <form>
                       <td>{{ pet.pet_id }}</td>
                       <td>{{ owner.owner_id}} - {{ person.name }} {{ person.lastname }}</td>
                       <td>{{ pet.name }}</td>
@@ -638,8 +641,9 @@
                       {% endif %}
                       <td>{{ pet.treatment }}</td>
                       <td>{{ pet.recent_vaccination }}</td>
+                      </form>
                     </tr>
-                  </form>
+                  
                   {% endfor %}
                 </tbody>
               </table>
@@ -680,14 +684,24 @@
               </thead>
               <tbody>
                 {% for clinic, person in clinics %}
+                  {% set row_color = "" %}
+                {% if clinic.visibility == false %}
+                  {% set row_color = "transparent-background" %}
+                {% endif %}
                   <tr>
-                    <td>{{ clinic.clinic_id }}</td>
-                    <td>{{ clinic.clinic_name }}</td>
-                    <td>{{ clinic.desc }}</td>
-                    <td>
+                    <td class="{{ row_color }}">
+                      {% if clinic.visibility == false%}
+                      <i class="fa-regular fa-eye-slash"></i>
+                      {% else %}
+                      <i class="fa-regular fa-eye"></i>
+                      {% endif %}
+                      {{ clinic.clinic_id }}</td>
+                    <td class="{{ row_color }}">{{ clinic.clinic_name }}</td>
+                    <td class="{{ row_color }}">{{ clinic.desc }}</td>
+                    <td class="{{ row_color }}">
                       {{ person.id }} - {{ person.name }} {{ person.lastname }}
                     </td>
-                    <td>
+                    <td class="{{ row_color }}">
                       {{ clinic.coordinates }}
                     </td>
                   </tr>
@@ -724,7 +738,6 @@
                     <th>ცხოველების რაოდენობა</th>
                     {% elif choice == 4 %}
                     <th>ვიზიტების რაოდენობა</th>
-                    <th>სპეციალობა</th>
                     <th>კლინიკის დამატების<br>უფლებამოსილება</th>
                     {% elif choice == 5 %}
                     <th>პოსტების რაოდენობა</th>
@@ -734,8 +747,9 @@
                 </thead>
                 <tbody>
                   {% for user, person, count in users %}
+                  <tr>
                   <form action="{{ url_for('general_logic.edit_user', person_id=person.id, choice = choice) }}" method="POST">
-                    <tr>
+                    
                       {% if choice == 3 %}
                       <td>{{ user.owner_id }}</td>
                       {% elif choice == 4 %}
@@ -781,24 +795,9 @@
                       </td>
                       {% if choice == 4 %}
                       <td>
-                        <select id="type_{{ person.id }}" name="vet_speciality" required disabled>
-                          <option value="1" {% if action == 1 %}selected{% endif %}>სპეციალობა არ აქვს</option>
-                          <option value="2" {% if action == 2 %}selected{% endif %}>კარდიოლოგია</option>
-                          <option value="3" {% if action == 3 %}selected{% endif %}>დერმატოლოგია</option>
-                          <option value="4" {% if action == 4 %}selected{% endif %}>ოფთალმოლოგია</option>
-                          <option value="5" {% if action == 5 %}selected{% endif %}>ორთოპედია</option>
-                          <option value="6" {% if action == 6 %}selected{% endif %}>ნევროლოგია</option>
-                          <option value="7" {% if action == 7 %}selected{% endif %}>ონკოლოგია</option>
-                          <option value="8" {% if action == 8 %}selected{% endif %}>რადიოლოგია</option>
-                          <option value="9" {% if action == 9 %}selected{% endif %}>ქირურგია</option>
-                          <option value="10" {% if action == 10 %}selected{% endif %}>შიგან სიკვდილი</option>
-                          <option value="11" {% if action == 11 %}selected{% endif %}>ქმედებითი სიკვდილი</option>
-                        </select>
-                      </td>
-                      <td>
                         <select id="type_{{ person.id }}" name="license" required disabled>
-                          <option value="True" {% if user.has_license %}selected{% endif %}>აქვს უფლებამოსილება</option>
-                          <option value="False" {% if user.has_license == false %}selected{% endif %}>არ აქვს უფლებამოსილება</option>
+                          <option value="True" {% if user.has_license %}selected{% endif %}>აქვს</option>
+                          <option value="False" {% if user.has_license == false %}selected{% endif %}>არ აქვს</option>
                         </select>
                       </td>
                       {% endif %}
@@ -808,8 +807,9 @@
                           <button type="submit" class="change-button s-button" style="display:none" id="save_{{ person.id }}" onsubmit="return confrm('დასტურის შემოწმება')"><i class="fa-solid fa-check"></i></button>
                         </div>
                       </td>
-                    </tr>
+                    
                   </form>
+                </tr>
                   {% endfor %}
                 </tbody>
               </table>

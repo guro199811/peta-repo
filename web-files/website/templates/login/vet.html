@@ -96,8 +96,9 @@
         </thead>
         <tbody>
           {% for person in action %}
+          <tr>
             <form action="{{ url_for('general_logic.edit_user', person_id=person.id) }}" method="POST">
-              <tr>
+              
                 <td>{{ person.id }}</td>
                 <td>
                   <input type="text" id="name_{{ person.id }}" name="name" value="{{ person.name }}" required disabled>
@@ -128,8 +129,9 @@
                     <button type="submit" class="saveOwner" id="save_{{ person.id }}" onsubmit="return confrm('Change Confirmation')"><i class="fa-solid fa-check"></i></button>
                   </div>
                 </td>
-              </tr>
+
               </form>
+              </tr>
             {% endfor %}
           </tbody>
         </table>
@@ -208,8 +210,9 @@
                 </thead>
                 <tbody>
                   {% for pet_hist, pet in pet_history %}
+                  <tr>
                   <form action="{{ url_for('general_logic.vet_logic',choice=1, action = 2) }}" method="POST">
-                    <tr>
+                    
                       <td>{{ pet_hist.history_id }}</td>
                       <td>{{ pet.pet_id }} - {{ pet.name }}</td>
                       <td>
@@ -302,11 +305,7 @@
                       <strong>სახელი: </strong> {{person.name}}<br>
                       <strong>გვარი: </strong> {{person.lastname}}<br>
                       <strong>ტელ.ნომერი: </strong> {{person.phone}}<br>
-                      {% if vet.speciality %}
-                      <strong>სპეციალობა: </strong> {{vet.Speciality}}<br>
-                      {% else %}
-                      <strong>არ აქვს სპეციალობა დარეგისტრირებული</strong><br>
-                      {% endif %}
+                      <strong>ელ.ფოსტა:</strong> {{ person.mail }}
                     </li>
                     {% endfor %}
                 </ul>
@@ -668,9 +667,7 @@
                 <td class="{{ row_color }}">{{ clinic_data.clinic.desc }}</td>
                 <td class="{{ row_color }}">
                   {% if clinic_data.personnel %}
-                    {% for person in clinic_data.personnel %}
-                      {{ person.name }} {{ person.lastname }} - {{ person.phone }}<br>
-                    {% endfor %}
+                      პერსონალი არის დარეგისტრირებული
                   {% else %}
                       პერსონალი არ არის დარეგისტრირებული
                   {% endif %}
@@ -684,9 +681,6 @@
                   <form action="{{ url_for('general_logic.vet_logic', choice=choice, action=0) }}" method="GET" title="კლინიკის მონაცემების შეცვლა";>
                     <input type="hidden" id="clinic" name="clinic_id" value="{{ clinic_data.clinic.clinic_id }}">
                     <button type="submit" class="change-button" style="border: none; box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);"><i class="fa-regular fa-pen-to-square"></i></button><br>
-                  </form>
-                  <form action="{{ url_for('auth.clinic_removal_email', clinic_id=clinic_data.clinic.clinic_id, user=current_user) }}" method="DELETE" title="კლინიკის წაშლა" onsubmit="return confirm('დარწმუნებული ხართ რომ გნებავთ კლინიკის წაშლა?\n თუ დარწმუნებული ხართ წაშლის თაობაზე, მეილზე მოგივათ დასტურის URL');">
-                    <button type="submit" class="change-button r-button" style="border: none; box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);"><i class="fa-solid fa-eraser"></i></button><br>
                   </form>
                   {% if clinic_data.clinic.visibility == false %}
                   <form action="{{ url_for('general_logic.vet_logic', choice=choice, action=2) }}" method="POST" title="კლინიკის დანახვადობა">
@@ -707,6 +701,9 @@
                     </button><br>
                   </form>
                 {% endif %}
+                <form action="{{ url_for('auth.clinic_removal_email', clinic_id=clinic_data.clinic.clinic_id, user=current_user) }}" method="DELETE" title="კლინიკის წაშლა" onsubmit="return confirm('დარწმუნებული ხართ რომ გნებავთ კლინიკის წაშლა?\n თუ დარწმუნებული ხართ წაშლის თაობაზე, მეილზე მოგივათ დასტურის URL');">
+                  <button type="submit" class="change-button r-button" style="border: none; box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);"><i class="fa-solid fa-eraser"></i></button><br>
+                </form>
                   <form action="{{ url_for('general_logic.vet_logic', choice=choice, action=4) }}" method="POST" title="კლინიკის მომუშავე პერსონალი";>
                     <input type="hidden" id="clinic" name="clinic_id" value="{{ clinic_data.clinic.clinic_id }}">
                     <button type="submit" class="change-button sky-button" style="border: none; box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); margin-top: 5px;"><i class="fa-solid fa-user-large"></i></button><br>
@@ -817,6 +814,16 @@
               <th>
                 <div class="pet-actions staff-actions">
                 {% if clinic_owner == current_user.id %}
+                {% if staff.is_clinic_owner %}
+                <form class='staff-form' title="პიროვნება უკვე არის კლინიკის მფლობელი";>
+                  <button type="submit" class="change-button disabled-button" style="border: none; box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); margin-top: 5px;" disabled>
+                    <i class="fa-solid fa-crown"></i></button><br>
+                </form>
+                <form class='staff-form' title="საკუთარი თავის წაშლა არ შეგიძლიათ რადგან კლინიკის მფოლები ხართ";>
+                  <button type="submit" class="change-button disabled-button" style="border: none; box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); margin-top: 5px;" disabled>
+                    <i class="fa-regular fa-circle-xmark"></i></button><br>
+                </form>
+                {% else %}
                 <form class='staff-form' action="{{ url_for('general_logic.give_clinic_ownership', clinic_id = staff.clinic_id, person_id = person.id) }}" method="POST" title="პერსონალისთვის კლინიკის მფლობელობის მიცემა";>
                   <button type="submit" class="change-button gold-button" style="border: none; box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); margin-top: 5px;">
                     <i class="fa-solid fa-crown"></i></button><br>
@@ -825,6 +832,8 @@
                   <button type="submit" class="change-button r-button" style="border: none; box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); margin-top: 5px;">
                     <i class="fa-regular fa-circle-xmark"></i></button><br>
                 </form>
+                {% endif %}
+
                 {% else %}
                 <form class='staff-form' title="კლინიკის მომუშავე პერსონალი";>
                   <button type="submit" class="change-button disabled-button" style="border: none; box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); margin-top: 5px;" disabled>
@@ -832,7 +841,7 @@
                 </form>
                 {% if person.id == current_user.id %}
                 <form class='staff-form' action="{{ url_for('general_logic.remove_staff', bridge_id=staff.bridge_id) }}" method="POST" title="კლინიკის მომუშავე პერსონალიდან საკუთარი თავის ამოშლა";>
-                  <button type="submit" class="change-button" style="border: none; box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); margin-top: 5px;">
+                  <button type="submit" class="change-button r-button" style="border: none; box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); margin-top: 5px;">
                     <i class="fa-solid fa-xmark"></i></button><br>
                 </form>
                 {% else %}
