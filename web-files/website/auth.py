@@ -88,7 +88,7 @@ def login():
                     db.session.commit()
                     flash('10 წარუმატებელი ცდის შედეგად, აქაუნთი დაბლოკილია 30 წუთით.', 'error')
                 else:
-                    flash(f'პაროლი არასწორია, გთხოვთ სცადოთ ხელახლა. ცდების რაოდენობა = {10 - session["tries"]}', 'error')
+                    flash(f'პაროლი არასწორია, გთხოვთ სცადოთ ხელახლა. ცდების რაოდენობა დარჩენილია = {10 - session["tries"]}', 'error')
 
                 return render_template('login.html', user=current_user, tries=session['tries'])
         else:

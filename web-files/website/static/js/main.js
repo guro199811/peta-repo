@@ -1,15 +1,3 @@
-//autohiding of alerts
-function hideAlert() {
-  const alerts = document.querySelectorAll('.alert');
-  alerts.forEach(function(alert) {
-    setTimeout(function() {
-      alert.style.display = 'none';
-    }, 10000); // Hide after 10 seconds
-  });
-}
-
-// Call hideAlert on each alert when the document loads
-document.addEventListener('DOMContentLoaded', hideAlert);
 
 //enable input script
 function enableInput(inputId) {

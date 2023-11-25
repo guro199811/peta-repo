@@ -47,19 +47,33 @@
     {% if category == 'error' %}
       <div class="alert alert-danger alert-dismissable fade show" role="alert">
         {{ message }}
-        <button type="button" class="close" onclick="this.parentElement.style.display='none';">
+        <button type="button" class="close" >
           &times;
         </button>
       </div>
     {% else %}
-      <div class="alert alert-success alter-dismissable fade show" role="alert">
+      <div class="alert alert-success alert-dismissable fade show" role="alert">
         {{ message }}
-        <button type="button" class="close" onclick="this.parentElement.style.display='none';">
+        <button type="button" class="close" >
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
     {% endif %}
     {% endfor %}
+    <script>
+      // This ensures that hideAlert is called right after the alerts are added to the DOM
+      function hideAlert() {
+        console.log('hideAlert')
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(function(alert) {
+          setTimeout(function() {
+            alert.style.display = 'none';
+          }, 10000); // Hide after 10 seconds
+        });
+      }
+
+      hideAlert();
+    </script>
   {% endif %}
   {% endwith %}
   
