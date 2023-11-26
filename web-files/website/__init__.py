@@ -1,7 +1,8 @@
-from flask import Flask
+from flask import Flask, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_mail import Mail
+from flask_babel import Babel
 import os
 import secrets
 import logging
@@ -35,12 +36,28 @@ def create_app(migrate):
 
     app.config.from_pyfile('mail_config.cfg')
     
-    
+    #Babel setup
+    babel = Babel(app)
+
+    app.config['BABEL_DEFAULT_LOCALE'] = 'ka'
+    app.config['BABEL_TRANSLATION_DIRECTORIES'] = 'translations'
+
+    def get_locale():
+    # Implement the logic to select the appropriate locale
+        return request.args.get('lang') or \
+               request.accept_languages.best_match(['en', 'ru', 'ka'])
+
+    # Set the localeselector function
+    babel.locale_selector_func = get_locale
+
+
     #rest of the app
     with app.app_context():
         db.init_app(app)
         migrate.init_app(app, db)
         mail.init_app(app)
+
+
 
     from .views import views
     from .auth import auth
@@ -65,3 +82,5 @@ def create_app(migrate):
     
 
     return app
+
+

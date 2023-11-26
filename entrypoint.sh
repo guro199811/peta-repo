@@ -17,6 +17,26 @@ else
   export PORT=5000
 fi
 
+echo "--RUN BABEL --"
+
+# Extract new messages and update the .pot file
+pybabel extract -F babel.cfg -o messages.pot .
+
+
+# Initialize or update the catalog for each language
+
+# Do this step manually whenever you add new languages
+#pybabel init -i messages.pot -d translations -l en
+#pybabel init -i messages.pot -d translations -l ru
+
+
+# Update the .po files for each language after extracting new messages
+pybabel update -i messages.pot -d translations -l en
+pybabel update -i messages.pot -d translations -l ru
+
+# Compile the .po files to .mo files
+pybabel compile -d translations
+
 
 echo "-- RUN FLASK SCRIPT -- "
 # Run database migrations
@@ -30,6 +50,7 @@ flask db upgrade
 
 echo "-- RUN PREMADE -- "
 python premade.py
+
 
 echo "-- RUN FLASK APP -- "
 python3 -m flask --app ./main.py run --host=0.0.0.0 --port=$PORT

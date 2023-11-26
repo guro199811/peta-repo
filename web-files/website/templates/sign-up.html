@@ -10,41 +10,41 @@
 
 <div class="sign-container">
   <section id="register" class="main-section">
-    <h3 class="welcome-text"><strong>რეგისტრაცია</strong></h3>
+    <h3 class="welcome-text"><strong>{{ _('რეგისტრაცია') }}</strong></h3>
     <form class="register-form" method="POST">
-      <label for="name">სახელი</label>
-      <input type="text" id="name" name="name" title="გთხოვთ შეიყვანოთ თქვენი სახელი" required>
-      <label for="lastname">გვარი</label>
-      <input type="text" id="lastname" name="lastname" title="გთხოვთ შეიყვანოთ თქვენი გვარი" required>
+      <label for="name">{{ _('სახელი') }}</label>
+      <input type="text" id="name" name="name" title="{{ _('გთხოვთ შეიყვანოთ თქვენი სახელი') }}" required>
+      <label for="lastname">{{ _('გვარი') }}</label>
+      <input type="text" id="lastname" name="lastname" title="{{ _('გთხოვთ შეიყვანოთ თქვენი გვარი') }}" required>
 
-      <label for="email">ელ.ფოსტა</label>
+      <label for="email">{{ _('ელ.ფოსტა') }}</label>
       <input type="email" id="email" name="email" 
       placeholder="name@example.com" 
-      title="გთხოვთ შეიყვანოთ ვალიდური ელ.ფოსტა, მასზე გაიგზავნება დამადასტურებელი ბმული" required>
+      title="{{ _('გთხოვთ შეიყვანოთ ვალიდური ელ.ფოსტა, მასზე გაიგზავნება დამადასტურებელი ბმული') }}" required>
 
-      <label for="password">პაროლი</label>
+      <label for="password">{{ _('პაროლი') }}</label>
       <input type="password" id="password" name="password" placeholder="******" 
-       title="უნდა შეიცავდეს მინიმუმ 6 სიმბოლოს" required>
-      <label for="repeat-password">გაიმეორეთ პაროლი</label>
+       title="{{ _('უნდა შეიცავდეს მინიმუმ 6 სიმბოლოს') }}" required>
+      <label for="repeat-password">{{ _('გაიმეორეთ პაროლი') }}</label>
       <input type="password" id="repeat-password" name="repeat-password" placeholder="******" 
-      title="გაიმეორეთ თქვენი პაროლი" minlength="6" required>
+      title="{{ _('გაიმეორეთ თქვენი პაროლი') }}" minlength="6" required>
       <div>
-        <input type="checkbox" id="show-password" class="show-password-checkbox" title="აჩვენოს/დამალოს პაროლი"><label for="checkbox" style="font-size: 14px;">პაროლის ნახვა</label>
+        <input type="checkbox" id="show-password" class="show-password-checkbox" title="{{ _('აჩვენოს/დამალოს პაროლი') }}"><label for="checkbox" style="font-size: 14px;">{{ _('პაროლის ნახვა') }}</label>
         </div>
-      <label for="phone">ტელ.ნომერი</label>
+      <label for="phone">{{ _('ტელ.ნომერი') }}</label>
       <div class="phone-input">
           <select id="countryCode" name="country_code" required>
               {% for prefix in prefixes %}
               <option value="{{ prefix.prefix }}">{{ prefix.icon }} {{ prefix.prefix }}</option>
               {% endfor %}
           </select>
-          <input type="text" id="phone" name="phone" minlength="6" maxlength="6" title="ტელ.ნომერი" placeholder="ტელ.ნომერი" required>
+          <input type="text" id="phone" name="phone" minlength="6" maxlength="6" title="{{ _('ტელ.ნომერი') }}" placeholder="{{ _('ტელ.ნომერი') }}" required>
       </div>
-      <label for="address">Address:</label>
+      <label for="address">{{ _('Address:') }}</label>
       <input type="text" id="address" name="address">
       <h3></h3>
       <h3></h3>
-      <input type="submit" value="Register">
+      <input type="submit" value="{{ _('რეგისტრაცია') }}">
     </form>
   </section>
 </div>
@@ -75,7 +75,7 @@
     
     // Test the input value against the pattern
     if (!pattern.test(passwordInput.value)) {
-      passwordInput.setCustomValidity("პაროლი უნდა შეიცავდეს მინიმუმ 6 სიმბოლოს, მინიმუმ 1 ლათინურ სიმბოლოს და 1 ციფრს.");
+      passwordInput.setCustomValidity("{{ _('პაროლი უნდა შეიცავდეს მინიმუმ 6 სიმბოლოს, მინიმუმ 1 ლათინურ სიმბოლოს და 1 ციფრს.') }}");
     } else {
       passwordInput.setCustomValidity('');
     }
@@ -119,7 +119,7 @@
       var phoneInput = document.getElementById('phone');
       if (phoneInput.value.length < phoneInput.minLength || phoneInput.value.length > phoneInput.maxLength) {
           event.preventDefault(); // Stop the form from submitting
-          alert('გთხოვთ შეიყვანოთ ' + phoneInput.minLength + ' სიმბოლო.');
+          alert("{{ _('გთხოვთ შეიყვანოთ') }}" + phoneInput.minLength + "{{ _('სიმბოლო.') }}");
       }
   });
 </script>

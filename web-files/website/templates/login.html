@@ -10,27 +10,28 @@
 {% block content%}
 <div class="sign-container">
   <section id="login" class="main-section">
-    <h3 class="welcome-text"><strong>ანგარიშზე შესვლა</strong></h3>
+    <h3 class="welcome-text"><strong>{{ _('ანგარიშზე შესვლა') }}</strong></h3>
     <br>
     <form class="login-form" method="POST" id="loginForm">
-      <label for="email">ელ.ფოსტა</label>
+      <label for="email">{{ _('ელ.ფოსტა') }}</label>
       <input type="email" id="email" name="email" placeholder="name@example.com"
-       title="ელ.ფოსტის შესაყვანი ველი" required>
-      <label for="password">პაროლი</label>
+       title="{{ _('ელ.ფოსტის შესაყვანი ველი') }}" required>
+      <label for="password">{{ _('პაროლი') }}</label>
       <input type="password" id="password" name="password" placeholder="******" 
-       title="პაროლის შესაყვანი ველი" required>
+       title="{{ _('პაროლის შესაყვანი ველი') }}" required>
       <div>
-      <input type="checkbox" id="show-password" class="show-password-checkbox" title="აჩვენოს/დამალოს პაროლი"><label for="checkbox" style="font-size: 14px;">პაროლის ნახვა</label>
+      <input type="checkbox" id="show-password" class="show-password-checkbox" 
+       title="{{ _('აჩვენოს/დამალოს პაროლი') }}"><label for="checkbox" style="font-size: 14px;">{{ _('პაროლის ნახვა') }}</label>
       </div>
       <h3></h3>
       {% if session.get('tries', 0) >= 3 %}
       <div class="g-recaptcha" data-sitekey="6LdmXcwoAAAAAARZJDNPt5HN8DGlyCwps6kHEa_q"></div>
       {% endif %}
       <h3></h3>
-      <input type="submit" value="შესვლა">
+      <input type="submit" value="{{ _('შესვლა') }}">
       <br>
       <p style="font-size: 13px;">
-        <a href="{{ url_for('auth.forgot_password') }}">პაროლი დამავიწყდა</a>
+        <a href="{{ url_for('auth.forgot_password') }}">{{ _('პაროლი დამავიწყდა') }}</a>
       </p>    
     </form>
   </section>
@@ -44,7 +45,7 @@
       "{% if session.get('tries', 0) >= 3 %}"
       var response = grecaptcha.getResponse();
       if (response.length == 0) {
-          alert("გთხოვთ, დაადასტუროთ, რომ არ ხართ რობოტი!");
+          alert("{{ _('გთხოვთ, დაადასტუროთ, რომ არ ხართ რობოტი!') }}");
           event.preventDefault(); // Prevent form submission
       }
       "{% endif %}"
