@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-11-26 18:37+0000\n"
+"POT-Creation-Date: 2023-11-27 04:17+0000\n"
 "PO-Revision-Date: 2023-11-26 17:57+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ru\n"
@@ -28,11 +28,157 @@ msgstr "Моя страница"
 msgid "გამოსვლა"
 msgstr "Выйти"
 
-#: website/templates/base.html:39
+#: website/templates/base.html:39 website/templates/login.html:31
 msgid "შესვლა"
 msgstr "Войти в аккаунт"
 
-#: website/templates/base.html:40
+#: website/templates/base.html:40 website/templates/sign-up.html:13
+#: website/templates/sign-up.html:47
 msgid "რეგისტრაცია"
 msgstr "Регистрация"
+
+#: website/templates/base.html:88
+msgid "დამატებითი ინფორმაციისთვის დაგვიკავშირდით"
+msgstr ""
+
+#: website/templates/login.html:13
+msgid "ანგარიშზე შესვლა"
+msgstr ""
+
+#: website/templates/auths/forgot_password.html:15
+#: website/templates/login.html:16 website/templates/sign-up.html:20
+msgid "ელ.ფოსტა"
+msgstr ""
+
+#: website/templates/auths/forgot_password.html:17
+#: website/templates/login.html:18
+msgid "ელ.ფოსტის შესაყვანი ველი"
+msgstr ""
+
+#: website/templates/login.html:19 website/templates/sign-up.html:25
+msgid "პაროლი"
+msgstr ""
+
+#: website/templates/login.html:21
+msgid "პაროლის შესაყვანი ველი"
+msgstr ""
+
+#: website/templates/auths/reset_password.html:19
+#: website/templates/login.html:24 website/templates/sign-up.html:32
+msgid "აჩვენოს/დამალოს პაროლი"
+msgstr ""
+
+#: website/templates/auths/reset_password.html:19
+#: website/templates/login.html:24 website/templates/sign-up.html:32
+msgid "პაროლის ნახვა"
+msgstr ""
+
+#: website/templates/login.html:34
+msgid "პაროლი დამავიწყდა"
+msgstr ""
+
+#: website/templates/auths/reset_password.html:34
+#: website/templates/login.html:48
+msgid "გთხოვთ, დაადასტუროთ, რომ არ ხართ რობოტი!"
+msgstr ""
+
+#: website/templates/main.html:9
+msgid "მოგესალმებით ჩვენს ვებ.საიტზე"
+msgstr ""
+
+#: website/templates/main.html:10
+msgid ""
+"ჩვენი საიტი შექმნილია თქვენი შინაური ცხოველებისთვის, \n"
+"      დარეგისტრირდით და დაარეგისტრირეთ თქვენი ერთგული მეგობრები,\n"
+"      შეიყვანეთ მათი აცრების ისტორია და ასევე\n"
+"      ნახეთ თქვენს ახლოს განლაგებული კლინიკები."
+msgstr ""
+
+#: website/templates/sign-up.html:15
+msgid "სახელი"
+msgstr ""
+
+#: website/templates/sign-up.html:16
+msgid "გთხოვთ შეიყვანოთ თქვენი სახელი"
+msgstr ""
+
+#: website/templates/sign-up.html:17
+msgid "გვარი"
+msgstr ""
+
+#: website/templates/sign-up.html:18
+msgid "გთხოვთ შეიყვანოთ თქვენი გვარი"
+msgstr ""
+
+#: website/templates/sign-up.html:23
+msgid ""
+"გთხოვთ შეიყვანოთ ვალიდური ელ.ფოსტა, მასზე გაიგზავნება დამადასტურებელი "
+"ბმული"
+msgstr ""
+
+#: website/templates/auths/reset_password.html:12
+#: website/templates/sign-up.html:27
+msgid "უნდა შეიცავდეს მინიმუმ 6 სიმბოლოს"
+msgstr ""
+
+#: website/templates/auths/reset_password.html:13
+#: website/templates/sign-up.html:28
+msgid "გაიმეორეთ პაროლი"
+msgstr ""
+
+#: website/templates/auths/reset_password.html:15
+#: website/templates/sign-up.html:30
+msgid "გაიმეორეთ თქვენი პაროლი"
+msgstr ""
+
+#: website/templates/sign-up.html:34 website/templates/sign-up.html:41
+msgid "ტელ.ნომერი"
+msgstr ""
+
+#: website/templates/sign-up.html:43
+msgid "Address:"
+msgstr ""
+
+#: website/templates/auths/reset_password.html:56
+#: website/templates/sign-up.html:78
+msgid ""
+"პაროლი უნდა შეიცავდეს მინიმუმ 6 სიმბოლოს, მინიმუმ 1 ლათინურ სიმბოლოს და 1"
+" ციფრს."
+msgstr ""
+
+#: website/templates/sign-up.html:122
+msgid "გთხოვთ შეიყვანოთ"
+msgstr ""
+
+#: website/templates/sign-up.html:122
+msgid "სიმბოლო."
+msgstr ""
+
+#: website/templates/ajax_requests/owner_search_result.html:2
+msgid "შინაური ცხოველის პატრონი მოიძებნა: "
+msgstr ""
+
+#: website/templates/ajax_requests/owner_search_result.html:10
+msgid "მოცემულ მომხმარებელს ცხოველები არ ყავს დარეგისტრირებული"
+msgstr ""
+
+#: website/templates/auths/forgot_password.html:12
+msgid "შეიყვანეთ თქვენი ელ.ფოსტა, მასზე გაიგზავნება პაროლის აღსადგენი ბმული"
+msgstr ""
+
+#: website/templates/auths/forgot_password.html:21
+msgid "აღსადგენი ბმულის გაგზავნა"
+msgstr ""
+
+#: website/templates/auths/reset_password.html:7
+msgid "შეიყვანეთ თქვენი მონაცემები"
+msgstr ""
+
+#: website/templates/auths/reset_password.html:10
+msgid "ახალი პაროლი"
+msgstr ""
+
+#: website/templates/auths/reset_password.html:22
+msgid "პაროლის შეცვლა"
+msgstr ""
 
