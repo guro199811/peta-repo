@@ -32,17 +32,20 @@ pybabel extract -F babel.cfg -o messages.pot .
 
 # Update the .po files for each language after extracting new messages
 pybabel update -i messages.pot -d translations -l en
-pybabel update -i messages.pot -d translations -l ru
 
 # Compile the .po files to .mo files
+
+echo "-- COMPILE BABEL --"
 pybabel compile -d translations
 
+echo "-- EXPORT BABEL FILES --"
+export FLASK_RUN_EXTRA_FILES=app/translations/en/LC_MESSAGES/messages.mo
 
 echo "-- RUN FLASK SCRIPT -- "
 # Run database migrations
 flask db init
 
-echo "--STAMPING THE HEAD--"
+echo "--Migrating--"
 #STOPPING assumtions on database
 flask db stamp head
 flask db migrate

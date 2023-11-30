@@ -77,7 +77,6 @@ def editor():
                            action = action)
 
 
-#mail testing
 
 @views.route('/verification')
 def verification():

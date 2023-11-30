@@ -1,5 +1,16 @@
 /* Global styles */
 
+/* Link */
+.navbar-menu .navbar-item a{
+  font-family:Georgia,Times,'Times New Roman',serif;
+ }
+
+ /* Paragraph */
+.footer p{
+  font-family:Georgia,Times,'Times New Roman',serif;
+ }
+ 
+ 
 
 /* can you spot any */
 * {

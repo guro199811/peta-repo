@@ -21,6 +21,18 @@ except:
     database_url = None
 
 
+# Initialize Babel
+babel = Babel()
+
+
+def get_locale():
+    return 'en'
+    '''return request.args.get('lang')\
+        or\
+        request.accept_languages.best_match(['en', 'ka'])'''
+
+
+
 def create_app(migrate):
     app = Flask(__name__, static_url_path='/static', static_folder='static')
     secret_key = 'shdiwkmalwdandwakjsndkwjanksjdnwkanskdwkajn'
@@ -36,19 +48,10 @@ def create_app(migrate):
 
     app.config.from_pyfile('mail_config.cfg')
     
-    #Babel setup
-    babel = Babel(app)
+    #Babel config setup
 
     app.config['BABEL_DEFAULT_LOCALE'] = 'ka'
-    app.config['BABEL_TRANSLATION_DIRECTORIES'] = 'translations'
-
-    def get_locale():
-    # Implement the logic to select the appropriate locale
-        return request.args.get('lang') or \
-               request.accept_languages.best_match(['en', 'ru', 'ka'])
-
-    # Set the localeselector function
-    babel.locale_selector_func = get_locale
+    app.config['BABEL_TRANSLATION_DIRECTORIES'] = '../translations'
 
 
     #rest of the app
@@ -56,6 +59,8 @@ def create_app(migrate):
         db.init_app(app)
         migrate.init_app(app, db)
         mail.init_app(app)
+        
+    babel.init_app(app, locale_selector=get_locale)
 
 
 
@@ -63,6 +68,7 @@ def create_app(migrate):
     from .auth import auth
     from .general_logic import general_logic
     from .ajax_logic import ajax_logic
+    from .models import Person
 
     app.register_blueprint(views, url_prefix='/')
     app.register_blueprint(auth, url_prefix='/')
@@ -70,7 +76,6 @@ def create_app(migrate):
     app.register_blueprint(ajax_logic, url_prefix='/')
 
     # ვეუბნებით ფლასკს როგორ ჩავტვირთოთ მომხმარებელი (Primary key)-ით
-    from .models import Person
 
     login_manager = LoginManager()
     login_manager.login_view = 'auth.login'

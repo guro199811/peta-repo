@@ -28,6 +28,7 @@ from .views import grant_access
 import logging
 
 from flask import current_app as app 
+from flask_babel import _
 
 auth = Blueprint('auth', __name__)
 
@@ -46,7 +47,7 @@ def login():
         if user:
             # Check if the account is currently blocked
             if user.temporary_block and datetime.utcnow() < user.temporary_block:
-                flash('თქვენი აქაუნთი დროებით დაბლოკილია, გთხოვთ სცადოთ მოგვიანებით.', 'error')
+                flash(_('თქვენი აქაუნთი დროებით დაბლოკილია, გთხოვთ სცადოთ მოგვიანებით.'), 'error')
                 return render_template('login.html', user=current_user, tries=session['tries'])
 
             # Unblock the account if the block duration has passed
@@ -63,7 +64,7 @@ def login():
                 db.session.commit()
                 login_user(user, remember=True)
                 if user.confirmed:
-                    #ვიგებთ რა ტიპის მომხმარებელია
+                    #Guessing what type of user logged in
                     type = user.type
                     if type == 1:
                         return redirect(url_for('views.owner'))
@@ -86,13 +87,14 @@ def login():
                     # Block the account for 30 minutes
                     user.temporary_block = datetime.utcnow() + timedelta(minutes=30)
                     db.session.commit()
-                    flash('10 წარუმატებელი ცდის შედეგად, აქაუნთი დაბლოკილია 30 წუთით.', 'error')
+                    flash(_('10 წარუმატებელი ცდის შედეგად, აქაუნთი დაბლოკილია 30 წუთით.'), category='error')
                 else:
-                    flash(f'პაროლი არასწორია, გთხოვთ სცადოთ ხელახლა. ცდების რაოდენობა დარჩენილია = {10 - session["tries"]}', 'error')
+                    error_message = _('პაროლი არასწორია, გთხოვთ სცადოთ ხელახლა. ცდების რაოდენობა დარჩენილია = {tries}')
+                    flash(error_message.format(tries=10 - session["tries"]), 'error')
 
                 return render_template('login.html', user=current_user, tries=session['tries'])
         else:
-            flash('ელ.ფოსტა არ არის დარეგისტრირებული, გთხოვთ სცადოთ ხელახლა.', 'error')
+            flash(_('ელ.ფოსტა არ არის დარეგისტრირებული, გთხოვთ სცადოთ ხელახლა.'), 'error')
     return render_template("login.html", user=current_user, tries=session['tries'])
 
 
@@ -100,7 +102,7 @@ def login():
 @auth.route('/logout')
 @login_required
 def logout():
-    #დამახსოვრებული მომხმარებელი გამოდის
+    #Remembered user logs out here
     logout_user()
     return redirect(url_for('auth.login'))
 
@@ -134,19 +136,19 @@ def register():
         user = Person.query.filter_by(mail=mail).first()
 
         if user:
-            flash('ეს ელ.ფოსტა უკვე დარეგისტრირებულია.', category='error')
+            flash(_('მოცემული ელ.ფოსტა უკვე დარეგისტრირებულია.'), category='error')
         elif len(mail) < 4:
-            flash("ემაილი უნდა შეიცავდეს მინიმუმ 4 სიმბოლოს.", category="error")
+            flash(_("ემაილი უნდა შეიცავდეს მინიმუმ 4 სიმბოლოს."), category="error")
         elif len(name) < 2:
-            flash("სახელი უნდა იყოს მინიმუმ 1 ასოზე დიდი.", category="error")
+            flash(_("სახელი უნდა იყოს მინიმუმ 1 ასოზე დიდი."), category="error")
         elif password1 != password2:
-            flash("გამეორებული პაროლი არაა სწორი", category="error")
+            flash(_("გამეორებული პაროლი არაა სწორი"), category="error")
         elif len(password1) < 6:
-            flash("პაროლის მინიმალური ზომა არის 6 სიმბოლო.", category="error")
+            flash(_("პაროლის მინიმალური ზომა არის 6 სიმბოლო."), category="error")
         elif not re.search("[a-zA-Z]", password1):
-            flash("თქვენი მაროლი უნდა შეიცავდეს მინიმუმ 1 ასოს")
+            flash(_("თქვენი მაროლი უნდა შეიცავდეს მინიმუმ 1 ასოს"),category="error")
         elif not re.search("[0-9]", password1):
-            flash('თქვენი პაროლი უნდა შეიცავდეს მინიმუმ 1 ციფრს')
+            flash(_('თქვენი პაროლი უნდა შეიცავდეს მინიმუმ 1 ციფრს'), category="error")
         else:
             #Combining phone data
             phone = prefix + phone
@@ -177,9 +179,10 @@ def send_confirmation(new_user = current_user):
     verimail = Mail(app)    
 
 
-    message = Message('ელ.ფოსტის დასტური(Petaworld.com)', sender='noreply@peta.ge', recipients=[new_user.mail])
+    message = Message(_('ელ.ფოსტის დასტური(Petaworld.com)'), sender='noreply@peta.ge', recipients=[new_user.mail])
     confirmation_url = url_for('auth.confirm_token', token=token, _external=True)
-    message.body = f'გთხოვთ დაადასტუროთ თქვენი ელ.ფოსტა მოცემული ბმულით: {confirmation_url}\nგთხოვთ გაითვალისწინოთб, რომ თქვენი ბმული გაუქმდება გამოგზავნიდან 1 საათში\n\n\nპატივისცემით, Peta-Team'
+    m = _('გთხოვთ დაადასტუროთ თქვენი ელ.ფოსტა მოცემული ბმულით: {confirmation_url}\nგთხოვთ გაითვალისწინოთб, რომ თქვენი ბმული გაუქმდება გამოგზავნიდან 1 საათში\n\n\nპატივისცემით, Peta-Team')
+    message.body = m.format(confirmation_url)
     verimail.send(message)
     return render_template("auths/verification.html", verification_type = 0)
 
@@ -215,9 +218,10 @@ def forgot_password():
 
         if user:
             send_password_reset_email(user)
-            flash(f'პაროლის შეცვლის იმეილი გაიგზავნა თქვენს {user.mail} ელ.ფოსტაზე', category='success')
+            success_message = _('პაროლის შეცვლის იმეილი გაიგზავნა თქვენს {user.mail} ელ.ფოსტაზე')
+            flash(success_message.format(user.mail), category='success')
         else:
-            flash('ეს ელ.ფოსტა არ არის დარეგისტრირებული', category='error')
+            flash(_('ეს ელ.ფოსტა არ არის დარეგისტრირებული'), category='error')
 
     return render_template("auths/forgot_password.html", user=current_user)
 
@@ -228,8 +232,9 @@ def send_password_reset_email(user):
     reset_url = url_for('auth.reset_password', token=token, _external=True)
     verimail = Mail(app) 
 
-    message = Message('პაროლის შეცვლა (Petaworld.com)', sender='noreply@peta.ge', recipients=[user.mail])
-    message.body = f'პაროლის შეცვლის ლინკი: {reset_url}\nლინკი გაუქმდება გამოგზავნიდან 1 საათში.\n\n\nPeta-Team'
+    message = Message(_('პაროლის შეცვლა (Petaworld.com)'), sender='noreply@peta.ge', recipients=[user.mail])
+    m = 'პაროლის შეცვლის ლინკი: {reset_url}\nლინკი გაუქმდება გამოგზავნიდან 1 საათში.\n\n\nPeta-Team'
+    message.body = m.format(reset_url)
     verimail.send(message)
     
 
@@ -239,13 +244,13 @@ def reset_password(token):
         new_password = request.form.get('password')
         confirm_password = request.form.get('repeat-password')
         if new_password != confirm_password:
-            flash('პაროლები არ ემთხვევა', category='error')
+            flash(_('პაროლები არ ემთხვევა'), category='error')
         elif len(new_password) < 6:
-            flash('პაროლი უნდა შეიცავდეს მინიმუმ 6 სიმბოლოს', category='error')
+            flash(_('პაროლი უნდა შეიცავდეს მინიმუმ 6 სიმბოლოს'), category='error')
         elif not re.search("[a-zA-Z]", new_password):
-            flash("თქვენი მაროლი უნდა შეიცავდეს მინიმუმ 1 ასოს")
+            flash(_("თქვენი პაროლი უნდა შეიცავდეს მინიმუმ 1 ასოს"))
         elif not re.search("[0-9]", new_password):
-            flash('თქვენი პაროლი უნდა შეიცავდეს მინიმუმ 1 ციფრს')
+            flash(_('თქვენი პაროლი უნდა შეიცავდეს მინიმუმ 1 ციფრს'))
         else:
             email = confirm_password_token(token)
             user = Person.query.filter_by(mail=email).first()
@@ -256,7 +261,7 @@ def reset_password(token):
                 db.session.commit()
                 return redirect(url_for('auth.login'))
             else:
-                flash('ლინკი არ არის სწორი', category='error')
+                flash(_('ლინკი არ არის სწორი'), category='error')
 
     return render_template("auths/reset_password.html", token=token, user=current_user)
 
@@ -324,18 +329,20 @@ def clinic_removal_email(clinic_id):
             person_id = current_user.id).one_or_none()
         clinic = db.session.query(Clinic).filter_by(clinic_id = clinic_id).one()
         if person.is_clinic_owner:
-            message = Message('დასტური კლინიკის წაშლაზე (Petaworld.com)', sender='noreply@peta.ge', recipients=[user.mail])
-            message.body = f'მოგესალმებით, გთხოვთ წაიკითხოთ!\n\nთქვენ ხართ მოცემული კლინიკის "{clinic.clinic_name}" დამრეგისტრირებელი,\n\n\
+            message = Message(_('დასტური კლინიკის წაშლაზე (Petaworld.com)'), sender='noreply@peta.ge', recipients=[user.mail])
+            m = 'მოგესალმებით, გთხოვთ წაიკითხოთ!\n\nთქვენ ხართ მოცემული კლინიკის "{clinic.clinic_name}" დამრეგისტრირებელი,\n\n\
                 მოცემული კლინიკის წაშლით,ანუ ბმულზე გადასვლის შედეგად თქვენ დარწმუნებული ხართ რომ შლით:\n\n\
                     • ყველა კავშირს მოცემულ კლინიკასთან (აღდგენა შეუძლებელია)\n\
                     • ყველა ვიზიტს რომელიც მოცემულ კლინიკაშია დარეგისტრირებული (აღდგენა შეუძლებელია)\n\
                     • ყველა თანამშრომლების კავშირებს კლინიკასთან (აღდგენა შეუძლებელია)\n\n\n\
                       {remove_url}\nლინკი გაუქმდება გამოგზავნიდან 1 საათში.\n\n\nPeta-Team'
+            message.body = m.format(clinic.clinic_name, remove_url)
         else:
-            message = Message('დასტური კლინიკასთან კავშირის გაწყვეტაზე (Petaworld.com)', sender='noreply@peta.ge', recipients=[user.mail])
-            message.body = f'თუ დარწმუნებული ხართ რომ გნებავთ კავშირის გაწყვეტა კლინიკასთან სახელად "{clinic.clinic_name}", გადადით მოცემულ ბმულზე: {remove_url}\nლინკი გაუქმდება გამოგზავნიდან 1 საათში.\n\n\nPeta-Team'
+            message = Message(_('დასტური კლინიკასთან კავშირის გაწყვეტაზე (Petaworld.com)'), sender='noreply@peta.ge', recipients=[user.mail])
+            m = 'თუ დარწმუნებული ხართ რომ გნებავთ კავშირის გაწყვეტა კლინიკასთან სახელად "{clinic.clinic_name}", გადადით მოცემულ ბმულზე: {remove_url}\nლინკი გაუქმდება გამოგზავნიდან 1 საათში.\n\n\nPeta-Team'
+            message.body = m.format(clinic.clinic_name, remove_url)
     except Exception as e:
-        flash('შეცდომა')
+        flash(_('შეცდომა'))
         logging.warning(e)
 
     r_mail.send(message)

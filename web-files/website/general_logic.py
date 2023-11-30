@@ -6,7 +6,7 @@ from sqlalchemy import join, select, or_, func, and_, cast, String
 from sqlalchemy.orm import aliased
 from sqlalchemy.orm.exc import NoResultFound
 from datetime import date as dt, timedelta
-
+from flask_babel import _
 from .views import grant_access
 
 
@@ -37,21 +37,21 @@ def owner_logic(action):
                 address = request.form.get('address')
                 changed = change_user_data(firstname, lastname, address)
                 if changed:
-                    flash('მონაცემები წარმატებით შეიცვალა.', category='success')
+                    flash(_('მონაცემები წარმატებით შეიცვალა.'), category='success')
                 return render_template('login/owner.html', action = action)
             
                     
 
             return render_template('login/owner.html', action=action)
         if action == 1:
-            # მფლობელის მონაცემების მიღება და მფლობელის ID-ის მიხედვით
+            #Owner data is being retrieved with current user_id
             owner = db.session.query(Owner).filter_by(person_id=current_user.id).one_or_none()
             if owner is None:
                 return render_template('login/owner.html', action=action, pets=None)
             else:
                 owner_id = owner.owner_id
 
-                # მფლობელის იდენტიფიკატორით ცხოვლის მფლობლების მიღება
+                # Retrieving Pet data using Owner Data
                 pets = db.session.query(Pet, Pet_species, Pet_breed).\
                     join(Pet_species, Pet.pet_species == Pet_species.species_id).\
                     join(Pet_breed, Pet.pet_breed == Pet_breed.breed_id).\
@@ -59,11 +59,10 @@ def owner_logic(action):
                     order_by(Pet.pet_id.asc()).\
                     all()
                 if len(pets) == 0:
-                    #flash('თქვენ ცხოველები არ გყავთ.')
                     return render_template('login/owner.html', action=action, pets=None)
                 else:
                     return render_template('login/owner.html', action=action, pets=pets)
-                # შაბლონის გამოტანა 'owner_logic.html'-ში, action-ის მიხედვით
+                
             
         elif action == 2:
             owner = db.session.query(Owner).filter_by(person_id = current_user.id).one_or_none()
@@ -133,15 +132,10 @@ def owner_logic(action):
                             latitude = float(latitude_str)
                             longitude = float(longitude_str)
                         except ValueError as e:
-                            # Log the error and the offending coordinates string
-                            logging.warning(f"Invalid coordinates format for clinic {clinic.clinic_name}: {clinic.coordinates}")
-                            logging.warning(e)
                             # Skip this clinic and continue with the next
                             continue
                     else:
-                        # Log a warning for clinics without valid coordinates
-                        logging.warning(f"No valid coordinates provided for clinic {clinic.clinic_name}")
-                        # Skip this clinic and continue with the next
+                        # Skip this clinic
                         continue
 
                     clinic_info = {
@@ -177,9 +171,9 @@ def owner_logic(action):
                 confirmation = register_pet(pet_name, pet_species, pet_breed, 
                                             recent_vaccination, gender, birth_date)
                 if confirmation:
-                    flash('ცხოველი დარეგისტრირდა წარმატებით', category='success')
+                    flash(_('ცხოველი დარეგისტრირდა წარმატებით'), category='success')
                 else:
-                    flash('თქვენი ცხოველი ვერ დარეგისტრირდა', category='error')    
+                    flash(_('თქვენი ცხოველი ვერ დარეგისტრირდა'), category='error')    
 
             return redirect(url_for('general_logic.owner_logic', action=1))
         
@@ -241,14 +235,12 @@ def admin_logic(choice, action):
     
     if choice == 1:
         if action == 1:
-            # მფლობელის მონაცემების მიღება და მფლობელის ID-ის მიხედვით
             owner = db.session.query(Owner).filter_by(person_id=current_user.id).one_or_none()
             if owner is None:
                 return render_template('login/admin.html',choice = choice, action=action, pets=None)
             else:
                 owner_id = owner.owner_id
 
-                # მფლობელის იდენტიფიკატორით ცხოვლის მფლობლების მიღება
                 pets = db.session.query(Pet, Pet_species, Pet_breed).\
                     join(Pet_species, Pet.pet_species == Pet_species.species_id).\
                     join(Pet_breed, Pet.pet_breed == Pet_breed.breed_id).\
@@ -256,7 +248,6 @@ def admin_logic(choice, action):
                     order_by(Pet.pet_id.asc()).\
                     all()
                 if len(pets) == 0:
-                    #flash('თქვენ ცხოველები არ გყავთ.')
                     return render_template('login/admin.html',
                                            choice = choice ,action=action, pets=None)
                 else:
@@ -283,7 +274,6 @@ def admin_logic(choice, action):
                         .filter(Owner.person_id == current_user.id).all()
                 except Exception as e:
                     visits = None
-                    logging.warning(e)
 
                 if request.method == "GET":
                     return render_template('login/admin.html',
@@ -330,9 +320,6 @@ def admin_logic(choice, action):
                             latitude = float(latitude_str)
                             longitude = float(longitude_str)
                         except ValueError as e:
-                            # Log the error and the offending coordinates string
-                            logging.warning(f"Invalid coordinates format for clinic {clinic.clinic_name}: {clinic.coordinates}")
-                            logging.warning(e)
                             # Skip this clinic and continue with the next
                             continue
                     else:
@@ -375,9 +362,9 @@ def admin_logic(choice, action):
                 confirmation = register_pet(pet_name, pet_species, pet_breed, 
                                             recent_vaccination, gender, birth_date)
                 if confirmation:
-                    flash('ცხოველი დარეგისტრირდა წარმატებით', category='success')
+                    flash(_('ცხოველი დარეგისტრირდა წარმატებით'), category='success')
                 else:
-                    flash('თქვენი ცხოველი ვერ დარეგისტრირდა', category='error')    
+                    flash(_('თქვენი ცხოველი ვერ დარეგისტრირდა'), category='error')    
 
             return render_template('login/admin.html',choice = choice, action=action)
         
@@ -550,7 +537,7 @@ def admin_logic(choice, action):
             address = request.form.get('address')
             changed = change_user_data(firstname, lastname, address)
             if changed:
-                flash('მონაცემები წარმატებით შეიცვალა.', category='success')
+                flash(_('მონაცემები წარმატებით შეიცვალა.'), category='success')
             return render_template('login/admin.html',choice = choice, action = action)
 
     if choice == 9:
@@ -587,14 +574,12 @@ def vet_logic(choice, action):
 
     if choice == 1:
         if action == 1:
-            # მფლობელის მონაცემების მიღება და მფლობელის ID-ის მიხედვით
             owner = db.session.query(Owner).filter_by(person_id=current_user.id).one_or_none()
             if owner is None:
                 return render_template('login/vet.html',choice = choice, action=action, pets=None)
             else:
                 owner_id = owner.owner_id
 
-                # მფლობელის იდენტიფიკატორით ცხოვლის მფლობლების მიღება
                 pets = db.session.query(Pet, Pet_species, Pet_breed).\
                     join(Pet_species, Pet.pet_species == Pet_species.species_id).\
                     join(Pet_breed, Pet.pet_breed == Pet_breed.breed_id).\
@@ -602,7 +587,6 @@ def vet_logic(choice, action):
                     order_by(Pet.pet_id.asc()).\
                     all()
                 if len(pets) == 0:
-                    #flash('თქვენ ცხოველები არ გყავთ.')
                     return render_template('login/vet.html',
                                            choice = choice ,action=action, pets=None)
                 else:
@@ -677,15 +661,9 @@ def vet_logic(choice, action):
                             latitude = float(latitude_str)
                             longitude = float(longitude_str)
                         except ValueError as e:
-                            # Log the error and the offending coordinates string
-                            logging.warning(f"Invalid coordinates format for clinic {clinic.clinic_name}: {clinic.coordinates}")
-                            logging.warning(e)
                             # Skip this clinic and continue with the next
                             continue
                     else:
-                        # Log a warning for clinics without valid coordinates
-                        logging.warning(f"No valid coordinates provided for clinic {clinic.clinic_name}")
-                        # Skip this clinic and continue with the next
                         continue
 
                     clinic_info = {
@@ -723,9 +701,9 @@ def vet_logic(choice, action):
                 confirmation = register_pet(pet_name, pet_species, pet_breed, 
                                             recent_vaccination, gender, birth_date)
                 if confirmation:
-                    flash('ცხოველი დარეგისტრირდა წარმატებით', category='success')
+                    flash(_('ცხოველი დარეგისტრირდა წარმატებით'), category='success')
                 else:
-                    flash('თქვენი ცხოველი ვერ დარეგისტრირდა', category='error')    
+                    flash(_('თქვენი ცხოველი ვერ დარეგისტრირდა'), category='error')    
 
             return redirect(url_for('general_logic.vet_logic', choice=choice, action=1))
         
@@ -770,15 +748,15 @@ def vet_logic(choice, action):
                 try:
                     vet = db.session.query(Vet).filter_by(person_id = person).one()
                 except:
-                    flash("ვეტერინარი არ არის დარეგისტრირებული ვეტერინარულ ბაზაში\n\
-                          გთხოვთ მიმართოს ადმინისტრაციას")
+                    flash(_("ვეტერინარი არ არის დარეგისტრირებული ვეტერინარულ ბაზაში\n\
+                          გთხოვთ მიმართოს ადმინისტრაციას"))
                 
                 owner_id = request.form.get('ownerId')
                 pet_id = request.form.get('petId')
                 if owner_id == None:
-                    flash('გთხოვთ მიუთითოთ შინაური ცხოველის პატრონი.')
+                    flash(_('გთხოვთ მიუთითოთ შინაური ცხოველის პატრონი.'))
                 if pet_id == None:
-                    flash('გთხოვთ მიუთითოთ შინაური ცხოველი.')
+                    flash(_('გთხოვთ მიუთითოთ შინაური ცხოველი.'))
                 diagnosis = request.form.get('diagnosis')
                 treatment = request.form.get('treatment')
                 date = request.form.get('date')
@@ -798,7 +776,7 @@ def vet_logic(choice, action):
                             try:
                                 visit.pet_id = pet_id
                             except:
-                                flash('გთხოვთ მიუთითოთ შინაური ცხოველის მფლობელი და შინაური ცხოველი.')
+                                flash(_('გთხოვთ მიუთითოთ შინაური ცხოველის მფლობელი და შინაური ცხოველი.'), category='error')
                             visit.diagnosis = diagnosis
                             visit.treatment = treatment
                             visit.date = date
@@ -933,10 +911,10 @@ def vet_logic(choice, action):
                                         clinic_id = clinic_id, is_clinic_owner = True)
                     db.session.add(pc_bridge)
                     db.session.commit()
-                    flash("კლინიკა წარმატებით დაემატა", category='success')
+                    flash(_("კლინიკა წარმატებით დაემატა"), category='success')
                     return redirect(url_for('general_logic.vet_logic', choice=choice, action=1))
                 except Exception as e:
-                    flash(f"გაუთვალისწინებელი ლოგიკის პრობლემა: {e}")
+                    flash(f"Unexpected Logic error: {e}")
 
             elif request.method == "GET":
                 vet_data = db.session.query(Vet).filter_by(person_id = current_user.id).one_or_none()
@@ -1028,11 +1006,10 @@ def vet_logic(choice, action):
                     return redirect(url_for('general_logic.vet_logic', 
                     choice = choice, action=1))
                 else:
-                    flash('პრობლემა, კლინიკის დამალვა ვერ მოხერხდა პრობლემის გამო')
+                    flash(_('პრობლემა, კლინიკის დამალვა ვერ მოხერხდა პრობლემის გამო'))
                     return redirect(url_for('general_logic.vet_logic', choice = choice, 
                         action=1))
             else:
-                logging.warning('its not a post?')
                 return redirect(url_for('general_logic.vet_logic', choice = choice, 
                         action=1))
 
@@ -1161,7 +1138,7 @@ def vet_logic(choice, action):
             address = request.form.get('address')
             changed = change_user_data(firstname, lastname, address)
             if changed:
-                flash('მონაცემები წარმატებით შეიცვალა.', category='success')
+                flash(_('მონაცემები წარმატებით შეიცვალა.'), category='success')
             return render_template('login/vet.html',choice = choice, action = action)
 
     return render_template('login/vet.html', choice = choice)
@@ -1256,7 +1233,7 @@ def edit_pet(action, pet_id):
                 db.session.commit()
                 changed = True
             if changed:
-                flash('მონაცემები წარმატებით შეიცვალა', category='success')
+                flash(_('მონაცემები წარმატებით შეიცვალა'), category='success')
             if current_user.type == 1:
                 return redirect(url_for('general_logic.owner_logic', action=1))
             elif current_user.type == 2:
@@ -1395,7 +1372,7 @@ def edit_user(person_id, choice):
             db.session.commit()
 
         except NoResultFound:
-            flash("მომხმარებელი ვერ მოიძებნა.", category='error')
+            flash(_("მომხმარებელი ვერ მოიძებნა."), category='error')
         action = request.form.get('action')
         if action:
             action = int(action)
@@ -1435,7 +1412,7 @@ def edit_note(note_id):
         db.session.commit()
     except:
         db.session.rollback()
-        flash("შეცდომა.", category='error')
+        flash(_("შეცდომა."), category='error')
     return redirect(url_for('general_logic.admin_logic', choice = 2, action=0))
 
 
@@ -1444,7 +1421,7 @@ def edit_note(note_id):
 @grant_access([3])
 def give_clinic_ownership(clinic_id, person_id):
     if person_id == current_user.id:
-        flash('თქვენ უკვე ხართ მოცემული კლინიკის მფლობელი', category='error')
+        flash(_('თქვენ უკვე ხართ მოცემული კლინიკის მფლობელი'), category='error')
         return redirect(url_for('general_logic.vet_logic', choice = 5, action=1))
     current_owner = db.session.query(P_C_bridge).filter_by(clinic_id = clinic_id,
     person_id = current_user.id, is_clinic_owner = True
@@ -1492,9 +1469,8 @@ def clinic_request_control(action, request_id):
                         request_data.approved = True
                         db.session.add(new_bridge)
                         db.session.commit()
-                        flash('წარმატება')
                     else:
-                        flash("თქვენ უკვე გაწევრიანებული ხართ მოცემულ კლინიკაში", category='error')
+                        flash(_("თქვენ უკვე გაწევრიანებული ხართ მოცემულ კლინიკაში"), category='error')
                         db.session.delete(request_data)
                         db.session.commit()
                 return redirect(url_for('general_logic.vet_logic',choice = 3, action=action))
@@ -1637,9 +1613,6 @@ def get_clinic_by_request(requests):
 
 def clinic_visibility_toggler(clinic_id, visibility):
     try:
-        # Convert v to boolean and log
-        logging.warning(f"Input visibility: {visibility}")
-
         # Retrieve clinic by clinic_id
         clinic = db.session.query(Clinic).filter_by(clinic_id=clinic_id).one_or_none()
 

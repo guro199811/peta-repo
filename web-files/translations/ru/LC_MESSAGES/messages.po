@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-11-27 04:17+0000\n"
+"POT-Creation-Date: 2023-11-29 18:33+0000\n"
 "PO-Revision-Date: 2023-11-26 17:57+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ru\n"
@@ -19,25 +19,185 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.13.1\n"
 
-#: website/templates/base.html:29 website/templates/base.html:31
-#: website/templates/base.html:33 website/templates/base.html:35
+#: website/auth.py:50
+msgid "თქვენი აქაუნთი დროებით დაბლოკილია, გთხოვთ სცადოთ მოგვიანებით."
+msgstr ""
+
+#: website/auth.py:90
+msgid "10 წარუმატებელი ცდის შედეგად, აქაუნთი დაბლოკილია 30 წუთით."
+msgstr ""
+
+#: website/auth.py:92
+msgid ""
+"პაროლი არასწორია, გთხოვთ სცადოთ ხელახლა. ცდების რაოდენობა დარჩენილია = "
+"{tries}"
+msgstr ""
+
+#: website/auth.py:97
+msgid "ელ.ფოსტა არ არის დარეგისტრირებული, გთხოვთ სცადოთ ხელახლა."
+msgstr ""
+
+#: website/auth.py:139
+msgid "მოცემული ელ.ფოსტა უკვე დარეგისტრირებულია."
+msgstr ""
+
+#: website/auth.py:141
+msgid "ემაილი უნდა შეიცავდეს მინიმუმ 4 სიმბოლოს."
+msgstr ""
+
+#: website/auth.py:143
+msgid "სახელი უნდა იყოს მინიმუმ 1 ასოზე დიდი."
+msgstr ""
+
+#: website/auth.py:145
+msgid "გამეორებული პაროლი არაა სწორი"
+msgstr ""
+
+#: website/auth.py:147
+msgid "პაროლის მინიმალური ზომა არის 6 სიმბოლო."
+msgstr ""
+
+#: website/auth.py:149 website/auth.py:251
+msgid "თქვენი მაროლი უნდა შეიცავდეს მინიმუმ 1 ასოს"
+msgstr ""
+
+#: website/auth.py:151 website/auth.py:253
+msgid "თქვენი პაროლი უნდა შეიცავდეს მინიმუმ 1 ციფრს"
+msgstr ""
+
+#: website/auth.py:182
+msgid "ელ.ფოსტის დასტური(Petaworld.com)"
+msgstr ""
+
+#: website/auth.py:184
+msgid ""
+"გთხოვთ დაადასტუროთ თქვენი ელ.ფოსტა მოცემული ბმულით: {confirmation_url}\n"
+"გთხოვთ გაითვალისწინოთб, რომ თქვენი ბმული გაუქმდება გამოგზავნიდან 1 საათში"
+"\n"
+"\n"
+"\n"
+"პატივისცემით, Peta-Team"
+msgstr ""
+
+#: website/auth.py:221
+msgid "პაროლის შეცვლის იმეილი გაიგზავნა თქვენს {user.mail} ელ.ფოსტაზე"
+msgstr ""
+
+#: website/auth.py:224
+msgid "ეს ელ.ფოსტა არ არის დარეგისტრირებული"
+msgstr ""
+
+#: website/auth.py:235
+msgid "პაროლის შეცვლა (Petaworld.com)"
+msgstr ""
+
+#: website/auth.py:247
+msgid "პაროლები არ ემთხვევა"
+msgstr ""
+
+#: website/auth.py:249
+msgid "პაროლი უნდა შეიცავდეს მინიმუმ 6 სიმბოლოს"
+msgstr ""
+
+#: website/auth.py:264
+msgid "ლინკი არ არის სწორი"
+msgstr ""
+
+#: website/auth.py:332
+msgid "დასტური კლინიკის წაშლაზე (Petaworld.com)"
+msgstr ""
+
+#: website/auth.py:341
+msgid "დასტური კლინიკასთან კავშირის გაწყვეტაზე (Petaworld.com)"
+msgstr ""
+
+#: website/auth.py:345
+msgid "შეცდომა"
+msgstr ""
+
+#: website/general_logic.py:40 website/general_logic.py:540
+#: website/general_logic.py:1141
+msgid "მონაცემები წარმატებით შეიცვალა."
+msgstr ""
+
+#: website/general_logic.py:174 website/general_logic.py:365
+#: website/general_logic.py:704
+msgid "ცხოველი დარეგისტრირდა წარმატებით"
+msgstr ""
+
+#: website/general_logic.py:176 website/general_logic.py:367
+#: website/general_logic.py:706
+#, fuzzy
+msgid "თქვენი ცხოველი ვერ დარეგისტრირდა"
+msgstr "Моя страница"
+
+#: website/general_logic.py:751
+msgid ""
+"ვეტერინარი არ არის დარეგისტრირებული ვეტერინარულ ბაზაში\n"
+"                          გთხოვთ მიმართოს ადმინისტრაციას"
+msgstr ""
+
+#: website/general_logic.py:757
+#, fuzzy
+msgid "გთხოვთ მიუთითოთ შინაური ცხოველის პატრონი."
+msgstr "Моя страница"
+
+#: website/general_logic.py:759
+#, fuzzy
+msgid "გთხოვთ მიუთითოთ შინაური ცხოველი."
+msgstr "Моя страница"
+
+#: website/general_logic.py:779
+msgid "გთხოვთ მიუთითოთ შინაური ცხოველის მფლობელი და შინაური ცხოველი."
+msgstr ""
+
+#: website/general_logic.py:914
+msgid "კლინიკა წარმატებით დაემატა"
+msgstr ""
+
+#: website/general_logic.py:1009
+msgid "პრობლემა, კლინიკის დამალვა ვერ მოხერხდა პრობლემის გამო"
+msgstr ""
+
+#: website/general_logic.py:1236
+msgid "მონაცემები წარმატებით შეიცვალა"
+msgstr ""
+
+#: website/general_logic.py:1375
+msgid "მომხმარებელი ვერ მოიძებნა."
+msgstr ""
+
+#: website/general_logic.py:1415
+msgid "შეცდომა."
+msgstr ""
+
+#: website/general_logic.py:1424
+msgid "თქვენ უკვე ხართ მოცემული კლინიკის მფლობელი"
+msgstr ""
+
+#: website/general_logic.py:1473
+msgid "თქვენ უკვე გაწევრიანებული ხართ მოცემულ კლინიკაში"
+msgstr ""
+
+#: website/templates/base.html:28 website/templates/base.html:30
+#: website/templates/base.html:32 website/templates/base.html:34
 msgid "ჩემი გვერდი"
 msgstr "Моя страница"
 
-#: website/templates/base.html:37
+#: website/templates/base.html:36
 msgid "გამოსვლა"
 msgstr "Выйти"
 
-#: website/templates/base.html:39 website/templates/login.html:31
+#: website/templates/base.html:38 website/templates/login.html:31
 msgid "შესვლა"
 msgstr "Войти в аккаунт"
 
-#: website/templates/base.html:40 website/templates/sign-up.html:13
+#: website/templates/base.html:39 website/templates/sign-up.html:13
 #: website/templates/sign-up.html:47
 msgid "რეგისტრაცია"
 msgstr "Регистрация"
 
-#: website/templates/base.html:88
+#: website/templates/base.html:87
 msgid "დამატებითი ინფორმაციისთვის დაგვიკავშირდით"
 msgstr ""
 
@@ -46,7 +206,9 @@ msgid "ანგარიშზე შესვლა"
 msgstr ""
 
 #: website/templates/auths/forgot_password.html:15
-#: website/templates/login.html:16 website/templates/sign-up.html:20
+#: website/templates/login.html:16 website/templates/login/admin.html:427
+#: website/templates/login/owner.html:197 website/templates/login/vet.html:249
+#: website/templates/login/vet.html:741 website/templates/sign-up.html:20
 msgid "ელ.ფოსტა"
 msgstr ""
 
@@ -94,6 +256,15 @@ msgid ""
 "      ნახეთ თქვენს ახლოს განლაგებული კლინიკები."
 msgstr ""
 
+#: website/templates/login/admin.html:203
+#: website/templates/login/admin.html:290
+#: website/templates/login/admin.html:424
+#: website/templates/login/admin.html:619
+#: website/templates/login/admin.html:657
+#: website/templates/login/admin.html:730 website/templates/login/owner.html:35
+#: website/templates/login/owner.html:62 website/templates/login/owner.html:194
+#: website/templates/login/vet.html:112 website/templates/login/vet.html:246
+#: website/templates/login/vet.html:739 website/templates/login/vet.html:812
 #: website/templates/sign-up.html:15
 msgid "სახელი"
 msgstr ""
@@ -102,7 +273,12 @@ msgstr ""
 msgid "გთხოვთ შეიყვანოთ თქვენი სახელი"
 msgstr ""
 
-#: website/templates/sign-up.html:17
+#: website/templates/login/admin.html:204
+#: website/templates/login/admin.html:425
+#: website/templates/login/admin.html:661
+#: website/templates/login/admin.html:731 website/templates/login/owner.html:39
+#: website/templates/login/owner.html:195 website/templates/login/vet.html:247
+#: website/templates/login/vet.html:816 website/templates/sign-up.html:17
 msgid "გვარი"
 msgstr ""
 
@@ -131,6 +307,9 @@ msgstr ""
 msgid "გაიმეორეთ თქვენი პაროლი"
 msgstr ""
 
+#: website/templates/login/admin.html:209
+#: website/templates/login/admin.html:426
+#: website/templates/login/owner.html:196 website/templates/login/vet.html:248
 #: website/templates/sign-up.html:34 website/templates/sign-up.html:41
 msgid "ტელ.ნომერი"
 msgstr ""
@@ -181,4 +360,1072 @@ msgstr ""
 #: website/templates/auths/reset_password.html:22
 msgid "პაროლის შეცვლა"
 msgstr ""
+
+#: website/templates/login/admin.html:117 website/templates/login/vet.html:458
+#: website/templates/login/vet.html:460
+msgid "ძიება"
+msgstr ""
+
+#: website/templates/login/admin.html:122
+#: website/templates/login/admin.html:124
+msgid "მთავარი დაფა"
+msgstr ""
+
+#: website/templates/login/admin.html:129
+#: website/templates/login/admin.html:131
+msgid "ყველა მომხმარებელი"
+msgstr ""
+
+#: website/templates/login/admin.html:136
+#: website/templates/login/admin.html:138
+msgid "ცხოველების პატრონები"
+msgstr ""
+
+#: website/templates/login/admin.html:143
+#: website/templates/login/admin.html:145
+msgid "ვეტერინარები"
+msgstr ""
+
+#: website/templates/login/admin.html:150
+#: website/templates/login/admin.html:152
+msgid "რედაქტორები"
+msgstr ""
+
+#: website/templates/login/admin.html:157
+#: website/templates/login/admin.html:159
+msgid "ყველა კლინიკა"
+msgstr ""
+
+#: website/templates/login/admin.html:164
+#: website/templates/login/admin.html:166
+msgid "ყველა ვიზიტი"
+msgstr ""
+
+#: website/templates/login/admin.html:171
+#: website/templates/login/admin.html:173
+msgid "შინაური ცხოველები"
+msgstr ""
+
+#: website/templates/login/admin.html:178
+#: website/templates/login/admin.html:180 website/templates/login/vet.html:66
+#: website/templates/login/vet.html:68
+msgid "ჩემი ცხოველების მენიუ"
+msgstr ""
+
+#: website/templates/login/admin.html:185
+#: website/templates/login/admin.html:187 website/templates/login/vet.html:73
+#: website/templates/login/vet.html:75
+msgid "ჩემი მონაცემები"
+msgstr ""
+
+#: website/templates/login/admin.html:195
+msgid "ძიების შედეგი"
+msgstr ""
+
+#: website/templates/login/admin.html:197
+msgid "ყველა დარეგისტრირებული მომხმარებელი"
+msgstr ""
+
+#: website/templates/login/admin.html:205
+msgid "ე.მაილი"
+msgstr ""
+
+#: website/templates/login/admin.html:206
+#: website/templates/login/admin.html:733
+msgid "ტიპი"
+msgstr ""
+
+#: website/templates/login/admin.html:207
+#: website/templates/login/admin.html:734
+#, fuzzy
+msgid "შემოგვიერთდა"
+msgstr "Моя страница"
+
+#: website/templates/login/admin.html:208
+#: website/templates/login/admin.html:665
+#: website/templates/login/admin.html:735 website/templates/login/owner.html:43
+#: website/templates/login/vet.html:820
+msgid "მისამართი"
+msgstr ""
+
+#: website/templates/login/admin.html:210
+#: website/templates/login/admin.html:327
+#: website/templates/login/admin.html:522
+#: website/templates/login/admin.html:745
+#: website/templates/login/owner.html:100 website/templates/login/vet.html:149
+#: website/templates/login/vet.html:512 website/templates/login/vet.html:591
+#: website/templates/login/vet.html:742
+msgid "მოქმედება"
+msgstr ""
+
+#: website/templates/login/admin.html:234
+#: website/templates/login/admin.html:775 website/templates/login/vet.html:363
+msgid "მომხმარებელი"
+msgstr ""
+
+#: website/templates/login/admin.html:235
+#: website/templates/login/admin.html:776
+msgid "ადმინისტრატორი"
+msgstr ""
+
+#: website/templates/login/admin.html:236
+#: website/templates/login/admin.html:382
+#: website/templates/login/admin.html:580
+#: website/templates/login/admin.html:777
+#: website/templates/login/owner.html:155 website/templates/login/vet.html:204
+#: website/templates/login/vet.html:505
+msgid "ვეტერინარი"
+msgstr ""
+
+#: website/templates/login/admin.html:237
+#: website/templates/login/admin.html:778
+msgid "რედაქტორი"
+msgstr ""
+
+#: website/templates/login/admin.html:259
+msgid "ძიების შედეგი არ არის."
+msgstr ""
+
+#: website/templates/login/admin.html:265 website/templates/login/vet.html:86
+msgid "ჩემი ცხოველების ჩამონათვალი"
+msgstr ""
+
+#: website/templates/login/admin.html:267 website/templates/login/vet.html:88
+msgid "ჩემი ცხოველების ისტორია"
+msgstr ""
+
+#: website/templates/login/admin.html:269 website/templates/login/owner.html:25
+#: website/templates/login/vet.html:90
+msgid "კლინიკების რუკა"
+msgstr ""
+
+#: website/templates/login/admin.html:271 website/templates/login/vet.html:92
+msgid "ვეტერინარების ტელეფონის ნომრები"
+msgstr ""
+
+#: website/templates/login/admin.html:276 website/templates/login/owner.html:33
+#: website/templates/login/vet.html:98
+msgid "მოგესალმებით"
+msgstr ""
+
+#: website/templates/login/admin.html:281 website/templates/login/vet.html:103
+#, fuzzy
+msgid "ჩემი ცხოველები"
+msgstr "Моя страница"
+
+#: website/templates/login/admin.html:292 website/templates/login/owner.html:64
+#: website/templates/login/owner.html:222 website/templates/login/vet.html:114
+#: website/templates/login/vet.html:274
+msgid "სახეობა"
+msgstr ""
+
+#: website/templates/login/admin.html:293
+#: website/templates/login/admin.html:458
+#: website/templates/login/admin.html:620 website/templates/login/owner.html:65
+#: website/templates/login/owner.html:228 website/templates/login/vet.html:115
+#: website/templates/login/vet.html:280
+msgid "ჯიში"
+msgstr ""
+
+#: website/templates/login/admin.html:294 website/templates/login/vet.html:116
+msgid "ბოლო ვაქცინაცია"
+msgstr ""
+
+#: website/templates/login/admin.html:297
+#: website/templates/login/admin.html:567
+#: website/templates/login/admin.html:669 website/templates/login/owner.html:47
+#: website/templates/login/vet.html:119
+#, fuzzy
+msgid "შენახვა"
+msgstr "Войти в аккаунт"
+
+#: website/templates/login/admin.html:306
+msgid "ახალი ცხოველის დამატება"
+msgstr ""
+
+#: website/templates/login/admin.html:309
+msgid "თქვენ არ გაქვთ ცხოველები, დააჭირეთ აქ რომ დაამატოთ"
+msgstr ""
+
+#: website/templates/login/admin.html:315 website/templates/login/owner.html:88
+#: website/templates/login/vet.html:137
+msgid "დამატებული ისტორია"
+msgstr ""
+
+#: website/templates/login/admin.html:316 website/templates/login/owner.html:89
+#: website/templates/login/vet.html:138
+msgid "ვიზიტების ისტორია"
+msgstr ""
+
+#: website/templates/login/admin.html:323
+#: website/templates/login/admin.html:380 website/templates/login/vet.html:202
+msgid "ID"
+msgstr ""
+
+#: website/templates/login/admin.html:324 website/templates/login/owner.html:97
+#: website/templates/login/vet.html:146
+msgid "შინაური ცხოველი"
+msgstr ""
+
+#: website/templates/login/admin.html:325 website/templates/login/owner.html:98
+#: website/templates/login/vet.html:147
+msgid "მკურნალობა -- რიცხვი"
+msgstr ""
+
+#: website/templates/login/admin.html:326
+#: website/templates/login/admin.html:490 website/templates/login/owner.html:99
+#: website/templates/login/owner.html:260 website/templates/login/vet.html:148
+#: website/templates/login/vet.html:312
+msgid "კომენტარი"
+msgstr ""
+
+#: website/templates/login/admin.html:369
+#: website/templates/login/admin.html:372
+#: website/templates/login/owner.html:142 website/templates/login/vet.html:192
+msgid "ახალი ისტორიის დამატება"
+msgstr ""
+
+#: website/templates/login/admin.html:371
+#: website/templates/login/owner.html:144
+msgid "თქვენ არ გაქვთ შინაური ცხოველების ისტორია"
+msgstr ""
+
+#: website/templates/login/admin.html:381
+#: website/templates/login/owner.html:154 website/templates/login/vet.html:203
+#: website/templates/login/vet.html:434 website/templates/login/vet.html:504
+msgid "კლინიკა"
+msgstr ""
+
+#: website/templates/login/admin.html:383
+#: website/templates/login/admin.html:582
+#: website/templates/login/owner.html:156 website/templates/login/vet.html:205
+msgid "ცხოველი"
+msgstr ""
+
+#: website/templates/login/admin.html:384
+#: website/templates/login/admin.html:583
+#: website/templates/login/owner.html:157 website/templates/login/vet.html:206
+#: website/templates/login/vet.html:466 website/templates/login/vet.html:508
+msgid "დიაგნოზი"
+msgstr ""
+
+#: website/templates/login/admin.html:385
+#: website/templates/login/admin.html:584
+#: website/templates/login/admin.html:622
+#: website/templates/login/owner.html:158 website/templates/login/vet.html:207
+#: website/templates/login/vet.html:470 website/templates/login/vet.html:509
+msgid "მკურნალობა"
+msgstr ""
+
+#: website/templates/login/admin.html:386
+#: website/templates/login/admin.html:585
+#: website/templates/login/owner.html:159 website/templates/login/vet.html:208
+msgid "ვიზიტის თარიღი"
+msgstr ""
+
+#: website/templates/login/admin.html:409
+#: website/templates/login/owner.html:180 website/templates/login/vet.html:229
+msgid "ვიზიტები არ არის დარეგისტრირებული თქვენს სახელზე"
+msgstr ""
+
+#: website/templates/login/admin.html:420
+#: website/templates/login/owner.html:190 website/templates/login/vet.html:242
+msgid "დარეგისტრირებული ვეტ.ექიმების ტელ.ნომრები"
+msgstr ""
+
+#: website/templates/login/admin.html:433
+#: website/templates/login/owner.html:203 website/templates/login/vet.html:255
+msgid "ჯერჯერობით ვეტერინარები არ არიან დარეგისტრირებულნი"
+msgstr ""
+
+#: website/templates/login/admin.html:438
+#: website/templates/login/owner.html:208
+#: website/templates/login/owner.html:242 website/templates/login/vet.html:260
+#: website/templates/login/vet.html:507
+msgid "შინაური ცხოველის სახელი"
+msgstr ""
+
+#: website/templates/login/admin.html:441
+#: website/templates/login/admin.html:621
+#: website/templates/login/owner.html:211 website/templates/login/vet.html:263
+msgid "სქესი"
+msgstr ""
+
+#: website/templates/login/admin.html:443
+#: website/templates/login/admin.html:636
+#: website/templates/login/owner.html:213 website/templates/login/vet.html:265
+msgid "მამრობითი"
+msgstr ""
+
+#: website/templates/login/admin.html:444
+#: website/templates/login/admin.html:638
+#: website/templates/login/owner.html:214 website/templates/login/vet.html:266
+msgid "მდედრობითი"
+msgstr ""
+
+#: website/templates/login/admin.html:447
+#: website/templates/login/owner.html:217 website/templates/login/vet.html:269
+msgid "დაბადების თარიღი"
+msgstr ""
+
+#: website/templates/login/admin.html:462 website/templates/login/owner.html:66
+#: website/templates/login/owner.html:232 website/templates/login/vet.html:284
+msgid "ბოლოდროინდელი ვაქცინაცია"
+msgstr ""
+
+#: website/templates/login/admin.html:462
+#: website/templates/login/owner.html:232 website/templates/login/vet.html:284
+msgid "(არ არის აუცილებელი)"
+msgstr ""
+
+#: website/templates/login/admin.html:465
+#: website/templates/login/owner.html:235 website/templates/login/vet.html:287
+msgid "შინაური ცხოველის რეგისტრაცია"
+msgstr ""
+
+#: website/templates/login/admin.html:472 website/templates/login/vet.html:294
+msgid "ცხოველის სახელი"
+msgstr ""
+
+#: website/templates/login/admin.html:479
+#: website/templates/login/owner.html:249 website/templates/login/vet.html:301
+msgid "მკურნალობის ტიპი"
+msgstr ""
+
+#: website/templates/login/admin.html:487
+#: website/templates/login/owner.html:257 website/templates/login/vet.html:309
+msgid "მკურნალობის რიცხვი"
+msgstr ""
+
+#: website/templates/login/admin.html:495
+#: website/templates/login/owner.html:145
+#: website/templates/login/owner.html:265 website/templates/login/vet.html:317
+msgid "ისტორიის დამატება"
+msgstr ""
+
+#: website/templates/login/admin.html:501
+#: website/templates/login/owner.html:271 website/templates/login/vet.html:323
+msgid "როგორც ჩანს თქვენ არ გყავთ დარეგისტრირებული შინაური ცხოველები"
+msgstr ""
+
+#: website/templates/login/admin.html:501
+#: website/templates/login/owner.html:271 website/templates/login/vet.html:323
+msgid "გთხოვთ დაარეგისტრიროთ ისინი მოცემულ ბმულიდან"
+msgstr ""
+
+#: website/templates/login/admin.html:521
+msgid "ჩანიშვნები"
+msgstr ""
+
+#: website/templates/login/admin.html:554
+#: website/templates/login/admin.html:556
+msgid "ჩანიშვნა"
+msgstr ""
+
+#: website/templates/login/admin.html:574 website/templates/login/vet.html:498
+msgid "ვიზიტები"
+msgstr ""
+
+#: website/templates/login/admin.html:581
+msgid "ცხოველის(ების) მფლობელი"
+msgstr ""
+
+#: website/templates/login/admin.html:608
+#: website/templates/login/admin.html:651
+#: website/templates/login/admin.html:712
+#: website/templates/login/admin.html:817
+msgid "შედეგი ვერ მოიძებნა"
+msgstr ""
+
+#: website/templates/login/admin.html:612
+msgid "დარეგისტრირებული შინაური ცხოველები"
+msgstr ""
+
+#: website/templates/login/admin.html:618
+msgid "მფლობელი"
+msgstr ""
+
+#: website/templates/login/admin.html:623
+msgid "უახლესი ვაქცინაცია"
+msgstr ""
+
+#: website/templates/login/admin.html:640
+msgid "სქესი არ არის მითითებული"
+msgstr ""
+
+#: website/templates/login/admin.html:673
+msgid "დარეგისტრირებული კლინიკები"
+msgstr ""
+
+#: website/templates/login/admin.html:679 website/templates/login/vet.html:554
+#: website/templates/login/vet.html:586 website/templates/login/vet.html:699
+msgid "კლინიკის სახელი"
+msgstr ""
+
+#: website/templates/login/admin.html:680 website/templates/login/vet.html:562
+#: website/templates/login/vet.html:588 website/templates/login/vet.html:701
+msgid "მოკლე აღწერა"
+msgstr ""
+
+#: website/templates/login/admin.html:681
+msgid "დამრეგისტრირებელი ვეტერინარი"
+msgstr ""
+
+#: website/templates/login/admin.html:682 website/templates/login/vet.html:590
+#: website/templates/login/vet.html:702
+msgid "კოორდინატები"
+msgstr ""
+
+#: website/templates/login/admin.html:732
+msgid "ელ. ფოსტა"
+msgstr ""
+
+#: website/templates/login/admin.html:736
+msgid "ტელეფონი"
+msgstr ""
+
+#: website/templates/login/admin.html:738
+msgid "ცხოველების რაოდენობა"
+msgstr ""
+
+#: website/templates/login/admin.html:740
+msgid "ვიზიტების რაოდენობა"
+msgstr ""
+
+#: website/templates/login/admin.html:741
+msgid "კლინიკის დამატების"
+msgstr ""
+
+#: website/templates/login/admin.html:741
+msgid "უფლებამოსილება"
+msgstr ""
+
+#: website/templates/login/admin.html:743
+msgid "პოსტების რაოდენობა"
+msgstr ""
+
+#: website/templates/login/admin.html:799
+msgid "აქვს"
+msgstr ""
+
+#: website/templates/login/admin.html:800
+msgid "არ აქვს"
+msgstr ""
+
+#: website/templates/login/owner.html:21
+#, fuzzy
+msgid "ჩემი შინაური ცხოველები"
+msgstr "Моя страница"
+
+#: website/templates/login/owner.html:23
+#, fuzzy
+msgid "ჩემი შინაური ცხოველების ისტორია"
+msgstr "Моя страница"
+
+#: website/templates/login/owner.html:27
+msgid "ვეტ.ექიმების ნომრები"
+msgstr ""
+
+#: website/templates/login/owner.html:54
+#, fuzzy
+msgid "შინაური ცხოველების ჩამონათვალი"
+msgstr "Моя страница"
+
+#: website/templates/login/owner.html:78
+msgid "დამატება"
+msgstr ""
+
+#: website/templates/login/owner.html:81
+#, fuzzy
+msgid "თქვენ არ გყავთ შინაური ცხოველები დარეგისტრირებული"
+msgstr "Моя страница"
+
+#: website/templates/login/owner.html:82
+#, fuzzy
+msgid "შინაური ცხოველების დამატება"
+msgstr "Моя страница"
+
+#: website/templates/login/vet.html:45 website/templates/login/vet.html:47
+msgid "კლინიკების სექცია"
+msgstr ""
+
+#: website/templates/login/vet.html:52 website/templates/login/vet.html:54
+msgid "მოთხოვნების სექცია"
+msgstr ""
+
+#: website/templates/login/vet.html:59 website/templates/login/vet.html:61
+msgid "კლინიკის ვიზიტები"
+msgstr ""
+
+#: website/templates/login/vet.html:128
+#, fuzzy
+msgid "ახალი შინაური ცხოველის დამატება"
+msgstr "Моя страница"
+
+#: website/templates/login/vet.html:131
+msgid ""
+"თქვენ არ გყავთ შინაური ცხოველი დარეგისტრირებული, დააჭირეთ აქ რომ "
+"დაარეგისტრიროთ"
+msgstr ""
+
+#: website/templates/login/vet.html:145
+msgid "ისტორიის იდენტიფიკატორი"
+msgstr ""
+
+#: website/templates/login/vet.html:194
+#, fuzzy
+msgid "თქვენ არ გაქვთ შინაური ცხოველების ისტორია, ისტორიის დამატება"
+msgstr "Моя страница"
+
+#: website/templates/login/vet.html:332
+msgid "კლინიკაში გაწევრიანების მოთხოვნის გაგზავნა"
+msgstr ""
+
+#: website/templates/login/vet.html:337
+msgid "მიღებული მოთხოვნები"
+msgstr ""
+
+#: website/templates/login/vet.html:338
+msgid "გაგზავნილი მოთხოვნები"
+msgstr ""
+
+#: website/templates/login/vet.html:346
+msgid "გამომგზავნი"
+msgstr ""
+
+#: website/templates/login/vet.html:347 website/templates/login/vet.html:394
+msgid "მოთხოვნის აღწერა"
+msgstr ""
+
+#: website/templates/login/vet.html:348
+msgid "გამოგზავნის თარიღი"
+msgstr ""
+
+#: website/templates/login/vet.html:349
+msgid "მოთხოვნის კონტროლი"
+msgstr ""
+
+#: website/templates/login/vet.html:363
+msgid "ითხოვს თქვენს კლინიკაში"
+msgstr ""
+
+#: website/templates/login/vet.html:363
+msgid "გაწევრიანებას"
+msgstr ""
+
+#: website/templates/login/vet.html:369 website/templates/login/vet.html:372
+msgid "მოთხოვნის დადასტურება"
+msgstr ""
+
+#: website/templates/login/vet.html:375
+msgid "მოთხოვნის უარყოფა"
+msgstr ""
+
+#: website/templates/login/vet.html:384
+msgid "ახალი მოთხოვნები არ არის"
+msgstr ""
+
+#: website/templates/login/vet.html:393
+msgid "მიმღები"
+msgstr ""
+
+#: website/templates/login/vet.html:395
+msgid "გაგზავნის თარიღი"
+msgstr ""
+
+#: website/templates/login/vet.html:396 website/templates/login/vet.html:415
+msgid "მოთხოვნის გაუქმება"
+msgstr ""
+
+#: website/templates/login/vet.html:410
+msgid "გაიგზავნა მოთხოვნა"
+msgstr ""
+
+#: website/templates/login/vet.html:410
+msgid "სთან კლინიკა სახელად"
+msgstr ""
+
+#: website/templates/login/vet.html:410
+msgid "ში გაწევრიანების თაობაზე"
+msgstr ""
+
+#: website/templates/login/vet.html:424
+msgid "გაგზავნილი მოთხოვნები არ არის დაფიქსირებული"
+msgstr ""
+
+#: website/templates/login/vet.html:441
+msgid "თქვენ არ ხართ არცერთ კლინიკაში გაწევრიანებული"
+msgstr ""
+
+#: website/templates/login/vet.html:444
+msgid "ვეტერინარი / მიმღები"
+msgstr ""
+
+#: website/templates/login/vet.html:454
+#, fuzzy
+msgid "შინაური ცხოველის პატრონი"
+msgstr "Моя страница"
+
+#: website/templates/login/vet.html:456
+msgid "შეიყვანეთ ID ან ელ.ფოსტა"
+msgstr ""
+
+#: website/templates/login/vet.html:474 website/templates/login/vet.html:510
+msgid "ვიზიტის რიცხვი"
+msgstr ""
+
+#: website/templates/login/vet.html:474
+msgid "არ მითითების შემთხვევაში ვიზიტის ჩანაწერის დღე მიითითება"
+msgstr ""
+
+#: website/templates/login/vet.html:478 website/templates/login/vet.html:511
+msgid "დანიშნულება"
+msgstr ""
+
+#: website/templates/login/vet.html:485
+msgid ""
+"გთხოვთ შეავსოთ ყველა საჭირო ველი \n"
+"        (მიაქციეთ ყურადღება ცხოველის მფლობელთან ძიებას)"
+msgstr ""
+
+#: website/templates/login/vet.html:492
+msgid "თქვენ არ ხართ კლინიკაში გაწევრიანებული"
+msgstr ""
+
+#: website/templates/login/vet.html:506
+msgid "ცხოველის პატრონი"
+msgstr ""
+
+#: website/templates/login/vet.html:543
+msgid "ახალი ვიზიტის დამატება"
+msgstr ""
+
+#: website/templates/login/vet.html:545
+msgid "ვიზიტები არ არის, ვიზიტის დამატება"
+msgstr ""
+
+#: website/templates/login/vet.html:573 website/templates/login/vet.html:677
+msgid "სამწუხაროდ თქვენ არ გაქვთ ახალი კლინიკის დამატების უფლებამოსილება"
+msgstr ""
+
+#: website/templates/login/vet.html:585 website/templates/login/vet.html:698
+msgid "კლინიკის"
+msgstr ""
+
+#: website/templates/login/vet.html:587 website/templates/login/vet.html:700
+msgid "კლინიკის მფლობელი"
+msgstr ""
+
+#: website/templates/login/vet.html:589
+msgid "დარეგისტრირებული პერსონალი"
+msgstr ""
+
+#: website/templates/login/vet.html:611
+msgid "პერსონალი არის დარეგისტრირებული"
+msgstr ""
+
+#: website/templates/login/vet.html:613
+msgid "პერსონალი არ არის დარეგისტრირებული"
+msgstr ""
+
+#: website/templates/login/vet.html:622
+msgid "კლინიკის მონაცემების შეცვლა"
+msgstr ""
+
+#: website/templates/login/vet.html:627 website/templates/login/vet.html:636
+msgid "კლინიკის დანახვადობა"
+msgstr ""
+
+#: website/templates/login/vet.html:645
+msgid "კლინიკის წაშლა"
+msgstr ""
+
+#: website/templates/login/vet.html:648 website/templates/login/vet.html:662
+#: website/templates/login/vet.html:780
+msgid "კლინიკის მომუშავე პერსონალი"
+msgstr ""
+
+#: website/templates/login/vet.html:656
+msgid ""
+"თქვენ არ ხართ კლინიკის დამმარეგისტრირებელი, მონაცემების შეცვლა "
+"შეუძლებელია."
+msgstr ""
+
+#: website/templates/login/vet.html:675 website/templates/login/vet.html:677
+msgid "ახალი კლინიკის დამატება"
+msgstr ""
+
+#: website/templates/login/vet.html:680
+msgid "თქვენ არ ხართ არცერთ კლინიკაში გაწევრიანებული / არ გაქვთ იგი დამატებული"
+msgstr ""
+
+#: website/templates/login/vet.html:681
+msgid "დააჭირეთ აქ რომ დაამატოთ ახალი კლინიკა"
+msgstr ""
+
+#: website/templates/login/vet.html:690
+msgid "ძიება კლინიკის სახელით"
+msgstr ""
+
+#: website/templates/login/vet.html:703
+msgid "გაწევრიანება"
+msgstr ""
+
+#: website/templates/login/vet.html:730 website/templates/login/vet.html:804
+msgid "შედეგი ვერ მოიძებნნა"
+msgstr ""
+
+#: website/templates/login/vet.html:740
+msgid "ტელეფონის ნომერი"
+msgstr ""
+
+#: website/templates/login/vet.html:760
+msgid "პიროვნება უკვე არის კლინიკის მფლობელი"
+msgstr ""
+
+#: website/templates/login/vet.html:764
+msgid "საკუთარი თავის წაშლა არ შეგიძლიათ რადგან კლინიკის მფოლები ხართ"
+msgstr ""
+
+#: website/templates/login/vet.html:769
+msgid "პერსონალისთვის კლინიკის მფლობელობის მიცემა"
+msgstr ""
+
+#: website/templates/login/vet.html:773
+msgid "კლინიკის მომუშავე პერსონალის სტატუსის გაუქმება"
+msgstr ""
+
+#: website/templates/login/vet.html:785
+msgid "კლინიკის მომუშავე პერსონალიდან საკუთარი თავის ამოშლა"
+msgstr ""
+
+#: website/templates/login/vet.html:790
+msgid "პერსონალის წაშლა არ შეგიძლიათ, რადგან თქვენ არ ხართ კლინიკის მფლობელი"
+msgstr ""
+
+#: website/templates/login/vet.html:824
+msgid "ცვლილების დამახსოვრება"
+msgstr ""
+
+#~ msgid "თქვენი აქაუნთი დროებით დაბლოკილია, გთხოვთ სცადოთ მოგვიანებით."
+#~ msgstr ""
+
+#~ msgid "10 წარუმატებელი ცდის შედეგად, აქაუნთი დაბლოკილია 30 წუთით."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "პაროლი არასწორია, გთხოვთ სცადოთ ხელახლა. "
+#~ "ცდების რაოდენობა დარჩენილია = {tries}"
+#~ msgstr ""
+
+#~ msgid "ელ.ფოსტა არ არის დარეგისტრირებული, გთხოვთ სცადოთ ხელახლა."
+#~ msgstr ""
+
+#~ msgid "მოცემული ელ.ფოსტა უკვე დარეგისტრირებულია."
+#~ msgstr ""
+
+#~ msgid "ემაილი უნდა შეიცავდეს მინიმუმ 4 სიმბოლოს."
+#~ msgstr ""
+
+#~ msgid "სახელი უნდა იყოს მინიმუმ 1 ასოზე დიდი."
+#~ msgstr ""
+
+#~ msgid "გამეორებული პაროლი არაა სწორი"
+#~ msgstr ""
+
+#~ msgid "პაროლის მინიმალური ზომა არის 6 სიმბოლო."
+#~ msgstr ""
+
+#~ msgid "თქვენი მაროლი უნდა შეიცავდეს მინიმუმ 1 ასოს"
+#~ msgstr ""
+
+#~ msgid "თქვენი პაროლი უნდა შეიცავდეს მინიმუმ 1 ციფრს"
+#~ msgstr ""
+
+#~ msgid "ელ.ფოსტის დასტური(Petaworld.com)"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "გთხოვთ დაადასტუროთ თქვენი ელ.ფოსტა მოცემული"
+#~ " ბმულით: {confirmation_url}\n"
+#~ "გთხოვთ გაითვალისწინოთб, რომ თქვენი ბმული "
+#~ "გაუქმდება გამოგზავნიდან 1 საათში\n"
+#~ "\n"
+#~ "\n"
+#~ "პატივისცემით, Peta-Team"
+#~ msgstr ""
+
+#~ msgid "პაროლის შეცვლის იმეილი გაიგზავნა თქვენს {user.mail} ელ.ფოსტაზე"
+#~ msgstr ""
+
+#~ msgid "ეს ელ.ფოსტა არ არის დარეგისტრირებული"
+#~ msgstr ""
+
+#~ msgid "პაროლის შეცვლა (Petaworld.com)"
+#~ msgstr ""
+
+#~ msgid "პაროლები არ ემთხვევა"
+#~ msgstr ""
+
+#~ msgid "პაროლი უნდა შეიცავდეს მინიმუმ 6 სიმბოლოს"
+#~ msgstr ""
+
+#~ msgid "ლინკი არ არის სწორი"
+#~ msgstr ""
+
+#~ msgid "დასტური კლინიკის წაშლაზე (Petaworld.com)"
+#~ msgstr ""
+
+#~ msgid "დასტური კლინიკასთან კავშირის გაწყვეტაზე (Petaworld.com)"
+#~ msgstr ""
+
+#~ msgid "შეცდომა"
+#~ msgstr ""
+
+#~ msgid "მონაცემები წარმატებით შეიცვალა."
+#~ msgstr ""
+
+#~ msgid "ცხოველი დარეგისტრირდა წარმატებით"
+#~ msgstr ""
+
+#~ msgid "თქვენი ცხოველი ვერ დარეგისტრირდა"
+#~ msgstr "Моя страница"
+
+#~ msgid ""
+#~ "ვეტერინარი არ არის დარეგისტრირებული ვეტერინარულ ბაზაში\n"
+#~ "                          გთხოვთ მიმართოს ადმინისტრაციას"
+#~ msgstr ""
+
+#~ msgid "გთხოვთ მიუთითოთ შინაური ცხოველის პატრონი."
+#~ msgstr "Моя страница"
+
+#~ msgid "გთხოვთ მიუთითოთ შინაური ცხოველი."
+#~ msgstr "Моя страница"
+
+#~ msgid "გთხოვთ მიუთითოთ შინაური ცხოველის მფლობელი და შინაური ცხოველი."
+#~ msgstr ""
+
+#~ msgid "კლინიკა წარმატებით დაემატა"
+#~ msgstr ""
+
+#~ msgid "პრობლემა, კლინიკის დამალვა ვერ მოხერხდა პრობლემის გამო"
+#~ msgstr ""
+
+#~ msgid "მონაცემები წარმატებით შეიცვალა"
+#~ msgstr ""
+
+#~ msgid "მომხმარებელი ვერ მოიძებნა."
+#~ msgstr ""
+
+#~ msgid "შეცდომა."
+#~ msgstr ""
+
+#~ msgid "თქვენ უკვე ხართ მოცემული კლინიკის მფლობელი"
+#~ msgstr ""
+
+#~ msgid "თქვენ უკვე გაწევრიანებული ხართ მოცემულ კლინიკაში"
+#~ msgstr ""
+
+#~ msgid "{editor}: Editing failed"
+#~ msgstr ""
+
+#~ msgid "{editor}: Editing failed: {e}"
+#~ msgstr ""
+
+#~ msgid "Aborted!"
+#~ msgstr ""
+
+#~ msgid "Show this message and exit."
+#~ msgstr ""
+
+#~ msgid "(Deprecated) {text}"
+#~ msgstr ""
+
+#~ msgid "Options"
+#~ msgstr ""
+
+#~ msgid "Got unexpected extra argument ({args})"
+#~ msgid_plural "Got unexpected extra arguments ({args})"
+#~ msgstr[0] ""
+#~ msgstr[1] ""
+#~ msgstr[2] ""
+
+#~ msgid "DeprecationWarning: The command {name!r} is deprecated."
+#~ msgstr ""
+
+#~ msgid "Commands"
+#~ msgstr ""
+
+#~ msgid "Missing command."
+#~ msgstr ""
+
+#~ msgid "No such command {name!r}."
+#~ msgstr ""
+
+#~ msgid "Value must be an iterable."
+#~ msgstr ""
+
+#~ msgid "Takes {nargs} values but 1 was given."
+#~ msgid_plural "Takes {nargs} values but {len} were given."
+#~ msgstr[0] ""
+#~ msgstr[1] ""
+#~ msgstr[2] ""
+
+#~ msgid "env var: {var}"
+#~ msgstr ""
+
+#~ msgid "(dynamic)"
+#~ msgstr ""
+
+#~ msgid "default: {default}"
+#~ msgstr ""
+
+#~ msgid "required"
+#~ msgstr ""
+
+#~ msgid "%(prog)s, version %(version)s"
+#~ msgstr ""
+
+#~ msgid "Show the version and exit."
+#~ msgstr ""
+
+#~ msgid "Error: {message}"
+#~ msgstr ""
+
+#~ msgid "Try '{command} {option}' for help."
+#~ msgstr ""
+
+#~ msgid "Invalid value: {message}"
+#~ msgstr ""
+
+#~ msgid "Invalid value for {param_hint}: {message}"
+#~ msgstr ""
+
+#~ msgid "Missing argument"
+#~ msgstr ""
+
+#~ msgid "Missing option"
+#~ msgstr ""
+
+#~ msgid "Missing parameter"
+#~ msgstr ""
+
+#~ msgid "Missing {param_type}"
+#~ msgstr ""
+
+#~ msgid "Missing parameter: {param_name}"
+#~ msgstr ""
+
+#~ msgid "No such option: {name}"
+#~ msgstr ""
+
+#~ msgid "Did you mean {possibility}?"
+#~ msgid_plural "(Possible options: {possibilities})"
+#~ msgstr[0] ""
+#~ msgstr[1] ""
+#~ msgstr[2] ""
+
+#~ msgid "unknown error"
+#~ msgstr ""
+
+#~ msgid "Could not open file {filename!r}: {message}"
+#~ msgstr ""
+
+#~ msgid "Argument {name!r} takes {nargs} values."
+#~ msgstr ""
+
+#~ msgid "Option {name!r} does not take a value."
+#~ msgstr ""
+
+#~ msgid "Option {name!r} requires an argument."
+#~ msgid_plural "Option {name!r} requires {nargs} arguments."
+#~ msgstr[0] ""
+#~ msgstr[1] ""
+#~ msgstr[2] ""
+
+#~ msgid "Shell completion is not supported for Bash versions older than 4.4."
+#~ msgstr ""
+
+#~ msgid "Couldn't detect Bash version, shell completion is not supported."
+#~ msgstr ""
+
+#~ msgid "Repeat for confirmation"
+#~ msgstr ""
+
+#~ msgid "Error: The value you entered was invalid."
+#~ msgstr ""
+
+#~ msgid "Error: {e.message}"
+#~ msgstr ""
+
+#~ msgid "Error: The two entered values do not match."
+#~ msgstr ""
+
+#~ msgid "Error: invalid input"
+#~ msgstr ""
+
+#~ msgid "Press any key to continue..."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Choose from:\n"
+#~ "\t{choices}"
+#~ msgstr ""
+
+#~ msgid "{value!r} is not {choice}."
+#~ msgid_plural "{value!r} is not one of {choices}."
+#~ msgstr[0] ""
+#~ msgstr[1] ""
+#~ msgstr[2] ""
+
+#~ msgid "{value!r} does not match the format {format}."
+#~ msgid_plural "{value!r} does not match the formats {formats}."
+#~ msgstr[0] ""
+#~ msgstr[1] ""
+#~ msgstr[2] ""
+
+#~ msgid "{value!r} is not a valid {number_type}."
+#~ msgstr ""
+
+#~ msgid "{value} is not in the range {range}."
+#~ msgstr ""
+
+#~ msgid "{value!r} is not a valid boolean."
+#~ msgstr ""
+
+#~ msgid "{value!r} is not a valid UUID."
+#~ msgstr ""
+
+#~ msgid "file"
+#~ msgstr ""
+
+#~ msgid "directory"
+#~ msgstr ""
+
+#~ msgid "path"
+#~ msgstr ""
+
+#~ msgid "{name} {filename!r} does not exist."
+#~ msgstr ""
+
+#~ msgid "{name} {filename!r} is a file."
+#~ msgstr ""
+
+#~ msgid "{name} '{filename}' is a directory."
+#~ msgstr ""
+
+#~ msgid "{name} {filename!r} is not readable."
+#~ msgstr ""
+
+#~ msgid "{name} {filename!r} is not writable."
+#~ msgstr ""
+
+#~ msgid "{name} {filename!r} is not executable."
+#~ msgstr ""
+
+#~ msgid "{len_type} values are required, but {len_value} was given."
+#~ msgid_plural "{len_type} values are required, but {len_value} were given."
+#~ msgstr[0] ""
+#~ msgstr[1] ""
+#~ msgstr[2] ""
 
