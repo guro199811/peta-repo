@@ -17,10 +17,12 @@ else
   export PORT=5000
 fi
 
-echo "--RUN BABEL --"
+
+#Uncomment if Nessesery
+#echo "--RUN BABEL --"
 
 # Extract new messages and update the .pot file
-pybabel extract -F babel.cfg -o messages.pot .
+#pybabel extract -F babel.cfg -o messages.pot .
 
 
 # Initialize or update the catalog for each language
@@ -31,17 +33,17 @@ pybabel extract -F babel.cfg -o messages.pot .
 
 
 # Update the .po files for each language after extracting new messages
-pybabel update -i messages.pot -d translations -l en
+#pybabel update -i messages.pot -d translations -l en
 
 # Compile the .po files to .mo files
 
-echo "-- COMPILE BABEL --"
-pybabel compile -d translations
+#echo "-- COMPILE BABEL --"
+#pybabel compile -d translations
 
-echo "-- EXPORT BABEL FILES --"
-export FLASK_RUN_EXTRA_FILES=app/translations/en/LC_MESSAGES/messages.mo
+#echo "-- EXPORT BABEL FILES --"
+#export FLASK_RUN_EXTRA_FILES=app/translations/en/LC_MESSAGES/messages.mo
 
-echo "-- RUN FLASK SCRIPT -- "
+echo "-- RUN FLASK INIT -- "
 # Run database migrations
 flask db init
 

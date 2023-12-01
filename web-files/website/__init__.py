@@ -26,17 +26,18 @@ babel = Babel()
 
 
 def get_locale():
-    return 'en'
-    '''return request.args.get('lang')\
+    #You can uncomment return for language testing purposes
+    #return 'en'
+    return request.args.get('lang')\
         or\
-        request.accept_languages.best_match(['en', 'ka'])'''
+        request.accept_languages.best_match(['ka', 'en'])
 
 
 
 def create_app(migrate):
     app = Flask(__name__, static_url_path='/static', static_folder='static')
-    secret_key = 'shdiwkmalwdandwakjsndkwjanksjdnwkanskdwkajn'
-    #secret_key = os.environ.get('SECRET_KEY') or secrets.token_hex(16)
+    #secret_key = 'shdiwkmalwdandwakjsndkwjanksjdnwkanskdwkajn'
+    secret_key = os.environ.get('SECRET_KEY') or secrets.token_hex(16)
     app.config['SECRET_KEY'] = secret_key
     
     if database_url == None:
@@ -75,8 +76,10 @@ def create_app(migrate):
     app.register_blueprint(general_logic, url_prefix="/")
     app.register_blueprint(ajax_logic, url_prefix='/')
 
-    # ვეუბნებით ფლასკს როგორ ჩავტვირთოთ მომხმარებელი (Primary key)-ით
 
+    # Telling Flask how to load a user with primary key id,
+    # loaded user will be accessed as Current_user in global and templates
+    
     login_manager = LoginManager()
     login_manager.login_view = 'auth.login'
     login_manager.init_app(app)
