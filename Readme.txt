@@ -28,7 +28,7 @@ please don't copy it whole and don't claim as your own.
 3. Launching the project.
  *.For Windows users: Launch Powershell (Recommended launching it as administrator), For Linux and mac users use Terminal
   
-   then check if docker compose is set up correctly,
+   checking if docker compose is set up correctly is essential,
    try running 'docker-compose -v', if output looks something like this -- (docker-compose version x.x.x), docker compose is set up,
-   then you can just navigate to the project directory and run: 'docker compose up --build' command, which will launch the project locally
+   after that you can just navigate to the project directory and run: 'docker compose up --build' command, which will launch the project locally
 
