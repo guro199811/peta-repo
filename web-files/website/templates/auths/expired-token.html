@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %} Petta Login {% endblock %}
+
+{% block bg %}<body background="../static/images/expired.jpg">{% endblock %}
+
+
+    
+{% block content%}
+{% if expiredType = 0 %}
+<h1 style="text-align:center" class="verification">{{ _('თქვენს ელ.ფოსტის დასტურის ბმულს დრო გაუვიდა') }} 
+    <a href="{{ url_for('auth.send_confirmation') }}">{{ _('დააჭირეთ აქ რომ გაგზავნოთ ხელახლა') }}</a></h1>
+{% elif expiredType = 1 %}
+<h1 style="text-align:center" class="verification">{{ _('თქვენს პაროლის შეცვლის ბმულს დრო გაუვიდა') }}
+    <a href="{{ url_for('auth.forgot_password') }}">{{ _('დააჭირეთ აქ რომ გაგზავნოთ ხელახლა') }}</a></h1>
+{% elif expiredType = 2 %}
+<h1 style="text-align:center" class="verification">{{ _('თქვენს კლინიკის წაშლის ბმულს დრო გაუვიდა ') }}
+    <a href="{{ url_for('auth.clinic_removal_email', clinic_id = clinic_id, user = user) }}">{{ _('დააჭირეთ აქ რომ გაგზავნოთ ხელახლა') }}</a></h1>
+{% endif %}
+{% endblock%}

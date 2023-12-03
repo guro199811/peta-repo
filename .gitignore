@@ -1,13 +1,12 @@
-# Ignore these files and directories
+# This Files are being ignored
 ssh_keys
 ssh_keys.pub
 web-files/website/mail_config.cfg
 web-files/website/env
 
-# Ignore these files and directories
+# This is not
 web-files/__pycache__
 web-files/website/__pycache__
-web-files/website
 web-files/migrations
 database
 postgres-data

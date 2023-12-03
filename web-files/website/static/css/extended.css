@@ -1,0 +1,391 @@
+.visitaddition {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Two columns of equal width */
+  gap: 20px; /* Space between grid items */
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 800px;
+  margin: 20px auto;
+  font-family: 'Arial', sans-serif;
+}
+
+.visitaddition label {
+  margin-bottom: 8px; /* Space below the label */
+}
+
+.visitaddition select,
+.visitaddition input[type="text"],
+.visitaddition input[type="date"],
+.visitaddition textarea,
+.visitaddition button[type="button"],
+.visitaddition button[type="submit"] {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+/* Search input and button on the same row */
+.visitaddition .search-container {
+  display: flex;
+  gap: 10px;
+  grid-column: 1 / -1; /* Span across all columns */
+}
+
+.visitaddition #searchInput {
+  flex-grow: 1; /* Input takes up remaining space */
+}
+
+.visitaddition button[type="button"] {
+  white-space: nowrap; /* Prevents text wrapping in button */
+}
+
+/* All inputs and selects span across both columns except search */
+.visitaddition select,
+.visitaddition input[type="text"]:not(#searchInput),
+.visitaddition input[type="date"],
+.visitaddition textarea {
+  grid-column: 1 / -1; /* Span across all columns */
+}
+
+.visitaddition #searchResults {
+  grid-column: 1 / -1; /* Search results span all columns */
+}
+
+.visitaddition button[type="submit"] {
+  grid-column: 1 / -1; /* Submit button spans all columns */
+  padding: 10px 0;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.visitaddition button[type="submit"]:hover {
+  background-color: #45a049;
+}
+
+/* Adjust comment textarea size */
+#comment {
+  height: 150px; /* Adjusted height */
+}
+
+.home-section{
+  overflow:auto;
+ }
+
+@media (max-width: 768px) {
+  .visitaddition {
+      grid-template-columns: 1fr; /* Stack elements in one column on smaller screens */
+  }
+
+  .visitaddition .search-container {
+      flex-direction: column; /* Stack search input and button on top of each other */
+  }
+
+  .visitaddition button[type="button"] {
+      width: 100%; /* Button takes full width */
+  }
+}
+
+/* Form Division */
+.home-section form{
+  height:100%;
+ }
+ 
+ /* Division */
+ .home-section form > div{
+  height:96%;
+  overflow:auto;
+ }
+
+ .home-section form > div{
+  margin-top:0px;
+  margin-bottom:0px;
+  padding-right:64px;
+  padding-left:64px;
+ }
+ 
+
+@media (max-width:768px){
+
+  .buttons{
+    top:597px !important;
+    transform:translatex(0px) translatey(0px);
+   }
+
+  /* Sidebar */
+  .sidebar{
+   top:72px;
+  }
+
+  
+  
+  /* User menu */
+  .home-section .user-menu{
+   height:109%;
+  }
+ 
+  .sidebar {
+   width: 100%; /* Make the sidebar full width for mobile screens */
+   min-height: auto; /* Remove the minimum height */
+   top: 72px; /* Reset the top position */
+   left: -100%; /* Move the sidebar off-screen initially */
+   transition: all 0.5s ease;
+   position: fixed;
+   backdrop-filter: blur(10px)
+ }
+ 
+ .sidebar.open {
+   left: 0; /* Bring the sidebar in from the left */
+   width: 100%; /* Make it full width when open */
+   #btn{
+     left:0% !important;
+     transform:scale(1) !important;
+   }
+ }
+ 
+ 
+ 
+ /* Add styles for the overlay background when the sidebar is open */
+ .overlay {
+   position: fixed;
+   top: 0;
+   left: 0;
+   width: 100%;
+   height: 100%;
+   z-index: 999;
+   display: none;
+ }
+ 
+ /* Show the overlay when the sidebar is open */
+ .sidebar.open + .overlay {
+   display: block;
+ }
+ 
+ #btn {
+   left:100%;
+ }
+ 
+ 
+ #btn{
+   top:19px !important;
+   left:103%;
+   transform:scale(1.20) !important;
+  }
+  
+ 
+ .home-section{
+   left:0px;
+   width: 100%;
+   transition: all .5s ease;
+   height:84% !important;
+   background-color: transparent;
+ }
+ 
+ 
+
+ 
+ .sidebar.open ~ .home-section{
+   left:0px;
+   width: 100%;
+ }
+ 
+ }
+
+.sidebar input{
+    font-size: 15px;
+    color: #000;
+    font-weight: 400;
+    outline: none;
+    height: 35px;
+    width: 35px;
+    border:none;
+    border-radius: 5px;
+    background-color: white;
+    transition: all .5s ease;
+  }
+
+.sidebar{
+  backdrop-filter: blur(10px);
+  transform:translatex(0px) translatey(0px);
+   }
+
+/* Home section */
+.home-section{
+    height:90vh;
+   }
+
+/* Owner container */
+.home-section .owner-container{
+  width:100%;
+  height:100%;
+  transform:translatex(0px) translatey(3px);
+  padding-top:27px;
+  left:0px;
+ }
+ 
+
+ .home-section .buttons a{
+  margin-left:15px !important;}
+
+
+  @media (max-width:768px){
+
+    /* Owner container */
+    .home-section .owner-container{
+     left:0px;
+    }
+    
+
+  /* Link */
+  .home-section .owner-container .buttons a{
+    width:90px !important;
+  }
+     /* Buttons */
+ .home-section .buttons{
+  width:400px;
+  transform:translatex(0px) translatey(0px);
+ }
+ 
+ /* Link */
+ .home-section .owner-container .buttons a{
+  width:85px !important;
+ }
+ 
+ /* Link */
+ .home-section .buttons a{
+  height:85px !important;
+  margin-left:3px !important;
+ }
+
+
+
+
+
+ .buttons{
+  top:52px !important;
+  left:15px;
+ }
+
+ #btn{
+  top:0px !important;
+ }
+ 
+
+
+
+ 
+ .home-section .box-menu h1{
+  height:30%;
+ }
+ 
+}
+
+ 
+
+
+
+ @media (max-width:415px){
+
+  /* Box menu */
+  .home-section .box-menu{
+   left:-50px;
+  }
+  
+  /* Buttons */
+  .home-section .buttons{
+   margin-left:0px;
+   flex:0 1 auto;
+  }
+  
+  /* Link */
+  .home-section .buttons a{
+   margin-left:24px !important;
+   left:-25px;
+   flex-wrap:nowrap;
+  }
+  
+ }
+
+
+ @media (max-width:768px){
+
+  /* Home section */
+  .home-section{
+   overflow:auto;
+   padding-bottom:7px;
+   margin-top:60px;
+   margin-bottom:70px;
+   min-height: 79%;
+  }
+  
+  /* Table Row */
+  .table thead tr{
+   position:relative;
+  }
+  
+ }
+ 
+ @media (max-width:415px){
+ 
+  /* Home section */
+  .home-section{
+   margin-top:80px;
+   margin-bottom:85px;
+   visibility:visible;
+  }
+  
+ }
+
+ @media (max-width:415px){
+
+  /* Home section */
+  .home-section{
+   margin-bottom:70px;
+  }
+  
+  /* Box menu */
+  .home-section .box-menu{
+   top:-124px !important;
+   box-shadow:0px 2px 12px 0px rgba(0,0,0,0.5);
+  }
+  
+  /* Buttons */
+  .home-section .buttons{
+   top:457px !important;
+  }
+  
+ }
+
+ @media (max-width:768px){
+
+  /* Italic Tag */
+  #btn{
+   top:8px !important;
+  }
+  
+  /* User menu */
+  .home-section .user-menu{
+   width:100%;
+   height:90% !important;
+   transform:translatex(0px) translatey(0px);
+   box-shadow:0px 2px 50px 0px rgba(0,0,0,0);
+   border-style:none;
+  }
+  
+ }
+ 
+ @media (max-width:415px){
+ 
+  /* Italic Tag */
+  #btn{
+   top:16px !important;
+  }
+  
+ }
+
+ .alert{
+  padding-left: 100px !important;
+ }
