@@ -1,17 +1,17 @@
-Flask==2.2.3
+Flask==2.3.*
 Flask-Login==0.6.2
-Flask-SQLAlchemy==3.0.3
+Flask-SQLAlchemy==3.1.*
 SQLAlchemy>=1.4.0
 postgres==4.0
-# pgadmin4==7.3
+# pgadmin4==8.0
 configparser==5.3.0
 Jinja2==3.1.2
 jsonschema==3.2.0
-keyring==23.5.0
+keyring==24.*
 pipenv==2022.12.19
 psycopg2==2.9.6
 requests==2.31.*
-Werkzeug==2.2.3
+Werkzeug==2.3.8
 gunicorn==20.1.0
 Flask-Migrate==4.0.4
 flask-mail==0.9.1

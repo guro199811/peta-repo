@@ -1,6 +1,6 @@
 from website import db
 from website.models import Type, Pet_species, Pet_breed, Phone_Prefixes
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 from sqlalchemy.orm import Session
 import logging
 
@@ -19,8 +19,38 @@ else:
     engine = create_engine(database_url)
     
 session = Session(engine)
-    
+
+
+
+#This part of the code sets pet_breeds to autoincrement, on some systems models.py
+#wont autoincrement, so we check if it is autoincremented correctly here
 try:
+
+    # Creating a sequence for breed_id
+    sequence_command = text( """
+    CREATE SEQUENCE pet_breeds_breed_id_seq;
+    """)
+
+    # Attaching the sequence to the breed_id column
+    attach_sequence_command = text("""
+    ALTER TABLE pet_breeds
+    ALTER COLUMN breed_id SET DEFAULT nextval('pet_breeds_breed_id_seq'::regclass);
+    """)
+
+    pet_breeds = session.query(Pet_breed).first()
+    if pet_breeds:
+        session.execute(sequence_command)
+        session.execute(attach_sequence_command)
+    elif pet_breeds:
+        session.execute(sequence_command)
+        session.execute(attach_sequence_command)
+except Exception as e:
+    logging.warning(f'{e}')
+
+
+
+#Entering premade data is required for project to function correctly
+try:        
     type_fixture = [
         (1, 'User'),
         (2, 'Admin'),
@@ -36,7 +66,7 @@ try:
 
 
     prefix_fixture = [
-    ('+995', 6, '🇬🇪'),  # Georgia
+    ('+995', 9, '🇬🇪'),  # Georgia
     ('+380', 9, '🇺🇦'),  # Ukraine
     ('+1', 10, '🇺🇸'),   # United States & Canada
     ('+44', 10, '🇬🇧'),  # United Kingdom
