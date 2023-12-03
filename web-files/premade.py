@@ -1,3 +1,6 @@
+# Premade.py is Essential for Setting up database so it has values nessessery
+# to Function correctly
+
 from website import db
 from website.models import Type, Pet_species, Pet_breed, Phone_Prefixes
 from sqlalchemy import create_engine, text

@@ -1,3 +1,5 @@
+#This py file is intended for authentification logic, as well as everything thats involved with it
+
 from .tokens import generate_token, init_serializer
 from itsdangerous import SignatureExpired
 from sqlalchemy.exc import IntegrityError
@@ -283,34 +285,6 @@ def confirm_password_token(token, expiration=3600):
 #Functions for Confirming Clinic removal
 ########################################
 
-'''@auth.route('r_clinic/<int:clinic_id>', methods=['GET', 'DELETE'])
-@login_required
-@grant_access([2, 3])
-def remove_clinic(clinic_id):
-    try:
-        bridge = db.session.query(P_C_bridge).filter_by(clinic_id = clinic_id, person_id = current_user.id).one_or_none()
-        if bridge:
-            clinic = db.session.query(Clinic).filter_by(clinic_id = clinic_id).one_or_none()
-            if clinic:
-                if bridge.is_clinic_owner == True:
-                    #try:
-                    visits = db.session.query(Visit).filter_by(clinic_id = clinic.clinic_id).all()
-                    for visit in visits:
-                        db.session.delete(visit)
-                        db.session.commit()
-                    #except Exception as e:
-                        #logging.warning(e)
-                    db.session.delete(bridge)
-                    db.session.delete(clinic)
-                    db.session.commit()
-                    return redirect(url_for('general_logic.vet_logic', choice = 5, action = 1))
-                elif bridge.is_clinic_owner == False:
-                    db.session.delete(bridge)
-                    db.session.commit()
-                    return redirect(url_for('general_logic.vet_logic', choice = 5, action = 1))
-    except Exception as e:
-        logging.warning(e)
-'''
 
 #sending clinic removal email
 @login_required

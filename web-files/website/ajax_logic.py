@@ -1,3 +1,5 @@
+#This PY file is intended for ajax logic usage
+
 from flask import (Blueprint, render_template,
                 request, jsonify)
 from flask_login import login_required, current_user

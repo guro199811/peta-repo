@@ -8,8 +8,15 @@ from .models import *
 
 views = Blueprint('views', __name__)
 
+# Action and Choice variables are reusable variables that is being used for navigation
 action = 0
 choice = 8
+
+#This Decorator is created for granting access to certain types of users
+# 1.Regular user
+# 2.Administrator
+# 3.Vet
+# 4.Editor
 
 def grant_access(user_types):
     def decorator(view_func):

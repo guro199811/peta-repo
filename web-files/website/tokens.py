@@ -1,3 +1,5 @@
+#Tokens section, used for generating serializers
+
 from itsdangerous import URLSafeTimedSerializer
 
 # Create a serializer with a secret key

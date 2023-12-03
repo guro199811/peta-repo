@@ -1,3 +1,5 @@
+#Database Models are being defined here
+
 from flask_login import UserMixin
 from sqlalchemy import DateTime
 
