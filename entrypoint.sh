@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Wait for the database to start
-#sleep 3
+sleep 3
 
 # Navigate to the web-files/website directory inside a cointainer
 cd /app
@@ -43,11 +43,11 @@ fi
 #echo "-- EXPORT BABEL FILES --"
 #export FLASK_RUN_EXTRA_FILES=app/translations/en/LC_MESSAGES/messages.mo
 
-echo "-- RUN FLASK INIT -- "
+echo "-- RUN DB INIT -- "
 # Run database migrations
 flask db init
 
-echo "--Migrating--"
+echo "-- MIGRATING --"
 #STOPPING assumtions on database
 flask db stamp head
 flask db migrate

@@ -33,7 +33,23 @@ Hello and welcome to my project. This README provides instructions on how to set
      docker compose up --build
      ```
 
-     This command launches the project locally.
+     This command Builds and launches the project locally.
+
+   * WARNING: 
+     On first build, you might encounter an error right after -- MIGRATION -- , This is caused by database not initialising in given time,
+     Keep in mind that this occures only when database is being created in first initialization,
+     Hopefully there is an easy way to fix this issue, just wait for database to first initialize, ( for me its about 10 to 15 seconds ) to finish initialising, then stop
+     the process by pressing 'CTRL + c' hotkey and wait for it to fully stop, after that, just relaunch the project using 'docker compose up'
+     
+
+   -After First Build You dont have to rebuild it again, Unless you change Root directory files such as: Dockerfile, docker-compose.yml, entrypoint.sh
+    
+   -For regular docker compose startup run:
+    
+     ```bash
+     docker compose up
+     ```
+   
 
 ## Things to Keep in Mind
 
