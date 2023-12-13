@@ -1,5 +1,3 @@
-# Project Name
-
 Hello and welcome to my project. This README provides instructions on how to set up and run the project.
 
 ## Quick Start
