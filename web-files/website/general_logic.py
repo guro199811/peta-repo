@@ -57,27 +57,14 @@ def owner_logic(action):
         return render_template("login/owner.html", action=action)
     if action == 1:
         # Owner data is being retrieved with current user_id
-        owner = (
-            db.session.query(Owner).filter_by(
-                person_id=current_user.id
-                ).one_or_none()
-        )
+        owner = Owner.get_owner(current_user.id)
         if owner is None:
             return render_template(
                 "login/owner.html", action=action, pets=None
                 )
         else:
-            owner_id = owner.owner_id
-
             # Retrieving Pet data using Owner Data
-            pets = (
-                db.session.query(Pet, PetSpecies, PetBreed)
-                .join(PetSpecies, Pet.pet_species == PetSpecies.species_id)
-                .join(PetBreed, Pet.pet_breed == PetBreed.breed_id)
-                .filter(Pet.owner_id == owner_id)
-                .order_by(Pet.pet_id.asc())
-                .all()
-            )
+            pets = Pet.get_pet_extended(owner.owner_id)
             if len(pets) == 0:
                 return render_template(
                     "login/owner.html", action=action, pets=None
@@ -88,43 +75,11 @@ def owner_logic(action):
                     )
 
     elif action == 2:
-        owner = (
-            db.session.query(Owner).filter_by(
-                person_id=current_user.id
-                ).one_or_none()
-        )
+        owner = Owner.get_owner(current_user.id)
         if owner:
-            pet_history = (
-                db.session.query(PetHistory, Pet)
-                .join(Pet, PetHistory.pet_id == Pet.pet_id)
-                .filter(Pet.owner_id == owner.owner_id)
-                .all()
-            )
+            pet_history = PetHistory.get_history_by_owner(owner.owner_id)
             try:
-                vet_person = aliased(Person)
-                owner_person = aliased(Person)
-                visits = (
-                    db.session.query(
-                        Visit,
-                        Clinic,
-                        Vet,
-                        Owner,
-                        Pet,
-                        vet_person.name.label("vet_name"),
-                        vet_person.lastname.label("vet_lastname"),
-                        owner_person.name.label("owner_name"),
-                        owner_person.lastname.label("owner_lastname"),
-                        Pet.name.label("pet_name"),
-                    )
-                    .join(Clinic, Clinic.clinic_id == Visit.clinic_id)
-                    .join(Vet, Vet.vet_id == Visit.vet_id)
-                    .join(Owner, Owner.owner_id == Visit.owner_id)
-                    .join(Pet, Pet.pet_id == Visit.pet_id)
-                    .join(vet_person, vet_person.id == Vet.person_id)
-                    .join(owner_person, owner_person.id == Owner.person_id)
-                    .filter(Owner.person_id == current_user.id)
-                    .all()
-                )
+                visits = Visit.get_visits(current_user.id)
             except Exception as e:
                 visits = None
                 logging.warning(e)
@@ -142,11 +97,7 @@ def owner_logic(action):
                 comment = request.form.get("comment")
                 date = request.form.get("date")
 
-                history = (
-                    db.session.query(PetHistory)
-                    .filter_by(history_id=history_id)
-                    .one_or_none()
-                )
+                history = PetHistory.get_history_by_hist_id(history_id)
                 if history:
                     if treatment:
                         history.treatment = treatment
@@ -167,9 +118,7 @@ def owner_logic(action):
                 )
     elif action == 3:
         try:
-            clinics_data = db.session.query(Clinic).filter_by(
-                visibility=True
-                ).all()
+            clinics_data = Clinic.get_all_visible_clinics()
         except Exception as e:
             logging.warning(f'Error Occured in general_logic.py {e}')
             clinics_data = None
@@ -210,17 +159,12 @@ def owner_logic(action):
             )
 
     elif action == 4:
-        vets = (
-            db.session.query(Vet, Person)
-            .join(Person, Vet.person_id == Person.id)
-            .filter(Vet.active is True)
-            .all()
-        )
+        vets = Vet.get_all_vets()
         return render_template("login/owner.html", action=action, vets=vets)
 
     elif action == 5:
         if request.method == "GET":
-            pet_species_list = db.session.query(PetSpecies).all()
+            pet_species_list = PetSpecies.get_all_species()
             return render_template(
                 "login/owner.html", action=action,
                 pet_species_list=pet_species_list
@@ -249,15 +193,9 @@ def owner_logic(action):
 
     elif action == 6:  # needs pets from current user
         if request.method == "GET":
-            owner = (
-                db.session.query(Owner)
-                .filter_by(person_id=current_user.id)
-                .one_or_none()
-            )
+            owner = Owner.get_owner(current_user.id)
             if owner:
-                pets = db.session.query(Pet).filter_by(
-                    owner_id=owner.owner_id
-                    ).all()
+                pets = Pet.get_pets(owner.owner_id)
                 return render_template("login/owner.html", action=6, pets=pets)
             else:
                 return render_template("login/owner.html", action=6, pets=None)
@@ -290,25 +228,13 @@ def admin_logic(choice, action):
             if search_query:
                 # Perform a case-insensitive search on the 'persons' table
                 search_query = f"%{search_query.lower()}%"
-                search_results = (
-                    db.session.query(Person)
-                    .filter(
-                        or_(
-                            func.lower(Person.name).like(search_query),
-                            func.lower(Person.lastname).like(search_query),
-                            func.lower(Person.mail).like(search_query),
-                            func.lower(Person.address).like(search_query),
-                            cast(Person.phone, String).like(search_query),
-                        )
-                    )
-                    .all()
-                )
+                search_results = Person.search_users(search_query)
             else:
                 search_results = []
 
         elif action == 1:
             # When action is 1, display all persons
-            search_results = db.session.query(Person).all()
+            search_results = Person.get_all_users()
 
         return render_template(
             "login/admin.html",
@@ -317,27 +243,14 @@ def admin_logic(choice, action):
 
     if choice == 1:
         if action == 1:
-            owner = (
-                db.session.query(Owner)
-                .filter_by(person_id=current_user.id)
-                .one_or_none()
-            )
+            owner = Owner.get_owner(current_user.id)
             if owner is None:
                 return render_template(
                     "login/admin.html", choice=choice, action=action, pets=None
                 )
             else:
-                owner_id = owner.owner_id
+                pets = pets = Pet.get_pet_extended(owner.owner_id)
 
-                pets = (
-                    db.session.query(Pet, PetSpecies, PetBreed)
-                    .join(PetSpecies, Pet.pet_species ==
-                          PetSpecies.species_id)
-                    .join(PetBreed, Pet.pet_breed == PetBreed.breed_id)
-                    .filter(Pet.owner_id == owner_id)
-                    .order_by(Pet.pet_id.asc())
-                    .all()
-                )
                 if len(pets) == 0:
                     return render_template(
                         "login/admin.html",
@@ -350,41 +263,33 @@ def admin_logic(choice, action):
                     )
 
         elif action == 2:
-            owner = (
-                db.session.query(Owner)
-                .filter_by(person_id=current_user.id)
-                .one_or_none()
-            )
+            owner = Owner.get_owner(current_user.id)
             if owner:
-                pet_history = (
-                    db.session.query(PetHistory, Pet)
-                    .join(Pet, PetHistory.pet_id == Pet.pet_id)
-                    .filter(Pet.owner_id == owner.owner_id)
-                    .all()
-                )
+                pet_history = PetHistory.get_history_by_owner(owner.owner_id)
                 try:
-                    vet_person = aliased(Person)
-                    owner_person = aliased(Person)
-                    visits = (
-                        db.session.query(
-                            Visit,
-                            Vet,
-                            Owner,
-                            Pet,
-                            vet_person.name.label("vet_name"),
-                            vet_person.lastname.label("vet_lastname"),
-                            owner_person.name.label("owner_name"),
-                            owner_person.lastname.label("owner_lastname"),
-                            Pet.name.label("pet_name"),
-                        )
-                        .join(Vet, Vet.vet_id == Visit.vet_id)
-                        .join(Owner, Owner.owner_id == Visit.owner_id)
-                        .join(Pet, Pet.pet_id == Visit.pet_id)
-                        .join(vet_person, vet_person.id == Vet.person_id)
-                        .join(owner_person, owner_person.id == Owner.person_id)
-                        .filter(Owner.person_id == current_user.id)
-                        .all()
-                    )
+                    visits = Visit.get_visits(current_user.id)
+                    # vet_person = aliased(Person)
+                    # owner_person = aliased(Person)
+                    # visits = (
+                    #     db.session.query(
+                    #         Visit,
+                    #         Vet,
+                    #         Owner,
+                    #         Pet,
+                    #         vet_person.name.label("vet_name"),
+                    #         vet_person.lastname.label("vet_lastname"),
+                    #         owner_person.name.label("owner_name"),
+                    #         owner_person.lastname.label("owner_lastname"),
+                    #         Pet.name.label("pet_name"),
+                    #     )
+                    #     .join(Vet, Vet.vet_id == Visit.vet_id)
+                    #     .join(Owner, Owner.owner_id == Visit.owner_id)
+                    #     .join(Pet, Pet.pet_id == Visit.pet_id)
+                    #     .join(vet_person, vet_person.id == Vet.person_id)
+                    #  .join(owner_person, owner_person.id == Owner.person_id)
+                    #     .filter(Owner.person_id == current_user.id)
+                    #     .all()
+                    # )
                 except Exception as e:
                     logging.warning(f'general_logic line: 389 {e}')
                     visits = None
@@ -403,11 +308,7 @@ def admin_logic(choice, action):
                     comment = request.form.get("comment")
                     date = request.form.get("date")
 
-                    history = (
-                        db.session.query(PetHistory)
-                        .filter_by(history_id=history_id)
-                        .one_or_none()
-                    )
+                    history = PetHistory.get_history_by_hist_id(history_id)
                     if history:
                         if treatment:
                             history.treatment = treatment
@@ -431,8 +332,7 @@ def admin_logic(choice, action):
 
         elif action == 3:
             try:
-                clinics_data = db.session.query(Clinic).\
-                    filter_by(visibility=True).all()
+                clinics_data = Clinic.get_all_visible_clinics()
             except Exception as e:
                 logging.warning(f'general_logic line: 436 {e}')
                 clinics_data = None
@@ -481,19 +381,14 @@ def admin_logic(choice, action):
             )
 
         elif action == 4:
-            vets = (
-                db.session.query(Vet, Person)
-                .join(Person, Vet.person_id == Person.id)
-                .filter(Vet.active is True)
-                .all()
-            )
+            vets = Vet.get_all_vets()
             return render_template(
                 "login/admin.html", choice=choice, action=action, vets=vets
             )
 
         elif action == 5:
             if request.method == "GET":
-                pet_species_list = db.session.query(PetSpecies).all()
+                pet_species_list = PetSpecies.get_all_species()
                 return render_template(
                     "login/admin.html",
                     choice=choice,
@@ -529,16 +424,9 @@ def admin_logic(choice, action):
 
         elif action == 6:  # needs pets from current user
             if request.method == "GET":
-                owner = (
-                    db.session.query(Owner)
-                    .filter_by(person_id=current_user.id)
-                    .one_or_none()
-                )
+                owner = Owner.get_owner(current_user.id)
                 if owner:
-                    pets = (
-                        db.session.query(Pet).filter_by(
-                            owner_id=owner.owner_id).all()
-                    )
+                    pets = Pet.get_pets(owner.id)
                     return render_template(
                         "login/admin.html", choice=choice, action=6, pets=pets
                     )
@@ -587,13 +475,7 @@ def admin_logic(choice, action):
             .count()
         )
 
-        owners = (
-            db.session.query(Owner, Person, func.count(Pet.pet_id))
-            .join(Person, Owner.person_id == Person.id)
-            .outerjoin(Pet, Owner.owner_id == Pet.owner_id)
-            .group_by(Owner, Person)
-            .all()
-        )
+        owners = Owner.get_all_owners()
 
         # google charts table data here
         owner_data = []
@@ -605,7 +487,7 @@ def admin_logic(choice, action):
 
         # Google charts trend data here
 
-        persons = db.session.query(Person).all()
+        persons = Person.get_all_users()
 
         trend_data = [
             {"created": str(person.created), "count": 1} for person in persons
@@ -625,8 +507,7 @@ def admin_logic(choice, action):
         ]
 
         # Admin notes
-        notes = db.session.query(Note).filter_by(
-            person_id=current_user.id).all()
+        notes = Note.get_admin_notes(current_user.id)
         return render_template(
             "login/admin.html",
             choice=choice,
@@ -637,7 +518,7 @@ def admin_logic(choice, action):
             current_date=current_date,
             min_date=min_date,
             notes=notes,
-        )
+        )  # Stopped Here, TODO: Continue integrating OOP
 
     if choice == -1:
         users = (
@@ -809,17 +690,7 @@ def vet_logic(choice, action):
                     "login/vet.html", choice=choice, action=action, pets=None
                 )
             else:
-                owner_id = owner.owner_id
-
-                pets = (
-                    db.session.query(Pet, PetSpecies, PetBreed)
-                    .join(PetSpecies,
-                          Pet.pet_species == PetSpecies.species_id)
-                    .join(PetBreed, Pet.pet_breed == PetBreed.breed_id)
-                    .filter(Pet.owner_id == owner_id)
-                    .order_by(Pet.pet_id.asc())
-                    .all()
-                )
+                pets = pets = Pet.get_pet_extended(owner.owner_id)
                 if len(pets) == 0:
                     return render_template(
                         "login/vet.html",
@@ -1694,20 +1565,16 @@ def vet_logic(choice, action):
 
 
 def register_pet(
-    pet_name, pet_species, pet_breed, recent_vaccination, gender, birth_date
+    pet_name, pet_species, pet_breed,
+    recent_vaccination, gender, birth_date
 ):
     try:
-        owner = (
-            db.session.query(Owner).filter_by(
-                person_id=current_user.id).one_or_none()
-        )
+        owner = Owner.get_owner(current_user.id)
         if owner is None:
             owner = Owner(person_id=current_user.id)
             db.session.add(owner)
             db.session.commit()
         if owner is not None:
-            owner = db.session.query(Owner).filter_by(
-                person_id=current_user.id).one()
             breed = db.session.query(PetBreed).filter_by(
                 breed=pet_breed).one()
             pet = Pet(
@@ -2157,10 +2024,7 @@ def remove_pet(action, pet_id):
     pet = db.session.query(Pet).filter_by(pet_id=pet_id).one_or_none()
     history = db.session.query(PetHistory).filter_by(pet_id=pet.pet_id).all()
     if pet is not None:
-        owner = (
-            db.session.query(Owner).filter_by(
-                person_id=current_user.id).one_or_none()
-        )
+        owner = Owner.get_owner(current_user.id)
         if owner is not None:
             try:
                 if history:
