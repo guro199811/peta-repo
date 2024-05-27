@@ -61,7 +61,7 @@ try:
 
     if not session.query(Type).first():
         for type_ in type_fixture:
-            t = Type(type=type_[0], explanation=type_[1])
+            t = Type(user_type=type_[0], explanation=type_[1])
             session.add(t)
         session.commit()
 

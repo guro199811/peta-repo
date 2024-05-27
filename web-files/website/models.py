@@ -8,7 +8,7 @@ from . import db
 
 class Type(db.Model):
     __tablename__ = "types"
-    type = db.Column(db.Integer, primary_key=True, unique=True)
+    user_type = db.Column(db.Integer, primary_key=True, unique=True)
     explanation = db.Column(db.String(50))
 
 
@@ -21,7 +21,7 @@ class Person(db.Model, UserMixin):
     mail = db.Column(db.String(100), unique=True)
     address = db.Column(db.String(100))
     created = db.Column(db.Date)
-    type = db.Column(db.Integer, db.ForeignKey("types.type"))
+    user_type = db.Column(db.Integer, db.ForeignKey("types.user_type"))
     person_type = db.relationship(Type)
     password = db.Column(db.String(150), nullable=False)
     confirmed = db.Column(db.Boolean, nullable=False, default=False)

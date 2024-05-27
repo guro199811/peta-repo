@@ -22,7 +22,7 @@ def grant_access(user_types):
     def decorator(view_func):
         @wraps(view_func)
         def wrapper(*args, **kwargs):
-            if current_user.confirmed and current_user.type in user_types:
+            if current_user.confirmed and current_user.user_type in user_types:
                 return view_func(*args, **kwargs)
             elif current_user.confirmed is False:
                 return render_template(

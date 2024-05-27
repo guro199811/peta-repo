@@ -26,13 +26,13 @@
         <img src="{{ url_for('static', filename='../static/images/logo.png') }}" alt="Logo" class='logo'>
       </a>
       {% if current_user.is_authenticated %}
-      {% if current_user.type == 1 %}
+      {% if current_user.user_type == 1 %}
         <li class="navbar-item"><a href="/owner">{{ _('ჩემი გვერდი') }}</a></li>
-      {% elif current_user.type == 2 %}
+      {% elif current_user.user_type == 2 %}
         <li class="navbar-item"><a href="/admin">{{ _('ჩემი გვერდი') }}</a></li>
-      {% elif current_user.type == 3 %}
+      {% elif current_user.user_type == 3 %}
         <li class="navbar-item"><a href="/vet">{{ _('ჩემი გვერდი') }}</a></li>
-      {% elif current_user.type == 4 %}
+      {% elif current_user.user_type == 4 %}
         <li class="navbar-item"><a href="/editor">{{ _('ჩემი გვერდი') }}</a></li>
       {% endif %}
       <li class="navbar-item"><a href="/logout">{{ _('გამოსვლა') }}</a></li>

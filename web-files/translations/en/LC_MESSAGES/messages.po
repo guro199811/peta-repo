@@ -516,7 +516,7 @@ msgstr "Clinics Map"
 
 #: website/templates/login/admin.html:271 website/templates/login/vet.html:92
 msgid "ვეტერინარების ტელეფონის ნომრები"
-msgstr "Veterinarians' Phone Numbers"
+msgstr "VeterinarianW Phone Numbers"
 
 #: website/templates/login/admin.html:276 website/templates/login/owner.html:33
 #: website/templates/login/vet.html:98
@@ -643,7 +643,7 @@ msgstr "No visits registered under your name"
 #: website/templates/login/admin.html:420
 #: website/templates/login/owner.html:190 website/templates/login/vet.html:242
 msgid "დარეგისტრირებული ვეტ.ექიმების ტელ.ნომრები"
-msgstr "Registered veterinarians' phone numbers"
+msgstr "Registered veterinarian phone numbers"
 
 #: website/templates/login/admin.html:433
 #: website/templates/login/owner.html:203 website/templates/login/vet.html:255
@@ -846,7 +846,7 @@ msgstr "My Pet History"
 
 #: website/templates/login/owner.html:27
 msgid "ვეტ.ექიმების ნომრები"
-msgstr "Veterinarians' Numbers"
+msgstr "Veterinarian Numbers"
 
 #: website/templates/login/owner.html:54
 msgid "შინაური ცხოველების ჩამონათვალი"
@@ -862,7 +862,7 @@ msgstr "You do not have any registered domestic animals"
 
 #: website/templates/login/owner.html:82
 msgid "შინაური ცხოველების დამატება"
-msgstr "Add Domestic Animals"
+msgstr "Add a Domestic Animals"
 
 #: website/templates/login/vet.html:45 website/templates/login/vet.html:47
 msgid "კლინიკების სექცია"
@@ -1102,11 +1102,11 @@ msgstr "Phone Number"
 
 #: website/templates/login/vet.html:760
 msgid "პიროვნება უკვე არის კლინიკის მფლობელი"
-msgstr "The Individual is Already the Clinic Owner"
+msgstr "This Individual is Already the Clinic Owner"
 
 #: website/templates/login/vet.html:764
 msgid "საკუთარი თავის წაშლა არ შეგიძლიათ რადგან კლინიკის მფოლები ხართ"
-msgstr "You Cannot Delete Yourself as You Are the Clinic Owner"
+msgstr "You Cannot Delete Yourself because You Are the Clinic Owner"
 
 #: website/templates/login/vet.html:769
 msgid "პერსონალისთვის კლინიკის მფლობელობის მიცემა"

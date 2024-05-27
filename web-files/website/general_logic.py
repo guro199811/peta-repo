@@ -1777,29 +1777,19 @@ def edit_pet(action, pet_id):
                 db.session.commit()
                 changed = True
 
-            """if species is not None:
-                pet.species = species
-                db.session.commit()
-                changed = True"""
-
-            """if breed is not None and breed != '':
-                pet.breed = breed
-                db.session.commit()
-                changed = True"""
-
             if recent_vaccination is not None and recent_vaccination != "":
                 pet.recent_vaccination = recent_vaccination
                 db.session.commit()
                 changed = True
             if changed:
                 flash(_("მონაცემები წარმატებით შეიცვალა"), category="success")
-            if current_user.type == 1:
+            if current_user.user_type == 1:
                 return redirect(url_for("general_logic.owner_logic", action=1))
-            elif current_user.type == 2:
+            elif current_user.user_type == 2:
                 return redirect(
                     url_for("general_logic.admin_logic", choice=1, action=1)
                 )
-            elif current_user.type == 3:
+            elif current_user.user_type == 3:
                 return redirect(url_for("general_logic.vet_logic",
                                         choice=1, action=1))
 
@@ -1816,7 +1806,7 @@ def edit_user(person_id, choice):
         name = request.form.get("name")
         lastname = request.form.get("lastname")
         mail = request.form.get("mail")
-        type = request.form.get("type")
+        user_type = request.form.get("user_type")
         address = request.form.get("address")
         phone = request.form.get("phone")
 
@@ -1825,17 +1815,17 @@ def edit_user(person_id, choice):
         try:
             person = db.session.query(Person).filter_by(id=person_id).one()
 
-            previous_person_type = person.type
+            previous_person_type = person.user_type
 
             person.name = name
             person.lastname = lastname
             person.mail = mail
-            person.type = type
+            person.user_type = user_type
             person.address = address
             person.phone = phone
 
             db.session.commit()
-            if int(type) == 1:  # Regular user
+            if int(user_type) == 1:  # Regular user
                 if previous_person_type == 2:
                     try:
                         admin = (
@@ -1866,7 +1856,7 @@ def edit_user(person_id, choice):
                     except NoResultFound:
                         pass
 
-            if int(type) == 2:  # Admin
+            if int(user_type) == 2:  # Admin
                 try:
                     admin = db.session.query(Admin).filter_by(
                         person_id=person_id).one()
@@ -1894,7 +1884,7 @@ def edit_user(person_id, choice):
                     except NoResultFound:
                         pass
 
-            elif int(type) == 3:  # Vet
+            elif int(user_type) == 3:  # Vet
                 try:
                     vet = db.session.query(Vet).filter_by(
                         person_id=person_id).one()
@@ -1933,7 +1923,7 @@ def edit_user(person_id, choice):
                     except NoResultFound:
                         pass
 
-            elif int(type) == 4:  # Editor
+            elif int(user_type) == 4:  # Editor
                 try:
                     editor = (
                         db.session.query(Editor).filter_by(
@@ -2189,12 +2179,12 @@ def remove_pet(action, pet_id):
 
             except Exception as e:
                 flash(e)
-        if current_user.type == 1:
+        if current_user.user_type == 1:
             return redirect(url_for("general_logic.owner_logic", action=1))
-        elif current_user.type == 2:
+        elif current_user.user_type == 2:
             return redirect(url_for("general_logic.admin_logic",
                                     choice=1, action=1))
-        elif current_user.type == 3:
+        elif current_user.user_type == 3:
             return redirect(url_for("general_logic.vet_logic",
                                     choice=1, action=1))
     else:
@@ -2212,9 +2202,9 @@ def remove_history(history_id):
     if pet_history:
         db.session.delete(pet_history)
         db.session.commit()
-        if current_user.type == 1:
+        if current_user.user_type == 1:
             return redirect(url_for("general_logic.owner_logic", action=2))
-        if current_user.type == 2:
+        if current_user.user_type == 2:
             return redirect(url_for("general_logic.admin_logic",
                                     choice=1, action=2))
         else:

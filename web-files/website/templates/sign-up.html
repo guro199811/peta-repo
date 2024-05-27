@@ -38,7 +38,7 @@
               <option value="{{ prefix.prefix }}">{{ prefix.icon }} {{ prefix.prefix }}</option>
               {% endfor %}
           </select>
-          <input type="text" id="phone" name="phone" minlength="6" maxlength="6" title="{{ _('ტელ.ნომერი') }}" placeholder="{{ _('ტელ.ნომერი') }}" required>
+          <input type="text" id="phone" name="phone" minlength="9" maxlength="9" title="{{ _('ტელ.ნომერი') }}" placeholder="{{ _('ტელ.ნომერი') }}" required>
       </div>
       <label for="address">{{ _('მისამართი:') }}</label>
       <input type="text" id="address" name="address">
@@ -94,6 +94,7 @@
     
     // Find the object for the selected prefix
     var prefixObj = prefixes.find(p => p.prefix === selectedPrefix);
+    console.log(prefixObj);
 
     // Check if the prefix object is found and set lengths accordingly
     if (prefixObj) {

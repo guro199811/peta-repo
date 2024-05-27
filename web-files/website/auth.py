@@ -73,9 +73,9 @@ def login():
                 db.session.commit()
                 login_user(user, remember=True)
                 if user.confirmed:
-                    # Guessing what type of user logged in
-                    type = user.type
-                    match type:
+                    # Guessing what user_type of user logged in
+                    user_type = user.user_type
+                    match user_type:
                         case 1:
                             return redirect(url_for('views.owner'))
                         case 2:
@@ -186,8 +186,9 @@ def register():
             new_user = Person(
                 name=name, lastname=lastname, phone=phone,
                 mail=mail, address=address, created=date,
-                type=choice, password=generate_password_hash(password1,
-                                                             method='sha256'))
+                user_type=choice,
+                password=generate_password_hash(password1,
+                                                method='sha256'))
             db.session.add(new_user)
             db.session.commit()
             login_user(new_user, remember=True)
@@ -214,7 +215,7 @@ def send_confirmation(new_user=current_user):
     confirmation_url = url_for('auth.confirm_token',
                                token=token, _external=True)
     m = _('გთხოვთ დაადასტუროთ თქვენი ელ.ფოსტა მოცემული ბმულით:' +
-          ' {confirmation_url}\nგთხოვთ გაითვალისწინოთб, ' +
+          f' {confirmation_url}\nგთხოვთ გაითვალისწინოთб, ' +
           'რომ თქვენი ბმული გაუქმდება გამოგზავნიდან 1 საათში\n\n\n' +
           'პატივისცემით, Peta-Team')
     message.body = m.format(confirmation_url)

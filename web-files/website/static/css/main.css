@@ -2150,7 +2150,9 @@ padding-top:10px;
 
 /* You can also use this to ensure that the button is positioned correctly */
 .alert {
-  position: relative; /* Makes sure that the absolute positioning of the close button is relative to the alert */
+  position: fixed;
+  width: 100vw;
+  z-index: 10000;
 }
 
 .alert .close {
