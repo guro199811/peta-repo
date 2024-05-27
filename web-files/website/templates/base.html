@@ -49,14 +49,14 @@
     {% if category == 'error' %}
       <div class="alert alert-danger alert-dismissable fade show" role="alert">
         {{ message }}
-        <button type="button" class="close" >
+        <button type="button" class="close" onClick=closeAlert()>
           &times;
         </button>
       </div>
     {% else %}
       <div class="alert alert-success alert-dismissable fade show" role="alert">
         {{ message }}
-        <button type="button" class="close" >
+        <button type="button" class="close" onClick=closeAlert()>
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -65,7 +65,6 @@
     <script>
       // This ensures that hideAlert is called right after the alerts are added to the DOM
       function hideAlert() {
-        console.log('hideAlert')
         const alerts = document.querySelectorAll('.alert');
         alerts.forEach(function(alert) {
           setTimeout(function() {
@@ -73,7 +72,14 @@
           }, 10000); // Hide after 10 seconds
         });
       }
-
+      // Close Button has onClick event, it closes the alert window
+      function closeAlert() {
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(function(alert) {
+          alert.style.display = 'none';
+        });
+      }
+      // Calling hideAlert
       hideAlert();
     </script>
   {% endif %}
