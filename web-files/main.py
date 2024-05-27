@@ -2,20 +2,15 @@ from website import create_app
 from flask_migrate import Migrate
 
 
-
 migrate = Migrate()
-
-
 
 app = create_app(migrate)
 
 
-
-
-#Mail Verification Section
+# Mail Verification Section
 
 
 # Check if the PORT environment variable is set (for Heroku)
-'''if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host='0.0.0.0', port=port)'''
+# if __name__ == '__main__':
+#     port = int(os.environ.get("PORT", 5000))
+#     app.run(host='0.0.0.0', port=port)

@@ -3,8 +3,6 @@ ssh_keys
 ssh_keys.pub
 web-files/website/mail_config.cfg
 web-files/website/env
-
-# This is not
 web-files/__pycache__
 web-files/website/__pycache__
 web-files/migrations
