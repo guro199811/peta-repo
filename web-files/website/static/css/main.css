@@ -233,7 +233,7 @@ nav{
 .register-form input[type="text"],
 .register-form input[type="password"],
 .register-form input[type="email"],
-.register-form input[type="tel"],
+.register-form input[type="number"],
 .login-form input[type="email"],
 .login-form input[type="password"],
 .login-form input[type="text"] {
@@ -249,7 +249,7 @@ nav{
 .register-form input[type="text"]:hover,
 .register-form input[type="password"]:hover,
 .register-form input[type="email"]:hover,
-.register-form input[type="tel"]:hover,
+.register-form input[type="number"]:hover,
 .login-form input[type="email"]:hover,
 .login-form input[type="password"]:hover,
 .login-form input[type="text"]:hover {
@@ -391,6 +391,20 @@ nav{
   filter: blur(7px);
 }
 
+/* Vefirication centering div */
+.verification-wrapper {
+  background-color: transparent;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
 
 /* Style the checkbox itself */
 .show-password-checkbox {
@@ -1699,7 +1713,8 @@ nav{
 .verification {
   text-align:center;
   margin-top: 75px; 
-  color:white;
+  color:rgb(255, 255, 255);
+  text-shadow: #000 1px 1px;
 }
 
 
@@ -2192,4 +2207,6 @@ padding-top:10px;
  #countryCode{
   font-size:15px;
  }
+
+
  

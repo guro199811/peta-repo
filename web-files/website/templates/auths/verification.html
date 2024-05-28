@@ -4,18 +4,22 @@
 {% block bg %}{% endblock %}
 
 {% block content%}
-
+<div class="verification-wrapper">
 {% if verification_type == 0 %}
-<h1 class="verification">
-    {{ _('თქვენს, %(email)s ელ.ფოსტაზე გაიგზავნა დასტურის კოდი, გთხოვთ დაადასტუროთ მისი ვალიდურობა.', email=current_user.mail) }}
+
+  <h1 class="verification">
+    {{ _('თქვენს, %(email)s ელ.ფოსტაზე გაიგზავნა დასტურის კოდი, 
+    გთხოვთ დაადასტუროთ მისი ვალიდურობა.', email=current_user.mail) }}
   </h1>
   
 <div class="blur-verification-bg"></div>
 {% elif verification_type == 1 %}
-<h1 class="verification">
-    {{ ('_თუ დარწმუნებული ხართ კლინიკის წაშლაზე, თქვენს ელ.ფოსტაზე %(email)s-ზე
-    გაიგზავნა წასაშლელი ბმული, გთხოვთ გაეცნოთ მას.'), email=current_user.mail }}
-</h1>
+  <h1 class="verification">
+      {{ _('თუ დარწმუნებული ხართ კლინიკის წაშლაზე, თქვენს ელ.ფოსტაზე %(email)s-ზე
+      გაიგზავნა წასაშლელი ბმული, გთხოვთ გაეცნოთ მას.', email=current_user.mail) }}
+  </h1>
+
 <div class="blur-verification-bg"></div>
 {% endif %}
+</div>
 {% endblock%}

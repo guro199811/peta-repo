@@ -38,7 +38,7 @@
               <option value="{{ prefix.prefix }}">{{ prefix.icon }} {{ prefix.prefix }}</option>
               {% endfor %}
           </select>
-          <input type="text" id="phone" name="phone" minlength="9" maxlength="9" title="{{ _('ტელ.ნომერი') }}" placeholder="{{ _('ტელ.ნომერი') }}" required>
+          <input type="number" id="phone" name="phone" minlength="9" maxlength="9" title="{{ _('ტელ.ნომერი') }}" placeholder="{{ _('ტელ.ნომერი') }}" required>
       </div>
       <label for="address">{{ _('მისამართი:') }}</label>
       <input type="text" id="address" name="address">

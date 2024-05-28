@@ -26,7 +26,8 @@ def grant_access(user_types):
                 return view_func(*args, **kwargs)
             elif current_user.confirmed is False:
                 return render_template(
-                    "auths/verification.html", user=current_user)
+                    "auths/verification.html", user=current_user,
+                    verification_type=0)
             else:
                 abort(404)
 
@@ -52,8 +53,7 @@ def owner():
 @login_required
 @grant_access([2])
 def admin():
-    check = db.session.query(Admin).filter_by(
-        person_id=current_user.id).one_or_none()
+    check = Admin.get_admin(current_user.id)
     if check is None:
         new_admin = Admin(person_id=current_user.id)
         db.session.add(new_admin)
@@ -68,8 +68,7 @@ def admin():
 @login_required
 @grant_access([3])
 def vet():
-    check = db.session.query(Vet).filter_by(
-        person_id=current_user.id).one_or_none()
+    check = Vet.get_vet(current_user.id)
     if check is None:
         new_vet = Vet(person_id=current_user.id)
         db.session.add(new_vet)
@@ -84,8 +83,7 @@ def vet():
 @login_required
 @grant_access([4])
 def editor():
-    check = db.session.query(Editor).filter_by(
-        person_id=current_user.id).one_or_none()
+    check = Editor.get_editor(current_user.id)
     if check is None:
         new_editor = Editor(person_id=current_user.id)
         db.session.add(new_editor)

@@ -25,7 +25,7 @@
       <a href="/">
         <img src="{{ url_for('static', filename='../static/images/logo.png') }}" alt="Logo" class='logo'>
       </a>
-      {% if current_user.is_authenticated %}
+    {% if current_user.is_authenticated %}
       {% if current_user.user_type == 1 %}
         <li class="navbar-item"><a href="/owner">{{ _('ჩემი გვერდი') }}</a></li>
       {% elif current_user.user_type == 2 %}
