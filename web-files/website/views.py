@@ -30,9 +30,7 @@ def grant_access(user_types):
                     verification_type=0)
             else:
                 abort(404)
-
         return wrapper
-
     return decorator
 
 

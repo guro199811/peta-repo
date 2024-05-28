@@ -64,6 +64,7 @@ def create_app(migrate):
 
     babel.init_app(app, locale_selector=get_locale)
 
+    # Late Imports are intentional for working purposes!
     from .views import views
     from .auth import auth
     from .general_logic import general_logic
@@ -77,7 +78,7 @@ def create_app(migrate):
     app.register_blueprint(ajax_logic, url_prefix="/")
 
     # Telling Flask how to load a user with primary key id,
-    # loaded user will be accessed as Current_user in global and templates
+    # loaded user will be accessed as current_user in flask_login and templates
 
     login_manager = LoginManager()
     login_manager.login_view = "auth.login"

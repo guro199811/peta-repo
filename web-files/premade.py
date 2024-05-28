@@ -13,7 +13,7 @@ import os
 try:
     database_url = os.environ.get("DATABASE_URL1")
 except Exception as e:
-    logging.warning(f"Error Occured in premade.py Line 16: {e}")
+    logging.warning(f"Error Occured in premade.py Line: 16 -> {e}")
     database_url = None
 
 
@@ -44,11 +44,7 @@ try:
              "nextval('pet_breeds_breed_id_seq'::regclass);"
              )
 
-    pet_breeds = session.query(PetBreed).first()
-    if pet_breeds:
-        session.execute(sequence_command)
-        session.execute(attach_sequence_command)
-    elif pet_breeds:
+    if session.query(PetBreed).first():
         session.execute(sequence_command)
         session.execute(attach_sequence_command)
 except Exception as e:
@@ -160,6 +156,6 @@ try:
 
 
 except Exception as e:
-    print(f"An exception occurred: {str(e)}")
+    print(f"An exception at premade.py line: 158 -> {e}")
 finally:
     session.close()

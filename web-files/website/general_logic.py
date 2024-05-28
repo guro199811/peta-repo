@@ -41,288 +41,64 @@ general_logic = Blueprint("general_logic", __name__)
 @login_required
 @grant_access([1])
 def owner_logic(action):
-    if action == 0:
-        if request.method == "POST":
-            firstname = request.form.get("firstname")
-            lastname = request.form.get("lastname")
-            address = request.form.get("address")
-            changed = change_user_data(firstname, lastname, address)
-            if changed:
-                flash(
-                    _("მონაცემები წარმატებით შეიცვალა."), category="success"
-                )
-            return render_template("login/owner.html", action=action)
+    """
+    This function handles the owner(user) actions.
 
-        return render_template("login/owner.html", action=action)
-    if action == 1:
-        # Owner data is being retrieved with current user_id
-        owner = Owner.get_owner(current_user.id)
-        if owner is None:
-            return render_template(
-                "login/owner.html", action=action, pets=None
-            )
-        else:
-            # Retrieving Pet data using Owner Data
-            pets = Pet.get_pets_extended(owner.owner_id)
-            if len(pets) == 0:
+    Parameters:
+    action (int): The action to be performed by the owner.
+
+    Returns:
+    -> render_template: The rendered HTML template for the owner's action.
+       or
+    -> redirect: Redirects the user to the appropriate page.
+    """
+    match action:
+        case 0:
+            if request.method == "POST":
+                firstname = request.form.get("firstname")
+                lastname = request.form.get("lastname")
+                address = request.form.get("address")
+                changed = change_user_data(firstname, lastname, address)
+                if changed:
+                    flash(
+                        _("მონაცემები წარმატებით შეიცვალა."),
+                        category="success",
+                    )
+                return render_template("login/owner.html", action=action)
+
+            return render_template("login/owner.html", action=action)
+        case 1:
+            # Owner data is being retrieved with current user_id
+            owner = Owner.get_owner(current_user.id)
+            if owner is None:
                 return render_template(
                     "login/owner.html", action=action, pets=None
                 )
             else:
-                return render_template(
-                    "login/owner.html", action=action, pets=pets
-                )
-
-    elif action == 2:
-        owner = Owner.get_owner(current_user.id)
-        if owner:
-            pet_history = PetHistory.get_history_by_owner(owner.owner_id)
-            try:
-                visits = Visit.get_visits(current_user.id)
-            except Exception as e:
-                visits = None
-                logging.warning(f"general_logic line: 67 -> {e}")
-
-            if request.method == "GET":
-                return render_template(
-                    "login/owner.html",
-                    action=action,
-                    pet_history=pet_history,
-                    visits=visits,
-                )
-            elif request.method == "POST":
-                history_id = request.form.get("history_id")
-                treatment = request.form.get("treatment")
-                comment = request.form.get("comment")
-                date = request.form.get("date")
-
-                history = PetHistory.get_history_by_hist_id(history_id)
-                if history:
-                    if treatment:
-                        history.treatment = treatment
-                    if comment:
-                        history.comment = comment
-                    if date:
-                        history.date = date
-                else:
-                    abort(404)
-                db.session.commit()
-
-                return render_template(
-                    "login/owner.html",
-                    action=action,
-                    pet_history=pet_history,
-                )
-        else:
-            return render_template(
-                "login/owner.html", action=action, pet_history=None
-            )
-    elif action == 3:
-        try:
-            clinics_data = Clinic.get_all_visible_clinics()
-        except Exception as e:
-            logging.warning(f"Error Occured in general_logic.py {e}")
-            clinics_data = None
-        if clinics_data:
-            clinics = []
-            for clinic in clinics_data:
-                # Check if coordinates is a
-                # non-empty string and contains a comma
-                if (
-                    isinstance(clinic.coordinates, str)
-                    and "," in clinic.coordinates
-                ):
-                    try:
-                        latitude_str, longitude_str = (
-                            clinic.coordinates.split(",")
-                        )
-                        latitude = float(latitude_str)
-                        longitude = float(longitude_str)
-                    except ValueError as e:
-                        # Skip this clinic and continue with the next
-                        logging.warning(f"general_logic.py line: 190 {e}")
-                        continue
-                else:
-                    # Skip this clinic
-                    continue
-
-                clinic_info = {
-                    "clinic_name": clinic.clinic_name,
-                    "description": clinic.desc,
-                    "clinic_id": clinic.clinic_id,
-                    "latitude": latitude,
-                    "longitude": longitude,
-                }
-                clinics.append(clinic_info)
-            logging.warning(clinics)
-            return render_template(
-                "login/owner.html", clinics=clinics, action=action
-            )
-        return render_template(
-            "login/owner.html", clinics=None, action=action
-        )
-
-    elif action == 4:
-        vets = Vet.get_all_vets()
-        return render_template("login/owner.html", action=action, vets=vets)
-
-    elif action == 5:
-        if request.method == "GET":
-            pet_species_list = PetSpecies.get_all_species()
-            return render_template(
-                "login/owner.html",
-                action=action,
-                pet_species_list=pet_species_list,
-            )
-
-        if request.method == "POST":
-            pet_name = request.form.get("pet_name")
-            pet_species = request.form.get("pet_species")
-            pet_breed = request.form.get("pet_breed")
-            recent_vaccination = request.form.get("recent_vaccination")
-            gender = request.form.get("gender")
-            birth_date = request.form.get("bdate")
-
-            confirmation = register_pet(
-                pet_name,
-                pet_species,
-                pet_breed,
-                recent_vaccination,
-                gender,
-                birth_date,
-            )
-            if confirmation:
-                flash(
-                    _("ცხოველი დარეგისტრირდა წარმატებით"), category="success"
-                )
-            else:
-                flash(_("თქვენი ცხოველი ვერ დარეგისტრირდა"), category="error")
-
-        return redirect(url_for("general_logic.owner_logic", action=1))
-
-    elif action == 6:  # needs pets from current user
-        if request.method == "GET":
-            owner = Owner.get_owner(current_user.id)
-            if owner:
-                pets = Pet.get_pets(owner.owner_id)
-                return render_template(
-                    "login/owner.html", action=6, pets=pets
-                )
-            else:
-                return render_template(
-                    "login/owner.html", action=6, pets=None
-                )
-        elif request.method == "POST":
-            pet_id = request.form.get("pet_name")
-            treatment = request.form.get("treatment")
-            comment = request.form.get("comment")
-            date = request.form.get("date")
-            new_history = PetHistory(
-                pet_id=pet_id,
-                treatment=treatment,
-                date=date,
-                comment=comment,
-            )
-            db.session.add(new_history)
-            db.session.commit()
-            return render_template("login/owner.html", action=2)
-
-    else:
-        abort(404)
-
-
-@general_logic.route(
-    "/admin/<int:choice>/<int:action>", methods=["GET", "POST"]
-)
-@login_required
-@grant_access([2])
-def admin_logic(choice, action):
-    if choice == 0:
-        # Handle search functionality here
-        if action == 0:
-            search_query = request.args.get("q")
-            if search_query:
-                # Perform a case-insensitive search on the 'persons' table
-                search_query = f"%{search_query.lower()}%"
-                search_results = Person.search_users(search_query)
-            else:
-                search_results = []
-
-        elif action == 1:
-            # When action is 1, display all persons
-            search_results = Person.get_all_users()
-
-        return render_template(
-            "login/admin.html",
-            choice=choice,
-            action=action,
-            result=search_results,
-        )
-
-    if choice == 1:
-        if action == 1:
-            owner = Owner.get_owner(current_user.id)
-            if owner is None:
-                return render_template(
-                    "login/admin.html",
-                    choice=choice,
-                    action=action,
-                    pets=None,
-                )
-            else:
-                pets = pets = Pet.get_pets_extended(owner.owner_id)
-
+                # Retrieving Pet data using Owner Data
+                pets = Pet.get_pets_extended(owner.owner_id)
                 if len(pets) == 0:
                     return render_template(
-                        "login/admin.html",
-                        choice=choice,
-                        action=action,
-                        pets=None,
+                        "login/owner.html", action=action, pets=None
                     )
                 else:
                     return render_template(
-                        "login/admin.html",
-                        choice=choice,
-                        action=action,
-                        pets=pets,
+                        "login/owner.html", action=action, pets=pets
                     )
 
-        elif action == 2:
+        case 2:
             owner = Owner.get_owner(current_user.id)
             if owner:
                 pet_history = PetHistory.get_history_by_owner(owner.owner_id)
                 try:
                     visits = Visit.get_visits(current_user.id)
-                    # vet_person = aliased(Person)
-                    # owner_person = aliased(Person)
-                    # visits = (
-                    #     db.session.query(
-                    #         Visit,
-                    #         Vet,
-                    #         Owner,
-                    #         Pet,
-                    #         vet_person.name.label("vet_name"),
-                    #         vet_person.lastname.label("vet_lastname"),
-                    #         owner_person.name.label("owner_name"),
-                    #         owner_person.lastname.label("owner_lastname"),
-                    #         Pet.name.label("pet_name"),
-                    #     )
-                    #     .join(Vet, Vet.vet_id == Visit.vet_id)
-                    #     .join(Owner, Owner.owner_id == Visit.owner_id)
-                    #     .join(Pet, Pet.pet_id == Visit.pet_id)
-                    #     .join(vet_person, vet_person.id == Vet.person_id)
-                    #  .join(owner_person, owner_person.id == Owner.person_id)
-                    #     .filter(Owner.person_id == current_user.id)
-                    #     .all()
-                    # )
                 except Exception as e:
-                    logging.warning(f"general_logic line: 389 -> {e}")
                     visits = None
+                    logging.warning(f"general_logic line: 67 -> {e}")
 
                 if request.method == "GET":
                     return render_template(
-                        "login/admin.html",
-                        choice=choice,
+                        "login/owner.html",
                         action=action,
                         pet_history=pet_history,
                         visits=visits,
@@ -341,33 +117,30 @@ def admin_logic(choice, action):
                             history.comment = comment
                         if date:
                             history.date = date
+                    else:
+                        abort(404)
                     db.session.commit()
 
                     return render_template(
-                        "login/admin.html",
-                        choice=choice,
+                        "login/owner.html",
                         action=action,
                         pet_history=pet_history,
                     )
             else:
                 return render_template(
-                    "login/admin.html",
-                    choice=choice,
-                    action=action,
-                    pet_history=None,
+                    "login/owner.html", action=action, pet_history=None
                 )
-
-        elif action == 3:
+        case 3:
             try:
                 clinics_data = Clinic.get_all_visible_clinics()
             except Exception as e:
-                logging.warning(f"general_logic line: 436 {e}")
+                logging.warning(f"Error Occured in general_logic.py {e}")
                 clinics_data = None
             if clinics_data:
                 clinics = []
                 for clinic in clinics_data:
-                    # Check if coordinates is a non-empty string
-                    # and contains a comma
+                    # Check if coordinates is a
+                    # non-empty string and contains a comma
                     if (
                         isinstance(clinic.coordinates, str)
                         and "," in clinic.coordinates
@@ -380,15 +153,10 @@ def admin_logic(choice, action):
                             longitude = float(longitude_str)
                         except ValueError as e:
                             # Skip this clinic and continue with the next
-                            logging.warning({e})
+                            logging.warning(f"general_logic.py line: 190 {e}")
                             continue
                     else:
-                        # Log a warning for clinics without valid coordinates
-                        logging.warning(
-                            "No valid coordinates provided for clinic "
-                            + f"{clinic.clinic_name}"
-                        )
-                        # Skip this clinic and continue with the next
+                        # Skip this clinic
                         continue
 
                     clinic_info = {
@@ -399,32 +167,25 @@ def admin_logic(choice, action):
                         "longitude": longitude,
                     }
                     clinics.append(clinic_info)
-                # pass ing'clinics' to your template
+                logging.warning(clinics)
                 return render_template(
-                    "login/admin.html",
-                    clinics=clinics,
-                    action=action,
-                    choice=choice,
+                    "login/owner.html", clinics=clinics, action=action
                 )
             return render_template(
-                "login/admin.html",
-                clinics=None,
-                action=action,
-                choice=choice,
+                "login/owner.html", clinics=None, action=action
             )
 
-        elif action == 4:
+        case 4:
             vets = Vet.get_all_vets()
             return render_template(
-                "login/admin.html", choice=choice, action=action, vets=vets
+                "login/owner.html", action=action, vets=vets
             )
 
-        elif action == 5:
+        case 5:
             if request.method == "GET":
                 pet_species_list = PetSpecies.get_all_species()
                 return render_template(
-                    "login/admin.html",
-                    choice=choice,
+                    "login/owner.html",
                     action=action,
                     pet_species_list=pet_species_list,
                 )
@@ -456,27 +217,19 @@ def admin_logic(choice, action):
                         category="error",
                     )
 
-            return render_template(
-                "login/admin.html", choice=choice, action=action
-            )
+            return redirect(url_for("general_logic.owner_logic", action=1))
 
-        elif action == 6:  # needs pets from current user
+        case 6:  # needs pets from current user
             if request.method == "GET":
                 owner = Owner.get_owner(current_user.id)
                 if owner:
-                    pets = Pet.get_pets(owner.id)
+                    pets = Pet.get_pets(owner.owner_id)
                     return render_template(
-                        "login/admin.html",
-                        choice=choice,
-                        action=6,
-                        pets=pets,
+                        "login/owner.html", action=6, pets=pets
                     )
                 else:
                     return render_template(
-                        "login/admin.html",
-                        choice=choice,
-                        action=6,
-                        pets=None,
+                        "login/owner.html", action=6, pets=None
                     )
             elif request.method == "POST":
                 pet_id = request.form.get("pet_name")
@@ -491,122 +244,435 @@ def admin_logic(choice, action):
                 )
                 db.session.add(new_history)
                 db.session.commit()
-                return redirect(
-                    url_for(
-                        "general_logic.admin_logic", choice=choice, action=2
-                    )
-                )
-        else:
-            return render_template("login/admin.html", choice=1, action=None)
+                return render_template("login/owner.html", action=2)
 
-    if choice == 2:
-        owner_count = db.session.query(Owner).count()
-        vet_count = db.session.query(Vet).filter_by(active=True).count()
-        editor_count = db.session.query(Editor).filter_by(active=True).count()
-        admin_count = db.session.query(Admin).count()
-        other_users = Person.count_unique_users()
+        case _:
+            abort(404)
 
-        owners = Owner.get_all_owners()
 
-        # google charts table data here
-        owner_data = []
-        for owner in owners:
-            owner_id = owner[0].owner_id
-            name = f"{owner.Person.name} {owner.Person.lastname}"
-            pet_count = owner[2]
-            owner_data.append([owner_id, name, int(pet_count)])
+@general_logic.route(
+    "/admin/<int:choice>/<int:action>", methods=["GET", "POST"]
+)
+@login_required
+@grant_access([2])
+def admin_logic(choice, action):
+    """
+    This function handles the admin(user) dashboard.
+    It processes different actions based on the choice and action parameters.
 
-        # Google charts trend data here
+    Parameters:
+    choice (int): The choice selected by the admin user.
+    action (int): The action selected by the admin user.
 
-        persons = Person.get_all_users()
+    Returns:
+    -> render_template: A rendered HTML template
+       based on the choice and action parameters.
+    or
+    -> redirect: A redirect to the appropriate page.
+    """
+    match choice:
+        case 0:
+            # Handle search functionality here
+            if action == 0:
+                search_query = request.args.get("q")
+                if search_query:
+                    # Perform a case-insensitive search on the 'persons' table
+                    search_query = f"%{search_query.lower()}%"
+                    search_results = Person.search_users(search_query)
+                else:
+                    search_results = []
 
-        trend_data = [
-            {"created": str(person.created), "count": 1} for person in persons
-        ]
-        current_date = dt.today()
-        min_date = current_date - timedelta(days=4 * 30)
+            elif action == 1:
+                # When action is 1, display all persons
+                search_results = Person.get_all_users()
 
-        # Piechart data
-
-        data = [
-            ["Users", "User count chart"],
-            ["Owners", owner_count],
-            ["Vets", vet_count],
-            ["Editors", editor_count],
-            ["Admins", admin_count],
-            ["Regular users", other_users],
-        ]
-
-        # Admin notes
-        notes = Note.get_admin_notes(current_user.id)
-        return render_template(
-            "login/admin.html",
-            choice=choice,
-            action=action,
-            data=data,
-            owner_data=owner_data,
-            trend_data=trend_data,
-            current_date=current_date,
-            min_date=min_date,
-            notes=notes,
-        )
-
-    if choice == -1:
-        users = Owner.get_all_owners()
-
-        return render_template(
-            "login/admin.html", choice=choice, action=action, users=users
-        )
-    if choice == 3:
-        users = Owner.get_all_owners()
-
-        return render_template(
-            "login/admin.html", choice=choice, action=action, users=users
-        )
-    if choice == 4:
-        users = Vet.get_grouped_vets()
-
-        return render_template(
-            "login/admin.html", choice=choice, action=action, users=users
-        )
-    if choice == 5:
-        users = Editor.get_grouped_editors()
-
-        return render_template(
-            "login/admin.html", choice=choice, action=action, users=users
-        )
-    if choice == 6:
-        visits = Visit.get_visits_unfilterd()
-
-        return render_template(
-            "login/admin.html", choice=choice, action=action, visits=visits
-        )
-
-    if choice == 7:
-        pets = Pet.get_all_pets_extended()
-
-        return render_template("login/admin.html", choice=choice, pets=pets)
-
-    if choice == 8:
-        if request.method == "POST":
-            firstname = request.form.get("firstname")
-            lastname = request.form.get("lastname")
-            address = request.form.get("address")
-            changed = change_user_data(firstname, lastname, address)
-            if changed:
-                flash(
-                    _("მონაცემები წარმატებით შეიცვალა."), category="success"
-                )
             return render_template(
-                "login/admin.html", choice=choice, action=action
+                "login/admin.html",
+                choice=choice,
+                action=action,
+                result=search_results,
             )
 
-    if choice == 9:
-        clinics = PersonToClinic.get_all_clinic_owners()
+        case 1:
+            match action:
+                case 1:
+                    owner = Owner.get_owner(current_user.id)
+                    if owner is None:
+                        return render_template(
+                            "login/admin.html",
+                            choice=choice,
+                            action=action,
+                            pets=None,
+                        )
+                    else:
+                        pets = pets = Pet.get_pets_extended(owner.owner_id)
 
-        return render_template(
-            "login/admin.html", choice=choice, action=action, clinics=clinics
-        )
+                        if len(pets) == 0:
+                            return render_template(
+                                "login/admin.html",
+                                choice=choice,
+                                action=action,
+                                pets=None,
+                            )
+                        else:
+                            return render_template(
+                                "login/admin.html",
+                                choice=choice,
+                                action=action,
+                                pets=pets,
+                            )
+
+                case 2:
+                    owner = Owner.get_owner(current_user.id)
+                    if owner:
+                        pet_history = PetHistory.get_history_by_owner(
+                            owner.owner_id
+                        )
+                        try:
+                            visits = Visit.get_visits(current_user.id)
+                            # vet_person = aliased(Person)
+                            # owner_person = aliased(Person)
+                            # visits = (
+                            #     db.session.query(
+                            #         Visit,
+                            #         Vet,
+                            #         Owner,
+                            #         Pet,
+                            #         vet_person.name.label("vet_name"),
+                            #         vet_person.lastname.label("vet_lastname"),
+                            #         owner_person.name.label("owner_name"),
+                            #         owner_person.lastname.label("owner_lastname"),
+                            #         Pet.name.label("pet_name"),
+                            #     )
+                            #     .join(Vet, Vet.vet_id == Visit.vet_id)
+                            #     .join(Owner, Owner.owner_id == \
+                            # Visit.owner_id)
+                            #     .join(Pet, Pet.pet_id == Visit.pet_id)
+                            #     .join(vet_person, vet_person.id ==
+                            # Vet.person_id)
+                            #  .join(owner_person, owner_person.id ==
+                            # Owner.person_id)
+                            #     .filter(Owner.person_id == current_user.id)
+                            #     .all()
+                            # )
+                        except Exception as e:
+                            logging.warning(f"general_logic line: 389 -> {e}")
+                            visits = None
+
+                        if request.method == "GET":
+                            return render_template(
+                                "login/admin.html",
+                                choice=choice,
+                                action=action,
+                                pet_history=pet_history,
+                                visits=visits,
+                            )
+                        elif request.method == "POST":
+                            history_id = request.form.get("history_id")
+                            treatment = request.form.get("treatment")
+                            comment = request.form.get("comment")
+                            date = request.form.get("date")
+
+                            history = PetHistory.get_history_by_hist_id(
+                                history_id
+                            )
+                            if history:
+                                if treatment:
+                                    history.treatment = treatment
+                                if comment:
+                                    history.comment = comment
+                                if date:
+                                    history.date = date
+                            db.session.commit()
+
+                            return render_template(
+                                "login/admin.html",
+                                choice=choice,
+                                action=action,
+                                pet_history=pet_history,
+                            )
+                    else:
+                        return render_template(
+                            "login/admin.html",
+                            choice=choice,
+                            action=action,
+                            pet_history=None,
+                        )
+
+                case 3:
+                    try:
+                        clinics_data = Clinic.get_all_visible_clinics()
+                    except Exception as e:
+                        logging.warning(f"general_logic line: 436 {e}")
+                        clinics_data = None
+                    if clinics_data:
+                        clinics = []
+                        for clinic in clinics_data:
+                            # Check if coordinates is a non-empty string
+                            # and contains a comma
+                            if (
+                                isinstance(clinic.coordinates, str)
+                                and "," in clinic.coordinates
+                            ):
+                                try:
+                                    latitude_str, longitude_str = (
+                                        clinic.coordinates.split(",")
+                                    )
+                                    latitude = float(latitude_str)
+                                    longitude = float(longitude_str)
+                                except ValueError as e:
+                                    logging.warning({e})
+                                    continue
+                            else:
+                                logging.warning(
+                                    "No valid coordinates provided for clinic "
+                                    + f"{clinic.clinic_name}"
+                                )
+                                # Skip this clinic and continue with the next
+                                continue
+
+                            clinic_info = {
+                                "clinic_name": clinic.clinic_name,
+                                "description": clinic.desc,
+                                "clinic_id": clinic.clinic_id,
+                                "latitude": latitude,
+                                "longitude": longitude,
+                            }
+                            clinics.append(clinic_info)
+                        # pass ing'clinics' to your template
+                        return render_template(
+                            "login/admin.html",
+                            clinics=clinics,
+                            action=action,
+                            choice=choice,
+                        )
+                    return render_template(
+                        "login/admin.html",
+                        clinics=None,
+                        action=action,
+                        choice=choice,
+                    )
+
+                case 4:
+                    vets = Vet.get_all_vets()
+                    return render_template(
+                        "login/admin.html",
+                        choice=choice,
+                        action=action,
+                        vets=vets,
+                    )
+
+                case 5:
+                    if request.method == "GET":
+                        pet_species_list = PetSpecies.get_all_species()
+                        return render_template(
+                            "login/admin.html",
+                            choice=choice,
+                            action=action,
+                            pet_species_list=pet_species_list,
+                        )
+
+                    if request.method == "POST":
+                        pet_name = request.form.get("pet_name")
+                        pet_species = request.form.get("pet_species")
+                        pet_breed = request.form.get("pet_breed")
+                        recent_vaccination = request.form.get(
+                            "recent_vaccination"
+                        )
+                        gender = request.form.get("gender")
+                        birth_date = request.form.get("bdate")
+
+                        confirmation = register_pet(
+                            pet_name,
+                            pet_species,
+                            pet_breed,
+                            recent_vaccination,
+                            gender,
+                            birth_date,
+                        )
+                        if confirmation:
+                            flash(
+                                _("ცხოველი დარეგისტრირდა წარმატებით"),
+                                category="success",
+                            )
+                        else:
+                            flash(
+                                _("თქვენი ცხოველი ვერ დარეგისტრირდა"),
+                                category="error",
+                            )
+
+                    return render_template(
+                        "login/admin.html", choice=choice, action=action
+                    )
+
+                case 6:  # needs pets from current user
+                    if request.method == "GET":
+                        owner = Owner.get_owner(current_user.id)
+                        if owner:
+                            pets = Pet.get_pets(owner.id)
+                            return render_template(
+                                "login/admin.html",
+                                choice=choice,
+                                action=6,
+                                pets=pets,
+                            )
+                        else:
+                            return render_template(
+                                "login/admin.html",
+                                choice=choice,
+                                action=6,
+                                pets=None,
+                            )
+                    elif request.method == "POST":
+                        pet_id = request.form.get("pet_name")
+                        treatment = request.form.get("treatment")
+                        comment = request.form.get("comment")
+                        date = request.form.get("date")
+                        new_history = PetHistory(
+                            pet_id=pet_id,
+                            treatment=treatment,
+                            date=date,
+                            comment=comment,
+                        )
+                        db.session.add(new_history)
+                        db.session.commit()
+                        return redirect(
+                            url_for(
+                                "general_logic.admin_logic",
+                                choice=choice,
+                                action=2,
+                            )
+                        )
+
+                case _:
+                    return render_template(
+                        "login/admin.html", choice=1, action=None
+                    )
+
+        case 2:
+            owner_count = db.session.query(Owner).count()
+            vet_count = db.session.query(Vet).filter_by(active=True).count()
+            editor_count = (
+                db.session.query(Editor).filter_by(active=True).count()
+            )
+            admin_count = db.session.query(Admin).count()
+            other_users = Person.count_unique_users()
+
+            owners = Owner.get_all_owners()
+
+            # google charts table data here
+            owner_data = []
+            for owner in owners:
+                owner_id = owner[0].owner_id
+                name = f"{owner.Person.name} {owner.Person.lastname}"
+                pet_count = owner[2]
+                owner_data.append([owner_id, name, int(pet_count)])
+
+            # Google charts trend data here
+
+            persons = Person.get_all_users()
+
+            trend_data = [
+                {"created": str(person.created), "count": 1}
+                for person in persons
+            ]
+            current_date = dt.today()
+            min_date = current_date - timedelta(days=4 * 30)
+
+            # Piechart data
+
+            data = [
+                ["Users", "User count chart"],
+                ["Owners", owner_count],
+                ["Vets", vet_count],
+                ["Editors", editor_count],
+                ["Admins", admin_count],
+                ["Regular users", other_users],
+            ]
+
+            # Admin notes
+            notes = Note.get_admin_notes(current_user.id)
+            return render_template(
+                "login/admin.html",
+                choice=choice,
+                action=action,
+                data=data,
+                owner_data=owner_data,
+                trend_data=trend_data,
+                current_date=current_date,
+                min_date=min_date,
+                notes=notes,
+            )
+
+        case -1:
+            users = Owner.get_all_owners()
+
+            return render_template(
+                "login/admin.html", choice=choice, action=action, users=users
+            )
+
+        case 3:
+            users = Owner.get_all_owners()
+
+            return render_template(
+                "login/admin.html", choice=choice, action=action, users=users
+            )
+
+        case 4:
+            users = Vet.get_grouped_vets()
+
+            return render_template(
+                "login/admin.html", choice=choice, action=action, users=users
+            )
+
+        case 5:
+            users = Editor.get_grouped_editors()
+
+            return render_template(
+                "login/admin.html", choice=choice, action=action, users=users
+            )
+
+        case 6:
+            visits = Visit.get_visits_unfilterd()
+
+            return render_template(
+                "login/admin.html",
+                choice=choice,
+                action=action,
+                visits=visits,
+            )
+
+        case 7:
+            pets = Pet.get_all_pets_extended()
+
+            return render_template(
+                "login/admin.html", choice=choice, pets=pets
+            )
+
+        case 8:
+            if request.method == "POST":
+                firstname = request.form.get("firstname")
+                lastname = request.form.get("lastname")
+                address = request.form.get("address")
+                changed = change_user_data(firstname, lastname, address)
+                if changed:
+                    flash(
+                        _("მონაცემები წარმატებით შეიცვალა."),
+                        category="success",
+                    )
+                return render_template(
+                    "login/admin.html", choice=choice, action=action
+                )
+
+        case 9:
+            clinics = PersonToClinic.get_all_clinic_owners()
+
+            return render_template(
+                "login/admin.html",
+                choice=choice,
+                action=action,
+                clinics=clinics,
+            )
 
     return render_template("login/admin.html", choice=choice)
 
@@ -617,28 +683,33 @@ def admin_logic(choice, action):
 @login_required
 @grant_access([3])
 def vet_logic(choice, action):
-    if choice == 0:
-        # Handle search functionality here
-        search_query = request.args.get("q")
-        if search_query:
-            # Perform a case-insensitive search on the 'persons' table
-            search_query = f"%{search_query.lower()}%"
-            search_results = Person.search_users(search_query)
+    """
+    Handle the general logic for the vet dashboard.
 
-        return render_template(
-            "login/vet.html", choice=choice, action=search_results
-        )
+    Parameters:
+    choice (int): The choice selected by the user.
+    action (int): The action selected by the user.
 
-    if choice == 1:
-        if action == 1:
-            owner = Owner.get_owner(current_user.id)
-            if owner is None:
-                return render_template(
-                    "login/vet.html", choice=choice, action=action, pets=None
-                )
-            else:
-                pets = pets = Pet.get_pets_extended(owner.owner_id)
-                if len(pets) == 0:
+    Returns:
+    render_template: The rendered template for the vet dashboard.
+    """
+    match choice:
+        case 0:
+            # Handle search functionality here
+            search_query = request.args.get("q")
+            if search_query:
+                # Perform a case-insensitive search on the 'persons' table
+                search_query = f"%{search_query.lower()}%"
+                search_results = Person.search_users(search_query)
+
+            return render_template(
+                "login/vet.html", choice=choice, action=search_results
+            )
+
+        case 1:
+            if action == 1:
+                owner = Owner.get_owner(current_user.id)
+                if owner is None:
                     return render_template(
                         "login/vet.html",
                         choice=choice,
@@ -646,470 +717,396 @@ def vet_logic(choice, action):
                         pets=None,
                     )
                 else:
+                    pets = pets = Pet.get_pets_extended(owner.owner_id)
+                    if len(pets) == 0:
+                        return render_template(
+                            "login/vet.html",
+                            choice=choice,
+                            action=action,
+                            pets=None,
+                        )
+                    else:
+                        return render_template(
+                            "login/vet.html",
+                            choice=choice,
+                            action=action,
+                            pets=pets,
+                        )
+
+            elif action == 2:
+                owner = Owner.get_owner(current_user.id)
+                if owner:
+                    pet_history = PetHistory.get_history_by_owner(
+                        owner.owner_id
+                    )
+                    try:
+                        visits = Visit.get_visits(current_user.id)
+                    except Exception as e:
+                        visits = None
+                        logging.warning(e)
+
+                    if request.method == "GET":
+                        return render_template(
+                            "login/vet.html",
+                            choice=choice,
+                            action=action,
+                            pet_history=pet_history,
+                            visits=visits,
+                        )
+                    elif request.method == "POST":
+                        history_id = request.form.get("history_id")
+                        treatment = request.form.get("treatment")
+                        comment = request.form.get("comment")
+                        date = request.form.get("date")
+
+                        history = PetHistory.get_history_by_hist_id(
+                            history_id
+                        )
+                        if history:
+                            if treatment:
+                                history.treatment = treatment
+                            if comment:
+                                history.comment = comment
+                            if date:
+                                history.date = date
+                        db.session.commit()
+
+                        return render_template(
+                            "login/vet.html",
+                            choice=choice,
+                            action=action,
+                            pet_history=pet_history,
+                        )
+                else:
                     return render_template(
                         "login/vet.html",
                         choice=choice,
                         action=action,
-                        pets=pets,
+                        pet_history=None,
                     )
 
-        elif action == 2:
-            owner = Owner.get_owner(current_user.id)
-            if owner:
-                pet_history = PetHistory.get_history_by_owner(owner.owner_id)
+            elif action == 3:
                 try:
-                    visits = Visit.get_visits(current_user.id)
+                    clinics_data = Clinic.get_all_visible_clinics()
                 except Exception as e:
-                    visits = None
-                    logging.warning(e)
+                    logging.log(f"general_logic line: 921 -> {e}")
+                    clinics_data = None
+                # TODO Might want to transform this part of code into
+                # more reusable, either a function or staticmethod
+                if clinics_data:
+                    clinics = []
+                    for clinic in clinics_data:
+                        # Check if coordinates is a non-empty string
+                        # and contains a comma
+                        if (
+                            isinstance(clinic.coordinates, str)
+                            and "," in clinic.coordinates
+                        ):
+                            try:
+                                latitude_str, longitude_str = (
+                                    clinic.coordinates.split(",")
+                                )
+                                latitude = float(latitude_str)
+                                longitude = float(longitude_str)
+                            except ValueError as e:
+                                logging.log(f"general_logic line: 938 -> {e}")
+                                # Skip this clinic and continue with the next
+                                continue
+                        else:
+                            continue
 
+                        clinic_info = {
+                            "clinic_name": clinic.clinic_name,
+                            "description": clinic.desc,
+                            "clinic_id": clinic.clinic_id,
+                            "latitude": latitude,
+                            "longitude": longitude,
+                        }
+                        clinics.append(clinic_info)
+                    return render_template(
+                        "login/vet.html",
+                        clinics=clinics,
+                        action=action,
+                        choice=choice,
+                    )
+                return render_template(
+                    "login/vet.html",
+                    clinics=None,
+                    action=action,
+                    choice=choice,
+                )
+
+            elif action == 4:
+                vets = Vet.get_all_vets()
+                return render_template(
+                    "login/vet.html", choice=choice, action=action, vets=vets
+                )
+
+            elif action == 5:
                 if request.method == "GET":
+                    pet_species_list = PetSpecies.get_all_species()
                     return render_template(
                         "login/vet.html",
                         choice=choice,
                         action=action,
-                        pet_history=pet_history,
-                        visits=visits,
+                        pet_species_list=pet_species_list,
                     )
+
+                if request.method == "POST":
+                    pet_name = request.form.get("pet_name")
+                    pet_species = request.form.get("pet_species")
+                    pet_breed = request.form.get("pet_breed")
+                    recent_vaccination = request.form.get(
+                        "recent_vaccination"
+                    )
+                    gender = request.form.get("gender")
+                    birth_date = request.form.get("bdate")
+
+                    confirmation = register_pet(
+                        pet_name,
+                        pet_species,
+                        pet_breed,
+                        recent_vaccination,
+                        gender,
+                        birth_date,
+                    )
+                    if confirmation:
+                        flash(
+                            _("ცხოველი დარეგისტრირდა წარმატებით"),
+                            category="success",
+                        )
+                    else:
+                        flash(
+                            _("თქვენი ცხოველი ვერ დარეგისტრირდა"),
+                            category="error",
+                        )
+
+                return redirect(
+                    url_for(
+                        "general_logic.vet_logic", choice=choice, action=1
+                    )
+                )
+
+            elif action == 6:  # needs pets from current user
+                if request.method == "GET":
+                    owner = Owner.get_owner(current_user.id)
+                    if owner:
+                        pets = Pet.get_pets(owner.owner_id)
+                        return render_template(
+                            "login/vet.html",
+                            choice=choice,
+                            action=6,
+                            pets=pets,
+                        )
+                    else:
+                        return render_template(
+                            "login/vet.html",
+                            choice=choice,
+                            action=action,
+                            pets=None,
+                        )
                 elif request.method == "POST":
-                    history_id = request.form.get("history_id")
+                    pet_id = request.form.get("pet_name")
                     treatment = request.form.get("treatment")
                     comment = request.form.get("comment")
                     date = request.form.get("date")
-
-                    history = PetHistory.get_history_by_hist_id(history_id)
-                    if history:
-                        if treatment:
-                            history.treatment = treatment
-                        if comment:
-                            history.comment = comment
-                        if date:
-                            history.date = date
+                    new_history = PetHistory(
+                        pet_id=pet_id,
+                        treatment=treatment,
+                        date=date,
+                        comment=comment,
+                    )
+                    db.session.add(new_history)
                     db.session.commit()
-
-                    return render_template(
-                        "login/vet.html",
-                        choice=choice,
-                        action=action,
-                        pet_history=pet_history,
+                    return redirect(
+                        url_for(
+                            "general_logic.vet_logic", choice=choice, action=2
+                        )
                     )
             else:
                 return render_template(
-                    "login/vet.html",
-                    choice=choice,
-                    action=action,
-                    pet_history=None,
+                    "login/vet.html", choice=1, action=None
                 )
 
-        elif action == 3:
-            try:
-                clinics_data = Clinic.get_all_visible_clinics()
-            except Exception as e:
-                logging.log(f"general_logic line: 921 -> {e}")
-                clinics_data = None
-            # TODO Might want to transform this part of code into
-            # more reusable, either a function or staticmethod
-            if clinics_data:
-                clinics = []
-                for clinic in clinics_data:
-                    # Check if coordinates is a non-empty string
-                    # and contains a comma
-                    if (
-                        isinstance(clinic.coordinates, str)
-                        and "," in clinic.coordinates
-                    ):
-                        try:
-                            latitude_str, longitude_str = (
-                                clinic.coordinates.split(",")
+        case 3:  # Requests
+            sent_requests = Requests.get_sent_requests()
+            recieved_requests = Requests.get_sent_requests()
+
+            sent_connections = get_clinic_by_request(sent_requests)
+            received_connections = get_clinic_by_request(recieved_requests)
+
+            return render_template(
+                "login/vet.html",
+                sentRequests=sent_connections,
+                recievedRequest=received_connections,
+                action=action,
+                choice=choice,
+            )
+
+        case 4:  # My visits
+            if action == 0:
+                if request.method == "POST":
+                    clinic = request.form.get("clinic")
+                    person = request.form.get("vet")
+                    vet = Vet.get_vet(current_user.id)
+                    if vet is None:
+                        flash(
+                            _(
+                                "ვეტერინარი არ არის დარეგისტრირებული\
+                                ვეტერინარულ ბაზაში\n\
+                                გთხოვთ მიმართოს ადმინისტრაციას"
                             )
-                            latitude = float(latitude_str)
-                            longitude = float(longitude_str)
-                        except ValueError as e:
-                            logging.log(f"general_logic line: 938 -> {e}")
-                            # Skip this clinic and continue with the next
-                            continue
-                    else:
-                        continue
-
-                    clinic_info = {
-                        "clinic_name": clinic.clinic_name,
-                        "description": clinic.desc,
-                        "clinic_id": clinic.clinic_id,
-                        "latitude": latitude,
-                        "longitude": longitude,
-                    }
-                    clinics.append(clinic_info)
-                return render_template(
-                    "login/vet.html",
-                    clinics=clinics,
-                    action=action,
-                    choice=choice,
-                )
-            return render_template(
-                "login/vet.html", clinics=None, action=action, choice=choice
-            )
-
-        elif action == 4:
-            vets = Vet.get_all_vets()
-            return render_template(
-                "login/vet.html", choice=choice, action=action, vets=vets
-            )
-
-        elif action == 5:
-            if request.method == "GET":
-                pet_species_list = PetSpecies.get_all_species()
-                return render_template(
-                    "login/vet.html",
-                    choice=choice,
-                    action=action,
-                    pet_species_list=pet_species_list,
-                )
-
-            if request.method == "POST":
-                pet_name = request.form.get("pet_name")
-                pet_species = request.form.get("pet_species")
-                pet_breed = request.form.get("pet_breed")
-                recent_vaccination = request.form.get("recent_vaccination")
-                gender = request.form.get("gender")
-                birth_date = request.form.get("bdate")
-
-                confirmation = register_pet(
-                    pet_name,
-                    pet_species,
-                    pet_breed,
-                    recent_vaccination,
-                    gender,
-                    birth_date,
-                )
-                if confirmation:
-                    flash(
-                        _("ცხოველი დარეგისტრირდა წარმატებით"),
-                        category="success",
-                    )
-                else:
-                    flash(
-                        _("თქვენი ცხოველი ვერ დარეგისტრირდა"),
-                        category="error",
-                    )
-
-            return redirect(
-                url_for("general_logic.vet_logic", choice=choice, action=1)
-            )
-
-        elif action == 6:  # needs pets from current user
-            if request.method == "GET":
-                owner = Owner.get_owner(current_user.id)
-                if owner:
-                    pets = Pet.get_pets(owner.owner_id)
-                    return render_template(
-                        "login/vet.html", choice=choice, action=6, pets=pets
-                    )
-                else:
-                    return render_template(
-                        "login/vet.html",
-                        choice=choice,
-                        action=action,
-                        pets=None,
-                    )
-            elif request.method == "POST":
-                pet_id = request.form.get("pet_name")
-                treatment = request.form.get("treatment")
-                comment = request.form.get("comment")
-                date = request.form.get("date")
-                new_history = PetHistory(
-                    pet_id=pet_id,
-                    treatment=treatment,
-                    date=date,
-                    comment=comment,
-                )
-                db.session.add(new_history)
-                db.session.commit()
-                return redirect(
-                    url_for(
-                        "general_logic.vet_logic", choice=choice, action=2
-                    )
-                )
-        else:
-            return render_template("login/vet.html", choice=1, action=None)
-
-    if choice == 3:  # Requests
-        sent_requests = Requests.get_sent_requests()
-        recieved_requests = Requests.get_sent_requests()
-
-        sent_connections = get_clinic_by_request(sent_requests)
-        received_connections = get_clinic_by_request(recieved_requests)
-
-        return render_template(
-            "login/vet.html",
-            sentRequests=sent_connections,
-            recievedRequest=received_connections,
-            action=action,
-            choice=choice,
-        )
-
-    if choice == 4:  # My visits
-        if action == 0:
-            if request.method == "POST":
-                clinic = request.form.get("clinic")
-                person = request.form.get("vet")
-                vet = Vet.get_vet(current_user.id)
-                if vet is None:
-                    flash(
-                        _(
-                            "ვეტერინარი არ არის დარეგისტრირებული\
-                            ვეტერინარულ ბაზაში\n\
-                            გთხოვთ მიმართოს ადმინისტრაციას"
                         )
-                    )
 
-                owner_id = request.form.get("ownerId")
-                pet_id = request.form.get("petId")
-                if owner_id is None:
-                    flash(_("გთხოვთ მიუთითოთ შინაური ცხოველის პატრონი."))
-                if pet_id is None:
-                    flash(_("გთხოვთ მიუთითოთ შინაური ცხოველი."))
-                diagnosis = request.form.get("diagnosis")
-                treatment = request.form.get("treatment")
-                date = request.form.get("date")
-                if not date:
-                    date = dt.today()
-                comment = request.form.get("comment")
+                    owner_id = request.form.get("ownerId")
+                    pet_id = request.form.get("petId")
+                    if owner_id is None:
+                        flash(_("გთხოვთ მიუთითოთ შინაური ცხოველის პატრონი."))
+                    if pet_id is None:
+                        flash(_("გთხოვთ მიუთითოთ შინაური ცხოველი."))
+                    diagnosis = request.form.get("diagnosis")
+                    treatment = request.form.get("treatment")
+                    date = request.form.get("date")
+                    if not date:
+                        date = dt.today()
+                    comment = request.form.get("comment")
 
-                try:
-                    edit_mode = request.form.get("edit_mode")
-                    if edit_mode:
-                        visit_id = request.form.get("visit_id")
-                        visit = Visit.get_visit(visit_id)
-                        if visit:
-                            visit.clinic_id = clinic
-                            visit.vet_id = vet.vet_id
-                            visit.owner_id = owner_id
-                            try:
-                                visit.pet_id = pet_id
-                            except Exception as e:
-                                logging.log(
-                                    f"general logic line: 1114 -> {e}"
+                    try:
+                        edit_mode = request.form.get("edit_mode")
+                        if edit_mode:
+                            visit_id = request.form.get("visit_id")
+                            visit = Visit.get_visit(visit_id)
+                            if visit:
+                                visit.clinic_id = clinic
+                                visit.vet_id = vet.vet_id
+                                visit.owner_id = owner_id
+                                try:
+                                    visit.pet_id = pet_id
+                                except Exception as e:
+                                    logging.log(
+                                        f"general logic line: 1114 -> {e}"
+                                    )
+                                    flash(
+                                        _(
+                                            "გთხოვთ მიუთითოთ შინაური ცხოველის "
+                                            + "მფლობელი და შინაური ცხოველი."
+                                        ),
+                                        category="error",
+                                    )
+                                visit.diagnosis = diagnosis
+                                visit.treatment = treatment
+                                visit.date = date
+                                visit.comment = comment
+                                db.session.commit()
+                                return redirect(
+                                    url_for(
+                                        "general_logic.vet_logic",
+                                        action=1,
+                                        choice=4,
+                                    )
                                 )
-                                flash(
-                                    _(
-                                        "გთხოვთ მიუთითოთ შინაური ცხოველის "
-                                        + "მფლობელი და შინაური ცხოველი."
-                                    ),
-                                    category="error",
-                                )
-                            visit.diagnosis = diagnosis
-                            visit.treatment = treatment
-                            visit.date = date
-                            visit.comment = comment
-                            db.session.commit()
-                            return redirect(
-                                url_for(
-                                    "general_logic.vet_logic",
-                                    action=1,
-                                    choice=4,
-                                )
-                            )
 
-                except Exception as e:
-                    logging.warning(
-                        f"Editmode is False or nonexistant -> {e}"
-                    )
+                    except Exception as e:
+                        logging.warning(
+                            f"Editmode is False or nonexistant -> {e}"
+                        )
 
-                try:
-                    visit = Visit(
-                        clinic_id=clinic,
-                        vet_id=vet.vet_id,
-                        owner_id=owner_id,
-                        pet_id=pet_id,
-                        diagnosis=diagnosis,
-                        treatment=treatment,
-                        comment=comment,
-                        date=date,
-                    )
-                    db.session.add(visit)
-                    db.session.commit()
-                except Exception as e:
-                    logging.warning(f"general_logic line: 1145 -> {e}")
+                    try:
+                        visit = Visit(
+                            clinic_id=clinic,
+                            vet_id=vet.vet_id,
+                            owner_id=owner_id,
+                            pet_id=pet_id,
+                            diagnosis=diagnosis,
+                            treatment=treatment,
+                            comment=comment,
+                            date=date,
+                        )
+                        db.session.add(visit)
+                        db.session.commit()
+                    except Exception as e:
+                        logging.warning(f"general_logic line: 1145 -> {e}")
 
-            elif request.method == "GET":
-                try:
-                    # Querying PersonToClinic and getting clinics to work with
-                    # Js catches data and responsively gives out options
-                    my_clinics = (
-                        db.session.query(PersonToClinic.clinic_id)
-                        .filter_by(person_id=current_user.id)
-                        .all()
-                    )
-
-                    clinic_ids = [
-                        associacion.clinic_id for associacion in my_clinics
-                    ]
-
-                    staff_members_by_c = {}
-                    for clinic_id in clinic_ids:
-                        # Query for staff members at this clinic
-                        staff_members_query = (
-                            db.session.query(Person)
-                            .join(
-                                PersonToClinic,
-                                PersonToClinic.person_id == Person.id,
-                            )
-                            .filter(
-                                PersonToClinic.clinic_id == clinic_id,
-                                PersonToClinic.person_id != current_user.id,
-                            )
+                elif request.method == "GET":
+                    try:
+                        # Querying PersonToClinic and getting clinics to work w
+                        # Js catches data and responsively gives out options
+                        my_clinics = (
+                            db.session.query(PersonToClinic.clinic_id)
+                            .filter_by(person_id=current_user.id)
                             .all()
                         )
 
-                        # Add the staff members to the dictionary
-                        staff_member_dicts = [
-                            {
-                                "id": member.id,
-                                "name": member.name,
-                                "lastname": member.lastname,
-                                "phone": member.phone,
-                            }
-                            for member in staff_members_query
+                        clinic_ids = [
+                            associacion.clinic_id
+                            for associacion in my_clinics
                         ]
 
-                        # Add the list of dictionaries to the
-                        # staff_members_by_clinic dictionary
-                        staff_members_by_c[clinic_id] = staff_member_dicts
-
-                    s_m_by_clinic = json.dumps(staff_members_by_c)
-                    clinics = (
-                        db.session.query(Clinic)
-                        .filter(Clinic.clinic_id.in_(clinic_ids))
-                        .all()
-                    )
-
-                    try:
-                        visit_id = request.args.get("visit_id")
-                        if visit_id:
-                            visit = Visit.get_visit(visit_id)
-                            if visit:
-                                return render_template(
-                                    "login/vet.html",
-                                    action=action,
-                                    choice=choice,
-                                    edit_mode=True,
-                                    visit=visit,
-                                    clinics=clinics,
-                                    staff_members_by_clinic=s_m_by_clinic,
+                        staff_members_by_c = {}
+                        for clinic_id in clinic_ids:
+                            # Query for staff members at this clinic
+                            staff_members_query = (
+                                db.session.query(Person)
+                                .join(
+                                    PersonToClinic,
+                                    PersonToClinic.person_id == Person.id,
                                 )
-                    except Exception as e:
-                        logging.warning(e)
-
-                    return render_template(
-                        "login/vet.html",
-                        action=action,
-                        choice=choice,
-                        edit_mode=False,
-                        clinics=clinics,
-                        visit=None,
-                        staff_members_by_clinic=s_m_by_clinic,
-                    )
-
-                except Exception as e:
-                    logging.warning(e)
-                return render_template(
-                    "login/vet.html",
-                    action=action,
-                    choice=choice,
-                    clinics=None,
-                    staff_members=None,
-                )
-
-        elif action == 1:
-            vet = Vet.get_vet(current_user.id)
-            if vet:
-                visits = Visit.get_visits_by_vet(vet.vet_id)
-
-                return render_template(
-                    "login/vet.html",
-                    choice=choice,
-                    action=action,
-                    visits=visits,
-                )
-            else:
-                return render_template(
-                    "login/vet.html",
-                    choice=choice,
-                    action=action,
-                    visits=None,
-                )
-
-    if choice == 5:  # Add my clinic
-        if action == 0:
-            vet_data = Vet.get_vet(current_user.id)
-            if request.method == "POST":
-                clinic_name = request.form.get("clinic-name")
-                desc = request.form.get("comment")
-                coordinates = request.form.get("coordinates")
-                try:
-                    edit_mode = request.form.get("edit_mode")
-                    clinic_id = request.form.get("clinic_id")
-                    clinic = Clinic.get_clinic(clinic_id)
-                    if edit_mode:
-                        if clinic:
-                            clinic.clinic_name = clinic_name
-                            clinic.desc = desc
-                            clinic.coordinates = coordinates
-                            db.session.commit()
-                            return redirect(
-                                url_for(
-                                    "general_logic.vet_logic",
-                                    choice=choice,
-                                    action=1,
+                                .filter(
+                                    PersonToClinic.clinic_id == clinic_id,
+                                    PersonToClinic.person_id
+                                    != current_user.id,
                                 )
+                                .all()
                             )
-                except Exception as e:
-                    logging.warning(
-                        f"Editmode is False or nonexistant -> {e}"
-                    )
-                try:
-                    clinic = Clinic(
-                        clinic_name=clinic_name,
-                        desc=desc,
-                        coordinates=coordinates,
-                    )
-                    db.session.add(clinic)
-                    db.session.commit()
-                    clinic_id = clinic.clinic_id
-                    # adding mixture
-                    pc_associacion = PersonToClinic(
-                        person_id=current_user.id,
-                        clinic_id=clinic_id,
-                        is_clinic_owner=True,
-                    )
-                    db.session.add(pc_associacion)
-                    db.session.commit()
-                    flash(_("კლინიკა წარმატებით დაემატა"), category="success")
-                    return redirect(
-                        url_for(
-                            "general_logic.vet_logic",
-                            choice=choice,
-                            action=1,
-                        )
-                    )
-                except Exception as e:
-                    flash(f"Unexpected Logic error: {e}")
 
-            elif request.method == "GET":
-                if vet_data:
-                    try:
-                        clinic_id = request.args.get("clinic_id")
-                        if clinic_id:
-                            clinic = Clinic.get_clinic(clinic_id)
-                            if clinic:
-                                return render_template(
-                                    "login/vet.html",
-                                    action=action,
-                                    choice=choice,
-                                    edit_mode=True,
-                                    clinic=clinic,
-                                    vet_data=vet_data,
-                                )
+                            # Add the staff members to the dictionary
+                            staff_member_dicts = [
+                                {
+                                    "id": member.id,
+                                    "name": member.name,
+                                    "lastname": member.lastname,
+                                    "phone": member.phone,
+                                }
+                                for member in staff_members_query
+                            ]
+
+                            # Add the list of dictionaries to the
+                            # staff_members_by_clinic dictionary
+                            staff_members_by_c[clinic_id] = staff_member_dicts
+
+                        s_m_by_clinic = json.dumps(staff_members_by_c)
+                        clinics = (
+                            db.session.query(Clinic)
+                            .filter(Clinic.clinic_id.in_(clinic_ids))
+                            .all()
+                        )
+
+                        try:
+                            visit_id = request.args.get("visit_id")
+                            if visit_id:
+                                visit = Visit.get_visit(visit_id)
+                                if visit:
+                                    return render_template(
+                                        "login/vet.html",
+                                        action=action,
+                                        choice=choice,
+                                        edit_mode=True,
+                                        visit=visit,
+                                        clinics=clinics,
+                                        staff_members_by_clinic=s_m_by_clinic,
+                                    )
+                        except Exception as e:
+                            logging.warning(e)
+
+                        return render_template(
+                            "login/vet.html",
+                            action=action,
+                            choice=choice,
+                            edit_mode=False,
+                            clinics=clinics,
+                            visit=None,
+                            staff_members_by_clinic=s_m_by_clinic,
+                        )
 
                     except Exception as e:
                         logging.warning(e)
@@ -1117,51 +1114,277 @@ def vet_logic(choice, action):
                         "login/vet.html",
                         action=action,
                         choice=choice,
-                        edit_mode=False,
-                        clinic=None,
-                        vet_data=vet_data,
+                        clinics=None,
+                        staff_members=None,
+                    )
+
+            elif action == 1:
+                vet = Vet.get_vet(current_user.id)
+                if vet:
+                    visits = Visit.get_visits_by_vet(vet.vet_id)
+
+                    return render_template(
+                        "login/vet.html",
+                        choice=choice,
+                        action=action,
+                        visits=visits,
                     )
                 else:
                     return render_template(
                         "login/vet.html",
-                        action=action,
                         choice=choice,
-                        edit_mode=False,
-                        clinic=None,
-                        vet_data=None,
+                        action=action,
+                        visits=None,
                     )
 
-        elif action == 1:
-            if request.method == "GET":
-                try:
-                    # Query all associacions for the current user
-                    person_clinic = PersonToClinic.get_clinic_with_person(
-                        current_user.id
+        case 5:  # Add my clinic
+            if action == 0:
+                vet_data = Vet.get_vet(current_user.id)
+                if request.method == "POST":
+                    clinic_name = request.form.get("clinic-name")
+                    desc = request.form.get("comment")
+                    coordinates = request.form.get("coordinates")
+                    try:
+                        edit_mode = request.form.get("edit_mode")
+                        clinic_id = request.form.get("clinic_id")
+                        clinic = Clinic.get_clinic(clinic_id)
+                        if edit_mode:
+                            if clinic:
+                                clinic.clinic_name = clinic_name
+                                clinic.desc = desc
+                                clinic.coordinates = coordinates
+                                db.session.commit()
+                                return redirect(
+                                    url_for(
+                                        "general_logic.vet_logic",
+                                        choice=choice,
+                                        action=1,
+                                    )
+                                )
+                    except Exception as e:
+                        logging.warning(
+                            f"Editmode is False or nonexistant -> {e}"
+                        )
+                    try:
+                        clinic = Clinic(
+                            clinic_name=clinic_name,
+                            desc=desc,
+                            coordinates=coordinates,
+                        )
+                        db.session.add(clinic)
+                        db.session.commit()
+                        clinic_id = clinic.clinic_id
+                        # adding mixture
+                        pc_associacion = PersonToClinic(
+                            person_id=current_user.id,
+                            clinic_id=clinic_id,
+                            is_clinic_owner=True,
+                        )
+                        db.session.add(pc_associacion)
+                        db.session.commit()
+                        flash(
+                            _("კლინიკა წარმატებით დაემატა"),
+                            category="success",
+                        )
+                        return redirect(
+                            url_for(
+                                "general_logic.vet_logic",
+                                choice=choice,
+                                action=1,
+                            )
+                        )
+                    except Exception as e:
+                        flash(f"Unexpected Logic error: {e}")
+
+                elif request.method == "GET":
+                    if vet_data:
+                        try:
+                            clinic_id = request.args.get("clinic_id")
+                            if clinic_id:
+                                clinic = Clinic.get_clinic(clinic_id)
+                                if clinic:
+                                    return render_template(
+                                        "login/vet.html",
+                                        action=action,
+                                        choice=choice,
+                                        edit_mode=True,
+                                        clinic=clinic,
+                                        vet_data=vet_data,
+                                    )
+
+                        except Exception as e:
+                            logging.warning(e)
+                        return render_template(
+                            "login/vet.html",
+                            action=action,
+                            choice=choice,
+                            edit_mode=False,
+                            clinic=None,
+                            vet_data=vet_data,
+                        )
+                    else:
+                        return render_template(
+                            "login/vet.html",
+                            action=action,
+                            choice=choice,
+                            edit_mode=False,
+                            clinic=None,
+                            vet_data=None,
+                        )
+
+            elif action == 1:
+                if request.method == "GET":
+                    try:
+                        # Query all associacions for the current user
+                        person_clinic = PersonToClinic.get_clinic_with_person(
+                            current_user.id
+                        )
+
+                        # Initialize data structures
+                        clinics_info = []
+                        for associacion in person_clinic:
+                            # Query the clinic
+                            clinic = Clinic.get_clinic(associacion.clinic_id)
+
+                            if clinic:
+                                # Query the owner of the clinic
+                                owner = PersonToClinic.get_clinic_owner(
+                                    clinic.clinic_id
+                                )
+                                # Query other personnel of the clinic
+                                personnel = (
+                                    db.session.query(Person)
+                                    .join(PersonToClinic)
+                                    .filter(
+                                        PersonToClinic.clinic_id
+                                        == clinic.clinic_id,
+                                        PersonToClinic.is_clinic_owner
+                                        is False,
+                                        PersonToClinic.person_id
+                                        != current_user.id,
+                                    )
+                                    .all()
+                                )
+
+                                if (
+                                    isinstance(clinic.coordinates, str)
+                                    and "," in clinic.coordinates
+                                ):
+                                    try:
+                                        latitude_str, longitude_str = (
+                                            clinic.coordinates.split(",")
+                                        )
+                                        latitude = float(latitude_str)
+                                        longitude = float(longitude_str)
+                                    except ValueError as e:
+                                        logging.warning(
+                                            "Invalid coordinates format "
+                                            + "for clinic "
+                                            + f"{clinic.clinic_name}: "
+                                            + f"{clinic.coordinates} -> {e}"
+                                        )
+                                        logging.warning(e)
+                                        continue
+                                else:
+                                    logging.warning(
+                                        "No valid coordinates: "
+                                        + f"{clinic.clinic_name}"
+                                    )
+                                    continue
+
+                                # Structure data
+                                clinic_data = {
+                                    "clinic": clinic,
+                                    "latitude": latitude,
+                                    "longitude": longitude,
+                                    "owner": owner,
+                                    "personnel": personnel,
+                                }
+
+                                clinics_info.append(clinic_data)
+                        vet_data = (
+                            db.session.query(Vet)
+                            .filter_by(person_id=current_user.id)
+                            .one_or_none()
+                        )
+                        if vet_data:
+                            return render_template(
+                                "login/vet.html",
+                                choice=choice,
+                                action=action,
+                                clinics_info=clinics_info,
+                                vet_data=vet_data,
+                            )
+                        else:
+                            return render_template(
+                                "login/vet.html",
+                                choice=choice,
+                                action=action,
+                                clinics_info=clinics_info,
+                                vet_data=None,
+                            )
+
+                    except Exception as e:
+                        logging.warning(e)
+
+            elif action == 2:
+                if request.method == "POST":
+                    clinic_id = request.form.get("clinic_id")
+                    visibility = request.form.get("visibility")
+
+                    if clinic_visibility_toggler(clinic_id, visibility):
+                        return redirect(
+                            url_for(
+                                "general_logic.vet_logic",
+                                choice=choice,
+                                action=1,
+                            )
+                        )
+                    else:
+                        flash(_("პრობლემა... კლინიკის დამალვა ვერ მოხერხდა"))
+                        return redirect(
+                            url_for(
+                                "general_logic.vet_logic",
+                                choice=choice,
+                                action=1,
+                            )
+                        )
+                else:
+                    return redirect(
+                        url_for(
+                            "general_logic.vet_logic", choice=choice, action=1
+                        )
                     )
 
-                    # Initialize data structures
+            elif action == 3:
+                if request.method == "GET":
+                    search_query = request.args.get("q", "").strip()
                     clinics_info = []
-                    for associacion in person_clinic:
+                    unique_associacions = db.session.query(
+                        PersonToClinic
+                    ).filter_by(is_clinic_owner=True)
+
+                    # If there is a search query, filter the results
+                    if search_query:
+                        unique_associacions = unique_associacions.join(
+                            Clinic
+                        ).filter(
+                            Clinic.clinic_name.like(f"%{search_query}%"),
+                            Clinic.visibility is True,
+                        )
+
+                    unique_associacions = unique_associacions.all()
+
+                    for associacion in unique_associacions:
                         # Query the clinic
-                        clinic = Clinic.get_clinic(associacion.clinic_id)
+                        clinic = Clinic.get_visible_clinic(
+                            associacion.clinic_id
+                        )
 
                         if clinic:
                             # Query the owner of the clinic
                             owner = PersonToClinic.get_clinic_owner(
                                 clinic.clinic_id
-                            )
-                            # Query other personnel of the clinic
-                            personnel = (
-                                db.session.query(Person)
-                                .join(PersonToClinic)
-                                .filter(
-                                    PersonToClinic.clinic_id
-                                    == clinic.clinic_id,
-                                    PersonToClinic.is_clinic_owner is False,
-                                    PersonToClinic.person_id
-                                    != current_user.id,
-                                )
-                                .all()
                             )
 
                             if (
@@ -1176,17 +1399,16 @@ def vet_logic(choice, action):
                                     longitude = float(longitude_str)
                                 except ValueError as e:
                                     logging.warning(
-                                        "Invalid coordinates format "
-                                        + "for clinic "
-                                        + f"{clinic.clinic_name}: "
-                                        + f"{clinic.coordinates} -> {e}"
+                                        "Invalid coordinatesc "
+                                        + f"{clinic.clinic_name}:"
+                                        + f" {clinic.coordinates}"
                                     )
                                     logging.warning(e)
                                     continue
                             else:
                                 logging.warning(
-                                    "No valid coordinates: "
-                                    + f"{clinic.clinic_name}"
+                                    "No valid coordinates  provided"
+                                    + f" for clinic {clinic.clinic_name}"
                                 )
                                 # Skip this clinic and continue with the next
                                 continue
@@ -1197,243 +1419,128 @@ def vet_logic(choice, action):
                                 "latitude": latitude,
                                 "longitude": longitude,
                                 "owner": owner,
-                                "personnel": personnel,
                             }
 
                             clinics_info.append(clinic_data)
-                    vet_data = (
-                        db.session.query(Vet)
-                        .filter_by(person_id=current_user.id)
-                        .one_or_none()
-                    )
-                    if vet_data:
-                        return render_template(
-                            "login/vet.html",
-                            choice=choice,
-                            action=action,
-                            clinics_info=clinics_info,
-                            vet_data=vet_data,
-                        )
-                    else:
-                        return render_template(
-                            "login/vet.html",
-                            choice=choice,
-                            action=action,
-                            clinics_info=clinics_info,
-                            vet_data=None,
-                        )
 
-                except Exception as e:
-                    logging.warning(e)
-
-        elif action == 2:
-            if request.method == "POST":
-                clinic_id = request.form.get("clinic_id")
-                visibility = request.form.get("visibility")
-
-                if clinic_visibility_toggler(clinic_id, visibility):
-                    return redirect(
-                        url_for(
-                            "general_logic.vet_logic",
-                            choice=choice,
-                            action=1,
-                        )
-                    )
-                else:
-                    flash(_("პრობლემა... კლინიკის დამალვა ვერ მოხერხდა"))
-                    return redirect(
-                        url_for(
-                            "general_logic.vet_logic",
-                            choice=choice,
-                            action=1,
-                        )
-                    )
-            else:
-                return redirect(
-                    url_for(
-                        "general_logic.vet_logic", choice=choice, action=1
-                    )
-                )
-
-        elif action == 3:
-            if request.method == "GET":
-                search_query = request.args.get("q", "").strip()
-                clinics_info = []
-                unique_associacions = db.session.query(
-                    PersonToClinic
-                ).filter_by(is_clinic_owner=True)
-
-                # If there is a search query, filter the results
-                if search_query:
-                    unique_associacions = unique_associacions.join(
-                        Clinic
-                    ).filter(
-                        Clinic.clinic_name.like(f"%{search_query}%"),
-                        Clinic.visibility is True,
+                    return render_template(
+                        "login/vet.html",
+                        choice=choice,
+                        action=action,
+                        clinics_info=clinics_info,
                     )
 
-                unique_associacions = unique_associacions.all()
+                # sending the request for clinic approval
+                elif request.method == "POST":
+                    clinic_id = request.form.get("clinic_id")
+                    if clinic_id is not None:
+                        clinic_id = int(clinic_id)
 
-                for associacion in unique_associacions:
-                    # Query the clinic
-                    clinic = Clinic.get_visible_clinic(associacion.clinic_id)
-
-                    if clinic:
-                        # Query the owner of the clinic
-                        owner = PersonToClinic.get_clinic_owner(
-                            clinic.clinic_id
+                        associacion = (
+                            db.session.query(PersonToClinic)
+                            .join(
+                                Person, Person.id == PersonToClinic.person_id
+                            )
+                            .filter(
+                                PersonToClinic.clinic_id == clinic_id,
+                                PersonToClinic.is_clinic_owner is True,
+                            )
+                            .one_or_none()
                         )
 
-                        if (
-                            isinstance(clinic.coordinates, str)
-                            and "," in clinic.coordinates
-                        ):
+                        if associacion:
+                            send_request = Requests(
+                                requester_id=current_user.id,
+                                reciever_id=associacion.person_id,
+                                request_type="clinic",
+                                request_sent=dt.today(),
+                                ref=clinic_id,
+                            )
+                            db.session.add(send_request)
                             try:
-                                latitude_str, longitude_str = (
-                                    clinic.coordinates.split(",")
+                                db.session.commit()
+                                return redirect(
+                                    url_for(
+                                        "general_logic.vet_logic",
+                                        choice=3,
+                                        action=0,
+                                    )
                                 )
-                                latitude = float(latitude_str)
-                                longitude = float(longitude_str)
-                            except ValueError as e:
-                                logging.warning(
-                                    "Invalid coordinatesc "
-                                    + f"{clinic.clinic_name}:"
-                                    + f" {clinic.coordinates}"
-                                )
+                            except Exception as e:
+                                db.session.rollback()
                                 logging.warning(e)
-                                # Skip this clinic and continue with the next
-                                continue
                         else:
-                            logging.warning(
-                                "No valid coordinates "
-                                + f" provided for clinic {clinic.clinic_name}"
+                            logging.warning("No associacion was found")
+                            return render_template(
+                                "login/vet.html", choice=8, action=0
                             )
-                            # Skip this clinic and continue with the next
-                            continue
-
-                        # Structure data
-                        clinic_data = {
-                            "clinic": clinic,
-                            "latitude": latitude,
-                            "longitude": longitude,
-                            "owner": owner,
-                        }
-
-                        clinics_info.append(clinic_data)
-
-                return render_template(
-                    "login/vet.html",
-                    choice=choice,
-                    action=action,
-                    clinics_info=clinics_info,
-                )
-
-            # sending the request for clinic approval
-            elif request.method == "POST":
-                clinic_id = request.form.get("clinic_id")
-                if clinic_id is not None:
-                    clinic_id = int(clinic_id)
-
-                    associacion = (
-                        db.session.query(PersonToClinic)
-                        .join(Person, Person.id == PersonToClinic.person_id)
-                        .filter(
-                            PersonToClinic.clinic_id == clinic_id,
-                            PersonToClinic.is_clinic_owner is True,
-                        )
-                        .one_or_none()
-                    )
-
-                    if associacion:
-                        send_request = Requests(
-                            requester_id=current_user.id,
-                            reciever_id=associacion.person_id,
-                            request_type="clinic",
-                            request_sent=dt.today(),
-                            ref=clinic_id,
-                        )
-                        db.session.add(send_request)
-                        try:
-                            db.session.commit()
-                            return redirect(
-                                url_for(
-                                    "general_logic.vet_logic",
-                                    choice=3,
-                                    action=0,
-                                )
-                            )
-                        except Exception as e:
-                            db.session.rollback()
-                            logging.warning(e)
                     else:
-                        logging.warning("No associacion was found")
+                        logging.warning("clinic_id is None or invalid")
                         return render_template(
                             "login/vet.html", choice=8, action=0
                         )
-                else:
-                    logging.warning("clinic_id is None or invalid")
-                    return render_template(
-                        "login/vet.html", choice=8, action=0
-                    )
 
-        elif action == 4:
+            elif action == 4:
+                if request.method == "POST":
+                    clinic_id = request.form.get("clinic_id")
+                    clinic_owner = None
+
+                    if clinic_id:
+                        staffs = (
+                            db.session.query(PersonToClinic, Person)
+                            .join(
+                                Person, Person.id == PersonToClinic.person_id
+                            )
+                            .filter(PersonToClinic.clinic_id == clinic_id)
+                            .all()
+                        )
+                        if staffs:
+                            # Find the clinic owner among the staff
+                            for staff, person in staffs:
+                                if (
+                                    staff.is_clinic_owner
+                                    and person.id == current_user.id
+                                ):
+                                    logging.warning(
+                                        f"Found clinic owner: {person.id}"
+                                    )
+                                    clinic_owner = person.id
+                                    break
+
+                        return render_template(
+                            "login/vet.html",
+                            choice=choice,
+                            action=action,
+                            staffs=staffs,
+                            clinic_owner=clinic_owner,
+                        )
+                    else:
+                        logging.warning(f"clinic_id is {clinic_id}")
+                        return render_template(
+                            "login/vet.html",
+                            choice=choice,
+                            action=action,
+                            staffs=None,
+                            clinic_owner=None,
+                        )
+
+            else:
+                abort(404)
+
+        case 8:  # My Data
             if request.method == "POST":
-                clinic_id = request.form.get("clinic_id")
-                clinic_owner = None
-
-                if clinic_id:
-                    staffs = (
-                        db.session.query(PersonToClinic, Person)
-                        .join(Person, Person.id == PersonToClinic.person_id)
-                        .filter(PersonToClinic.clinic_id == clinic_id)
-                        .all()
+                firstname = request.form.get("firstname")
+                lastname = request.form.get("lastname")
+                address = request.form.get("address")
+                changed = change_user_data(firstname, lastname, address)
+                if changed:
+                    flash(
+                        _("მონაცემები წარმატებით შეიცვალა."),
+                        category="success",
                     )
-                    if staffs:
-                        # Find the clinic owner among the staff
-                        for staff, person in staffs:
-                            if (
-                                staff.is_clinic_owner
-                                and person.id == current_user.id
-                            ):
-                                logging.warning(
-                                    f"Found clinic owner: {person.id}"
-                                )
-                                clinic_owner = person.id
-                                break
-
-                    return render_template(
-                        "login/vet.html",
-                        choice=choice,
-                        action=action,
-                        staffs=staffs,
-                        clinic_owner=clinic_owner,
-                    )
-                else:
-                    logging.warning(f"clinic_id is {clinic_id}")
-                    return render_template(
-                        "login/vet.html",
-                        choice=choice,
-                        action=action,
-                        staffs=None,
-                        clinic_owner=None,
-                    )
-
-        else:
-            abort(404)
-
-    if choice == 8:  # My Data
-        if request.method == "POST":
-            firstname = request.form.get("firstname")
-            lastname = request.form.get("lastname")
-            address = request.form.get("address")
-            changed = change_user_data(firstname, lastname, address)
-            if changed:
-                flash(
-                    _("მონაცემები წარმატებით შეიცვალა."), category="success"
+                return render_template(
+                    "login/vet.html", choice=choice, action=action
                 )
-            return render_template(
-                "login/vet.html", choice=choice, action=action
-            )
 
     return render_template("login/vet.html", choice=choice)
 
@@ -1549,6 +1656,16 @@ def edit_pet(action, pet_id):
 @login_required
 @grant_access([2])
 def edit_user(person_id, choice):
+    """
+    Edits user data based on the given person_id and user_type.
+
+    Parameters:
+    person_id (int): The id of the user to be edited.
+    choice (int): The choice variable for appropriate action.
+
+    Returns:
+    redirect: Redirects to the appropriate panel with the updated user data.
+    """
     if request.method == "POST":
         name = request.form.get("name")
         lastname = request.form.get("lastname")
@@ -1703,6 +1820,17 @@ def edit_note(note_id):
 @login_required
 @grant_access([3])
 def give_clinic_ownership(clinic_id, person_id):
+    """
+    This function is used to give ownership of a clinic to another vet.
+
+    Parameters:
+    clinic_id (int): The id of the clinic to be transferred.
+    person_id (int): The id of the vet who will be given ownership.
+
+    Returns:
+    Redirects to the vet panel after the ownership transfer.
+    """
+
     if person_id == current_user.id:
         flash(
             _("თქვენ უკვე ხართ მოცემული კლინიკის მფლობელი"), category="error"
@@ -1750,70 +1878,22 @@ def give_clinic_ownership(clinic_id, person_id):
 def clinic_request_control(action, request_id):
     request_data = Requests.get_request_by_id(request_id)
     if request_data:
-        if action == 0:  # delete
-            db.session.delete(request_data)
-            db.session.commit()
-            return redirect(
-                url_for("general_logic.vet_logic", choice=3, action=action)
-            )
-        elif action == 1:  # approve
-            legit = (
-                db.session.query(Vet)
-                .filter_by(
-                    person_id=request_data.reciever_id, has_license=True
-                )
-                .one_or_none()
-            )
-            if legit:
-                clinic_data = Clinic.get_clinic(request_data.ref)
-                if clinic_data:
-                    check_associacion = (
-                        db.session.query(PersonToClinic)
-                        .filter_by(
-                            person_id=request_data.requester_id,
-                            clinic_id=clinic_data.clinic_id,
-                        )
-                        .one_or_none()
-                    )
-
-                    if check_associacion is None:
-                        new_associacion = PersonToClinic(
-                            person_id=request_data.requester_id,
-                            clinic_id=clinic_data.clinic_id,
-                            is_clinic_owner=False,
-                        )
-                        request_data.approved = True
-                        db.session.add(new_associacion)
-                        db.session.commit()
-                    else:
-                        flash(
-                            _(
-                                "თქვენ უკვე გაწევრიანებული ხართ"
-                                + " მოცემულ კლინიკაში"
-                            ),
-                            category="error",
-                        )
-                        db.session.delete(request_data)
-                        db.session.commit()
+        match action:
+            case 0:  # delete
+                db.session.delete(request_data)
+                db.session.commit()
                 return redirect(
-                    url_for(
-                        "general_logic.vet_logic", choice=3, action=action
+                    url_for("general_logic.vet_logic", choice=3, action=action)
+                )
+            case 1:  # approve
+                legit = (
+                    db.session.query(Vet)
+                    .filter_by(
+                        person_id=request_data.reciever_id, has_license=True
                     )
+                    .one_or_none()
                 )
-            else:
-                abort(404)
-        elif action == 2:  # deny
-            legit = (
-                db.session.query(Vet)
-                .filter_by(
-                    person_id=request_data.reciever_id, has_license=True
-                )
-                .one_or_none()
-            )
-            if legit:
-                try:
-                    request_data.approved = None
-                    db.session.commit()
+                if legit:
                     clinic_data = Clinic.get_clinic(request_data.ref)
                     if clinic_data:
                         check_associacion = (
@@ -1824,21 +1904,70 @@ def clinic_request_control(action, request_id):
                             )
                             .one_or_none()
                         )
-                        if check_associacion:
-                            db.session.delete(check_associacion)
-                            db.session.commit()
-                except Exception as e:
-                    logging.warning(e)
 
-                return redirect(
-                    url_for(
-                        "general_logic.vet_logic", choice=3, action=action
+                        if check_associacion is None:
+                            new_associacion = PersonToClinic(
+                                person_id=request_data.requester_id,
+                                clinic_id=clinic_data.clinic_id,
+                                is_clinic_owner=False,
+                            )
+                            request_data.approved = True
+                            db.session.add(new_associacion)
+                            db.session.commit()
+                        else:
+                            flash(
+                                _(
+                                    "თქვენ უკვე გაწევრიანებული ხართ"
+                                    + " მოცემულ კლინიკაში"
+                                ),
+                                category="error",
+                            )
+                            db.session.delete(request_data)
+                            db.session.commit()
+                    return redirect(
+                        url_for(
+                            "general_logic.vet_logic", choice=3, action=action
+                        )
                     )
+                else:
+                    abort(404)
+            case 2:  # deny
+                legit = (
+                    db.session.query(Vet)
+                    .filter_by(
+                        person_id=request_data.reciever_id, has_license=True
+                    )
+                    .one_or_none()
                 )
-            else:
+                if legit:
+                    try:
+                        request_data.approved = None
+                        db.session.commit()
+                        clinic_data = Clinic.get_clinic(request_data.ref)
+                        if clinic_data:
+                            check_associacion = (
+                                db.session.query(PersonToClinic)
+                                .filter_by(
+                                    person_id=request_data.requester_id,
+                                    clinic_id=clinic_data.clinic_id,
+                                )
+                                .one_or_none()
+                            )
+                            if check_associacion:
+                                db.session.delete(check_associacion)
+                                db.session.commit()
+                    except Exception as e:
+                        logging.warning(e)
+
+                    return redirect(
+                        url_for(
+                            "general_logic.vet_logic", choice=3, action=action
+                        )
+                    )
+                else:
+                    abort(404)
+            case _:
                 abort(404)
-        else:
-            abort(404)
     else:
         return redirect(
             url_for("general_logic.vet_logic", choice=3, action=action)
@@ -1976,6 +2105,21 @@ def get_clinic_by_request(requests):
 
 
 def clinic_visibility_toggler(clinic_id, visibility):
+    """
+    Toggles the visibility of a clinic based on the given visibility status.
+
+    Parameters:
+    clinic_id (int): The id of the clinic to be toggled.
+    visibility (str): The visibility status to be set.
+                      It can be either "True" or "False".
+
+    Returns:
+    bool: True if the visibility status is successfully
+          toggled, False otherwise.
+
+    Raises:
+    Exception: If any error occurs during the database operation.
+    """
     try:
         # Retrieve clinic by clinic_id
         clinic = Clinic.get_clinic(clinic_id)
