@@ -8,3 +8,4 @@ web-files/website/__pycache__
 web-files/migrations
 database
 postgres-data
+web-files/website/logs/errors.log

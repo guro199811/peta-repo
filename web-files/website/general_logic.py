@@ -245,7 +245,7 @@ def owner_logic(action):
                 )
                 db.session.add(new_history)
                 db.session.commit()
-                return render_template("login/owner.html", action=2)
+                return redirect(url_for("general_logic.owner_logic", action=2))
 
         case _:
             abort(404)
@@ -486,7 +486,7 @@ def admin_logic(choice, action):
                     if request.method == "GET":
                         owner = Owner.get_owner(current_user.id)
                         if owner:
-                            pets = Pet.get_pets(owner.id)
+                            pets = Pet.get_pets(owner.owner_id)
                             return render_template(
                                 "login/admin.html",
                                 choice=choice,
@@ -907,8 +907,8 @@ def vet_logic(choice, action):
                 )
 
         case 3:  # Requests
-            sent_requests = Requests.get_sent_requests()
-            recieved_requests = Requests.get_sent_requests()
+            sent_requests = Requests.get_sent_requests(current_user.id)
+            recieved_requests = Requests.get_received_requests(current_user.id)
 
             sent_connections = get_clinic_by_request(sent_requests)
             received_connections = get_clinic_by_request(recieved_requests)

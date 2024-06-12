@@ -50,7 +50,7 @@ try:
         session.execute(sequence_command)
         session.execute(attach_sequence_command)
 except Exception as e:
-    logger.exception(f'{e.__class__.__name__} -> {e}')
+    logger.debug(e.__class__name__)
 
 
 # Entering premade data is required for project to function correctly
@@ -159,6 +159,6 @@ try:
 
 
 except Exception as e:
-    print(f"An exception at premade.py line: 158 -> {e}")
+    print(e.__class__name__)
 finally:
     session.close()
