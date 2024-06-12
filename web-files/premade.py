@@ -1,25 +1,27 @@
 # Premade.py is Essential for Setting up database so it has values nessessery
 # to Function correctly
+import os
 
 # from website import db
 from website.models import Type, PetSpecies, PetBreed, PhonePrefixes
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import Session
-import logging
+from .website import logs
 
-import os
+logger = logs.logger_config.logger
 
 
 try:
     database_url = os.environ.get("DATABASE_URL1")
 except Exception as e:
-    logging.warning(f"Error Occured in premade.py Line: 16 -> {e}")
+    logger.exception(f'{e.__class__.__name__} -> {e}')
     database_url = None
 
 
 if database_url is None:
     engine = create_engine(
-        "postgresql://postgres:postgres@postgres:5432/petsite")
+        "postgresql://postgres:postgres@postgres:5432/petsite"
+    )
 else:
     engine = create_engine(database_url)
 
@@ -38,17 +40,17 @@ try:
     )
 
     # Attaching the sequence to the breed_id column
-    attach_sequence_command = \
-        text('ALTER TABLE pet_breeds ' +
-             'ALTER COLUMN breed_id SET DEFAULT ' +
-             "nextval('pet_breeds_breed_id_seq'::regclass);"
-             )
+    attach_sequence_command = text(
+        "ALTER TABLE pet_breeds "
+        + "ALTER COLUMN breed_id SET DEFAULT "
+        + "nextval('pet_breeds_breed_id_seq'::regclass);"
+    )
 
     if session.query(PetBreed).first():
         session.execute(sequence_command)
         session.execute(attach_sequence_command)
 except Exception as e:
-    logging.warning(f"{e}")
+    logger.exception(f'{e.__class__.__name__} -> {e}')
 
 
 # Entering premade data is required for project to function correctly
@@ -74,7 +76,8 @@ try:
     if not session.query(PhonePrefixes).first():
         for prefix_ in prefix_fixture:
             p = PhonePrefixes(
-                prefix=prefix_[0], nums=prefix_[1], icon=prefix_[2])
+                prefix=prefix_[0], nums=prefix_[1], icon=prefix_[2]
+            )
             session.add(p)
         session.commit()
 

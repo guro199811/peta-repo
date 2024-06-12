@@ -29,9 +29,10 @@ from .models import (
     Note,
     Requests,
 )
-import logging
 import json
+from .logs import logger_config
 
+logger = logger_config.logger
 
 general_logic = Blueprint("general_logic", __name__)
 # User Logics section
@@ -94,7 +95,7 @@ def owner_logic(action):
                     visits = Visit.get_visits(current_user.id)
                 except Exception as e:
                     visits = None
-                    logging.warning(f"general_logic line: 67 -> {e}")
+                    logger.exception(f'{e.__class__.__name__} -> {e}')
 
                 if request.method == "GET":
                     return render_template(
@@ -134,7 +135,7 @@ def owner_logic(action):
             try:
                 clinics_data = Clinic.get_all_visible_clinics()
             except Exception as e:
-                logging.warning(f"Error Occured in general_logic.py {e}")
+                logger.exception(f'{e.__class__.__name__} -> {e}')
                 clinics_data = None
             if clinics_data:
                 clinics = []
@@ -153,7 +154,7 @@ def owner_logic(action):
                             longitude = float(longitude_str)
                         except ValueError as e:
                             # Skip this clinic and continue with the next
-                            logging.warning(f"general_logic.py line: 190 {e}")
+                            logger.exception(f'{e.__class__.__name__} -> {e}')
                             continue
                     else:
                         # Skip this clinic
@@ -167,7 +168,7 @@ def owner_logic(action):
                         "longitude": longitude,
                     }
                     clinics.append(clinic_info)
-                logging.warning(clinics)
+                # logger.debug(clinics)
                 return render_template(
                     "login/owner.html", clinics=clinics, action=action
                 )
@@ -330,33 +331,8 @@ def admin_logic(choice, action):
                         )
                         try:
                             visits = Visit.get_visits(current_user.id)
-                            # vet_person = aliased(Person)
-                            # owner_person = aliased(Person)
-                            # visits = (
-                            #     db.session.query(
-                            #         Visit,
-                            #         Vet,
-                            #         Owner,
-                            #         Pet,
-                            #         vet_person.name.label("vet_name"),
-                            #         vet_person.lastname.label("vet_lastname"),
-                            #         owner_person.name.label("owner_name"),
-                            #         owner_person.lastname.label("owner_lastname"),
-                            #         Pet.name.label("pet_name"),
-                            #     )
-                            #     .join(Vet, Vet.vet_id == Visit.vet_id)
-                            #     .join(Owner, Owner.owner_id == \
-                            # Visit.owner_id)
-                            #     .join(Pet, Pet.pet_id == Visit.pet_id)
-                            #     .join(vet_person, vet_person.id ==
-                            # Vet.person_id)
-                            #  .join(owner_person, owner_person.id ==
-                            # Owner.person_id)
-                            #     .filter(Owner.person_id == current_user.id)
-                            #     .all()
-                            # )
                         except Exception as e:
-                            logging.warning(f"general_logic line: 389 -> {e}")
+                            logger.exception(f'{e.__class__.__name__} -> {e}')
                             visits = None
 
                         if request.method == "GET":
@@ -403,7 +379,7 @@ def admin_logic(choice, action):
                     try:
                         clinics_data = Clinic.get_all_visible_clinics()
                     except Exception as e:
-                        logging.warning(f"general_logic line: 436 {e}")
+                        logger.exception(f'{e.__class__.__name__} -> {e}')
                         clinics_data = None
                     if clinics_data:
                         clinics = []
@@ -421,10 +397,11 @@ def admin_logic(choice, action):
                                     latitude = float(latitude_str)
                                     longitude = float(longitude_str)
                                 except ValueError as e:
-                                    logging.warning({e})
+                                    logger.exception(
+                                        f'{e.__class__.__name__} -> {e}')
                                     continue
                             else:
-                                logging.warning(
+                                logger.warning(
                                     "No valid coordinates provided for clinic "
                                     + f"{clinic.clinic_name}"
                                 )
@@ -743,7 +720,7 @@ def vet_logic(choice, action):
                         visits = Visit.get_visits(current_user.id)
                     except Exception as e:
                         visits = None
-                        logging.warning(e)
+                        logger.exception(f'{e.__class__.__name__} -> {e}')
 
                     if request.method == "GET":
                         return render_template(
@@ -789,7 +766,7 @@ def vet_logic(choice, action):
                 try:
                     clinics_data = Clinic.get_all_visible_clinics()
                 except Exception as e:
-                    logging.log(f"general_logic line: 921 -> {e}")
+                    logger.exception(f'{e.__class__.__name__} -> {e}')
                     clinics_data = None
                 # TODO Might want to transform this part of code into
                 # more reusable, either a function or staticmethod
@@ -809,7 +786,8 @@ def vet_logic(choice, action):
                                 latitude = float(latitude_str)
                                 longitude = float(longitude_str)
                             except ValueError as e:
-                                logging.log(f"general_logic line: 938 -> {e}")
+                                logger.exception(
+                                    f'{e.__class__.__name__} -> {e}')
                                 # Skip this clinic and continue with the next
                                 continue
                         else:
@@ -983,9 +961,8 @@ def vet_logic(choice, action):
                                 try:
                                     visit.pet_id = pet_id
                                 except Exception as e:
-                                    logging.log(
-                                        f"general logic line: 1114 -> {e}"
-                                    )
+                                    logger.exception(
+                                        f'{e.__class__.__name__} -> {e}')
                                     flash(
                                         _(
                                             "გთხოვთ მიუთითოთ შინაური ცხოველის "
@@ -1007,7 +984,7 @@ def vet_logic(choice, action):
                                 )
 
                     except Exception as e:
-                        logging.warning(
+                        logger.warning(
                             f"Editmode is False or nonexistant -> {e}"
                         )
 
@@ -1025,7 +1002,7 @@ def vet_logic(choice, action):
                         db.session.add(visit)
                         db.session.commit()
                     except Exception as e:
-                        logging.warning(f"general_logic line: 1145 -> {e}")
+                        logger.exception(f'{e.__class__.__name__} -> {e}')
 
                 elif request.method == "GET":
                     try:
@@ -1096,7 +1073,7 @@ def vet_logic(choice, action):
                                         staff_members_by_clinic=s_m_by_clinic,
                                     )
                         except Exception as e:
-                            logging.warning(e)
+                            logger.exception(f'{e.__class__.__name__} -> {e}')
 
                         return render_template(
                             "login/vet.html",
@@ -1109,7 +1086,7 @@ def vet_logic(choice, action):
                         )
 
                     except Exception as e:
-                        logging.warning(e)
+                        logger.exception(f'{e.__class__.__name__} -> {e}')
                     return render_template(
                         "login/vet.html",
                         action=action,
@@ -1162,7 +1139,7 @@ def vet_logic(choice, action):
                                     )
                                 )
                     except Exception as e:
-                        logging.warning(
+                        logger.warning(
                             f"Editmode is False or nonexistant -> {e}"
                         )
                     try:
@@ -1213,7 +1190,7 @@ def vet_logic(choice, action):
                                     )
 
                         except Exception as e:
-                            logging.warning(e)
+                            logger.exception(f'{e.__class__.__name__} -> {e}')
                         return render_template(
                             "login/vet.html",
                             action=action,
@@ -1277,16 +1254,15 @@ def vet_logic(choice, action):
                                         latitude = float(latitude_str)
                                         longitude = float(longitude_str)
                                     except ValueError as e:
-                                        logging.warning(
+                                        logger.warning(
                                             "Invalid coordinates format "
                                             + "for clinic "
                                             + f"{clinic.clinic_name}: "
                                             + f"{clinic.coordinates} -> {e}"
                                         )
-                                        logging.warning(e)
                                         continue
                                 else:
-                                    logging.warning(
+                                    logger.warning(
                                         "No valid coordinates: "
                                         + f"{clinic.clinic_name}"
                                     )
@@ -1325,7 +1301,7 @@ def vet_logic(choice, action):
                             )
 
                     except Exception as e:
-                        logging.warning(e)
+                        logger.exception(f'{e.__class__.__name__} -> {e}')
 
             elif action == 2:
                 if request.method == "POST":
@@ -1398,15 +1374,14 @@ def vet_logic(choice, action):
                                     latitude = float(latitude_str)
                                     longitude = float(longitude_str)
                                 except ValueError as e:
-                                    logging.warning(
-                                        "Invalid coordinatesc "
+                                    logger.warning(
+                                        "Invalid coordinates "
                                         + f"{clinic.clinic_name}:"
-                                        + f" {clinic.coordinates}"
+                                        + f" {clinic.coordinates} -> {e}"
                                     )
-                                    logging.warning(e)
                                     continue
                             else:
-                                logging.warning(
+                                logger.warning(
                                     "No valid coordinates  provided"
                                     + f" for clinic {clinic.clinic_name}"
                                 )
@@ -1468,14 +1443,15 @@ def vet_logic(choice, action):
                                 )
                             except Exception as e:
                                 db.session.rollback()
-                                logging.warning(e)
+                                logger.exception(
+                                    f'{e.__class__.__name__} -> {e}')
                         else:
-                            logging.warning("No associacion was found")
+                            logger.debug("No associacion was found")
                             return render_template(
                                 "login/vet.html", choice=8, action=0
                             )
                     else:
-                        logging.warning("clinic_id is None or invalid")
+                        logger.debug("clinic_id is None or invalid")
                         return render_template(
                             "login/vet.html", choice=8, action=0
                         )
@@ -1501,9 +1477,6 @@ def vet_logic(choice, action):
                                     staff.is_clinic_owner
                                     and person.id == current_user.id
                                 ):
-                                    logging.warning(
-                                        f"Found clinic owner: {person.id}"
-                                    )
                                     clinic_owner = person.id
                                     break
 
@@ -1515,7 +1488,6 @@ def vet_logic(choice, action):
                             clinic_owner=clinic_owner,
                         )
                     else:
-                        logging.warning(f"clinic_id is {clinic_id}")
                         return render_template(
                             "login/vet.html",
                             choice=choice,
@@ -1807,7 +1779,7 @@ def edit_note(note_id):
     try:
         db.session.commit()
     except Exception as e:
-        logging.warning(f"general logic line: 2004 -> {e}")
+        logger.exception(f'{e.__class__.__name__} -> {e}')
         db.session.rollback()
         flash(_("შეცდომა."), category="error")
     return redirect(url_for("general_logic.admin_logic", choice=2, action=0))
@@ -1957,7 +1929,7 @@ def clinic_request_control(action, request_id):
                                 db.session.delete(check_associacion)
                                 db.session.commit()
                     except Exception as e:
-                        logging.warning(e)
+                        logger.exception(f'{e.__class__.__name__} -> {e}')
 
                     return redirect(
                         url_for(
@@ -2000,7 +1972,7 @@ def remove_pet(action, pet_id):
                     db.session.commit()
 
             except Exception as e:
-                flash(e)
+                logger.exception(f'{e.__class__.__name__} -> {e}')
         if current_user.user_type == 1:
             return redirect(url_for("general_logic.owner_logic", action=1))
         elif current_user.user_type == 2:
@@ -2128,19 +2100,17 @@ def clinic_visibility_toggler(clinic_id, visibility):
             # Toggle the visibility
             if visibility == "False":
                 clinic.visibility = True
-                logging.warning("false")
             if visibility == "True":
-                logging.warning("true")
                 clinic.visibility = False
 
             db.session.commit()
 
             return True
         else:
-            logging.warning(f"No clinic found with id {clinic_id}")
+            logger.debug(f"No clinic found with id {clinic_id}")
             return False
     except Exception as e:
-        logging.warning(
-            "Failed to toggle visibility" + f" for clinic {clinic_id}: {e}"
+        logger.exception(
+            f"Failed to toggle visibility for clinic {clinic_id}: {e}"
         )
         return False

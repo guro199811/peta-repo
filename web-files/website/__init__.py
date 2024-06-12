@@ -4,9 +4,11 @@ from flask_login import LoginManager
 from flask_mail import Mail
 from flask_babel import Babel
 import os
-# import secrets
-import logging
 
+# import customized logger
+from .logs import logger_config
+
+logger = logger_config.logger
 
 db = SQLAlchemy()
 mail = Mail()
@@ -14,7 +16,9 @@ mail = Mail()
 try:
     database_url = os.environ.get("DATABASE_URL1")
 except Exception as e:
-    logging.log(e)
+    logger.exception(
+        "Database url not found in environment variables " +
+        f"{e.__class__.__name__}")
     database_url = None
 
 
@@ -25,8 +29,9 @@ babel = Babel()
 def get_locale():
     # You can uncomment return for language testing purposes
     # return 'en'
-    return request.args.get("lang") or \
-        request.accept_languages.best_match(["ka", "en"])
+    return request.args.get("lang") or request.accept_languages.best_match(
+        ["ka", "en"]
+    )
 
 
 def create_app(migrate):
@@ -35,7 +40,7 @@ def create_app(migrate):
     # Uncomment this for local developement,
     # for it sets security key with fixed value
 
-    secret_key = 'shdiwkmalwdandwakjsndkwjanksjdnwkanskdwkajn'
+    secret_key = "shdiwkmalwdandwakjsndkwjanksjdnwkanskdwkajn"
     # And Comment this so it does not set random security key ##
     # secret_key = os.environ.get("SECRET_KEY") or secrets.token_hex(16)
     app.config["SECRET_KEY"] = secret_key

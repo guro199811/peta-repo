@@ -6,7 +6,6 @@ from . import db
 from .models import (
     Owner, Person, Pet
 )
-# import logging
 
 ajax_logic = Blueprint("ajax_logic", __name__)
 

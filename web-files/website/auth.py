@@ -25,10 +25,12 @@ from flask import (
 )
 
 from .views import grant_access
-import logging
-
 from flask import current_app as app
 from flask_babel import _
+from .logs import logger_config
+
+logger = logger_config.logger
+
 
 auth = Blueprint("auth", __name__)
 
@@ -211,7 +213,7 @@ def register():
         else:
             # Forming Phone Data
             phone = prefix + phone
-            logging.warning(phone)
+            logger.info(phone)
 
             # Adding data to database
             new_user = Person(
@@ -445,7 +447,7 @@ def clinic_removal_email(clinic_id):
             message.body = m.format(clinic.clinic_name, remove_url)
     except Exception as e:
         flash(_("შეცდომა"))
-        logging.warning(e)
+        logger.exception(f'{e.__class__.__name__} -> {e}')
 
     r_mail.send(message)
     return render_template("auths/verification.html", verification_type=1)
@@ -484,7 +486,7 @@ def confirm_clinic_removal(clinic_id, token, expiration=3600):
                                 db.session.delete(visit)
                                 db.session.commit()
                         except Exception as e:
-                            logging.warning(e)
+                            logger.exception(f'{e.__class__.__name__} -> {e}')
                         try:
                             all_bridges = (
                                 db.session.query(PersonToClinic)
@@ -495,7 +497,7 @@ def confirm_clinic_removal(clinic_id, token, expiration=3600):
                                 db.session.delete(a)
                                 db.session.commit()
                         except Exception as e:
-                            logging.warning(e)
+                            logger.exception(f'{e.__class__.__name__} -> {e}')
 
                         db.session.delete(bridge)
                         db.session.delete(clinic)
@@ -512,7 +514,7 @@ def confirm_clinic_removal(clinic_id, token, expiration=3600):
                 url_for("general_logic.vet_logic", choice=5, action=1)
             )
         except Exception as e:
-            logging.warning(e)
+            logger.exception(f'{e.__class__.__name__} -> {e}')
         return email
     except SignatureExpired:
         return render_template(
