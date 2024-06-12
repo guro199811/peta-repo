@@ -6,7 +6,7 @@ import os
 from website.models import Type, PetSpecies, PetBreed, PhonePrefixes
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import Session
-from .website import logs
+from website import logs
 
 logger = logs.logger_config.logger
 

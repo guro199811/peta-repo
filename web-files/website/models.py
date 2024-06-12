@@ -26,7 +26,7 @@ class Person(db.Model, UserMixin):
     created = db.Column(db.Date)
     user_type = db.Column(db.Integer, db.ForeignKey("types.user_type"))
     person_type = db.relationship(Type)
-    password = db.Column(db.String(150), nullable=False)
+    password = db.Column(db.String(), nullable=False)
     confirmed = db.Column(db.Boolean, nullable=False, default=False)
     confirmed_on = db.Column(db.Date, nullable=True)
     login_attempts = db.Column(db.Integer, default=0)

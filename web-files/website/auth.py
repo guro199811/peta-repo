@@ -224,7 +224,9 @@ def register():
                 address=address,
                 created=date,
                 user_type=choice,
-                password=generate_password_hash(password1, method="sha256"),
+                password=generate_password_hash(
+                    password1,
+                    method='scrypt'),
             )
             db.session.add(new_user)
             db.session.commit()
@@ -307,7 +309,7 @@ def forgot_password():
             send_password_reset_email(user)
             success_message = _(
                 "პაროლის შეცვლის იმეილი "
-                + "გაიგზავნა თქვენს {user.mail} ელ.ფოსტაზე"
+                + f"გაიგზავნა თქვენს {user.mail} ელ.ფოსტაზე"
             )
             flash(success_message.format(user.mail), category="success")
         else:
@@ -327,7 +329,7 @@ def send_password_reset_email(user):
         recipients=[user.mail],
     )
     m = (
-        "პაროლის შეცვლის ლინკი: {reset_url}\n ლინკი "
+        f"პაროლის შეცვლის ლინკი: {reset_url}\n ლინკი "
         + "გაუქმდება გამოგზავნიდან 1 საათში.\n\n\nPeta-Team"
     )
     message.body = m.format(reset_url)
@@ -357,7 +359,7 @@ def reset_password(token):
             if user:
                 # Update the user's password
                 user.password = generate_password_hash(
-                    new_password, method="sha256"
+                    new_password, method='scrypt'
                 )
                 db.session.commit()
                 return redirect(url_for("auth.login"))
