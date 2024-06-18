@@ -11,7 +11,7 @@ services:
       - 5000:5000
     volumes:
       - ./backend:/app
-      - ./backend/postgres-data:/var/lib/postgresql/data
+      - ./backend/postgres-database:/var/lib/postgresql/data
     environment:
       - SECRET_KEY
     depends_on:
@@ -55,3 +55,8 @@ services:
       PGADMIN_DEFAULT_PASSWORD: admin
     depends_on:
       - postgreSQL
+    logging:
+      driver: "none"
+    volumes:
+      - ./backend/pgadmin/pgadmin-entrypoint.sh:/pgadmin-entrypoint.sh
+    entrypoint: /pgadmin-entrypoint.sh
