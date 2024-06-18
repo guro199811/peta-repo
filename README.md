@@ -1,7 +1,7 @@
 ## Complete Refactoring of the petsite web-application
 
 #### Plans for implementation(TODO) of backend:
-1) Create Flask-api using flask-smorest (backend) for seamless documentation and open-api integrations.
+1) Create Flask-api using flask-smorest (backend) for seamless documentation and open-api integrations. (Done)
 
 2) Implement JWT authentication and proper password hashing.
 
