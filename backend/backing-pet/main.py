@@ -2,6 +2,10 @@ import os
 
 from flask import Flask
 from flask_smorest import Api
+from flask_jwt_extended import JWTManager
+
+# Importing a module executes its code
+import premade  # noqa: F401
 
 from db import db
 import models  # noqa: F401
@@ -31,6 +35,8 @@ def create_app(db_url=None):
     db.init_app(app)
     #  -------------Flask_smorest (open-api)----------------
     api = Api(app)
+    #  --------------Flask_jwt_extended----------------------
+    jwt = JWTManager(app)  # noqa: F841
     #  ---------------Managing Context----------------------
     with app.app_context():
         db.create_all()
