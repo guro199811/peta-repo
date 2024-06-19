@@ -1,6 +1,6 @@
 from models.person import Person  # noqa: F401
 from models.vet import Vet  # noqa: F401
-from models.owner import Owner  # noqa: F401
+from models.owner import PetOwner  # noqa: F401
 from models.editor import Editor  # noqa: F401
 from models.admin import Admin  # noqa: F401
 
@@ -12,7 +12,7 @@ from models.pet_species import PetSpecies  # noqa: F401
 from models.pet_history import PetHistory  # noqa: F401
 
 from models.clinic import Clinic  # noqa: F401
-from models.person_to_clinic import PersonToClinic  # noqa: F401
+from models.person_to_clinic import PersonClinic  # noqa: F401
 from models.visit import Visit  # noqa: F401
 
 from models.phone_prefixes import PhonePrefixes  # noqa: F401

@@ -6,4 +6,4 @@ class Post(db.Model):
     post_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     posted = db.Column(db.DateTime)
     editor_id = db.Column(db.Integer, db.ForeignKey("editors.editor_id"))
-    editor = db.relationship("Editor")
+    editor = db.relationship("Editor", lazy="dynamic")
