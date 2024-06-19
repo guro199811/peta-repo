@@ -4,13 +4,11 @@ from flask import Flask
 from flask_smorest import Api
 from flask_jwt_extended import JWTManager
 
-# Importing a module executes its code
-import premade  # noqa: F401
-
 from db import db
 import models  # noqa: F401
 
 from routes.home.home_page import blp as HomeBlueprint
+from routes.auth.register import blp as RegisterBlueprint
 
 
 def create_app(db_url=None):
@@ -42,5 +40,6 @@ def create_app(db_url=None):
         db.create_all()
     #  -----------------Blueprints--------------------------
     api.register_blueprint(HomeBlueprint)
+    api.register_blueprint(RegisterBlueprint)
     #  -----------------------------------------------------
     return app

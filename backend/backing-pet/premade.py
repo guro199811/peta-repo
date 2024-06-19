@@ -151,7 +151,10 @@ try:
 
 
 except Exception:
-    # Intentionally Silencing The Exception...
-    pass
+    # Intentional Exception silencing
+    logger.info(
+        "Premade did not run... \
+either data exists or Exception occured."
+    )
 finally:
     session.close()
