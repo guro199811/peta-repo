@@ -13,7 +13,7 @@ class Person(db.Model):
     address = db.Column(db.String(100))
     created = db.Column(db.Date)
     user_type = db.Column(db.Integer, db.ForeignKey("user_types.user_type"))
-    person_type = db.relationship("UserType", lazy="dynamic")
+    person_type = db.relationship("UserType")
     password = db.Column(db.String(), nullable=False)
     confirmed = db.Column(db.Boolean, nullable=False, default=False)
     confirmed_on = db.Column(db.Date, nullable=True)

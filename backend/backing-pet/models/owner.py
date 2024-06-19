@@ -6,4 +6,4 @@ class PetOwner(db.Model):
 
     owner_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     person_id = db.Column(db.Integer, db.ForeignKey("persons.id"))
-    person = db.relationship("Person", lazy="dynamic")
+    person = db.relationship("Person")

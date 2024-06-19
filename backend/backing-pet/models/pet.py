@@ -8,9 +8,9 @@ class Pet(db.Model):
     pet_species = db.Column(
         db.Integer, db.ForeignKey("pet_species.species_id")
     )
-    species = db.relationship("PetSpecies", lazy="dynamic")
+    species = db.relationship("PetSpecies")
     pet_breed = db.Column(db.Integer, db.ForeignKey("pet_breeds.breed_id"))
-    breed = db.relationship("PetBreed", lazy="dynamic")
+    breed = db.relationship("PetBreed")
     gender = db.Column(db.String(2))
     medical_condition = db.Column(db.String(50))
     current_treatment = db.Column(db.String(50))
@@ -18,4 +18,4 @@ class Pet(db.Model):
     name = db.Column(db.String(50))
     birth_date = db.Column(db.Date)
     owner_id = db.Column(db.Integer, db.ForeignKey("owners.owner_id"))
-    owner = db.relationship("PetOwner", lazy="dynamic")
+    owner = db.relationship("PetOwner")

@@ -6,6 +6,6 @@ class Note(db.Model):
 
     note_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     person_id = db.Column(db.Integer, db.ForeignKey("persons.id"))
-    person = db.relationship("Person", lazy="dynamic")
+    person = db.relationship("Person")
     created = db.Column(db.Date)
     content = db.Column(db.String(500))
