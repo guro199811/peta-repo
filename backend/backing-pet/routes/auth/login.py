@@ -17,9 +17,9 @@ from logs import logger_config
 logger = logger_config.logger
 
 blp = Blueprint(
-    "Auth_login",
+    "Login",
     __name__,
-    description="Operations on user login",
+    description="User login operations",
     url_prefix="/auth",
 )
 

@@ -10,6 +10,7 @@ import models  # noqa
 from routes.home.home_page import blp as HomeBlueprint
 from routes.auth.register import blp as RegisterBlueprint
 from routes.auth.login import blp as LoginBlueprint
+from routes.owner.owner import blp as OwnerBlueprint
 
 
 def create_app(db_url=None):
@@ -36,7 +37,7 @@ def create_app(db_url=None):
     api = Api(app, spec_kwargs={
         "components": {
             "securitySchemes": {
-                "jwtAuth": {
+                "JWT Auth": {
                     "type": "http",
                     "scheme": "bearer",
                     "bearerFormat": "JWT"
@@ -46,6 +47,11 @@ def create_app(db_url=None):
     })
     #  --------------Flask_jwt_extended---------------------
     jwt = JWTManager(app)  # noqa
+
+    @jwt.user_lookup_loader
+    def user_lookup_callback(_jwt_header, jwt_data):
+        return models.Person.query.filter_by(
+            id=jwt_data["sub"]).one_or_none()
     #  ---------------Managing Context----------------------
     with app.app_context():
         db.create_all()
@@ -53,5 +59,6 @@ def create_app(db_url=None):
     api.register_blueprint(HomeBlueprint)
     api.register_blueprint(RegisterBlueprint)
     api.register_blueprint(LoginBlueprint)
+    api.register_blueprint(OwnerBlueprint)
     #  -----------------------------------------------------
     return app

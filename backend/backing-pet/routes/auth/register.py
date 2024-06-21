@@ -18,13 +18,13 @@ logger = logger_config.logger
 blp = Blueprint(
     "Registration",
     __name__,
-    description="Authentification operations",
+    description="User registration operations",
     url_prefix="/auth",
 )
 
 
 @blp.route("/register")
-class PersonRegistration(MethodView):
+class UserRegister(MethodView):
     def get(self):
         # Query Phone Prefixes
         prefixes = db.session.query(PhonePrefixes).all()
