@@ -3,7 +3,6 @@ from datetime import datetime as dt
 from flask.views import MethodView
 from flask_smorest import Blueprint, abort
 from passlib.hash import pbkdf2_sha256
-from flask_jwt_extended import create_access_token
 
 from models import Person, PhonePrefixes
 from db import db
@@ -17,7 +16,10 @@ logger = logger_config.logger
 
 
 blp = Blueprint(
-    "Person", __name__, description="Person operations", url_prefix="/auth"
+    "Registration",
+    __name__,
+    description="Authentification operations",
+    url_prefix="/auth",
 )
 
 
@@ -78,9 +80,6 @@ class PersonRegistration(MethodView):
         try:
             db.session.add(new_user)
             db.session.commit()
-            access_token = create_access_token(
-                identity=new_user.id
-            )  # JWT token TODO: remove this when integrating mailing system
         except SQLAlchemyError as ex:
             db.session.rollback()
             logger.exception("Error occured while creating user")
@@ -90,4 +89,4 @@ class PersonRegistration(MethodView):
             abort(500)
         finally:
             db.session.close()
-        return {"access_token": access_token}, 201
+        return {"message": "User created successfully"}, 201

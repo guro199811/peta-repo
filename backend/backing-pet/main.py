@@ -5,10 +5,11 @@ from flask_smorest import Api
 from flask_jwt_extended import JWTManager
 
 from db import db
-import models  # noqa: F401
+import models  # noqa
 
 from routes.home.home_page import blp as HomeBlueprint
 from routes.auth.register import blp as RegisterBlueprint
+from routes.auth.login import blp as LoginBlueprint
 
 
 def create_app(db_url=None):
@@ -32,14 +33,25 @@ def create_app(db_url=None):
     #  -------------Database Initialization-----------------
     db.init_app(app)
     #  -------------Flask_smorest (open-api)----------------
-    api = Api(app)
-    #  --------------Flask_jwt_extended----------------------
-    jwt = JWTManager(app)  # noqa: F841
+    api = Api(app, spec_kwargs={
+        "components": {
+            "securitySchemes": {
+                "jwtAuth": {
+                    "type": "http",
+                    "scheme": "bearer",
+                    "bearerFormat": "JWT"
+                }
+            }
+        }
+    })
+    #  --------------Flask_jwt_extended---------------------
+    jwt = JWTManager(app)  # noqa
     #  ---------------Managing Context----------------------
     with app.app_context():
         db.create_all()
     #  -----------------Blueprints--------------------------
     api.register_blueprint(HomeBlueprint)
     api.register_blueprint(RegisterBlueprint)
+    api.register_blueprint(LoginBlueprint)
     #  -----------------------------------------------------
     return app
