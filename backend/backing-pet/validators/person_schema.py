@@ -7,7 +7,7 @@ class PlainPersonSchema(Schema):
     password = fields.String(required=True, load_only=True)
 
 
-class PersonSchema(PlainPersonSchema):
+class PersonRegistrationSchema(PlainPersonSchema):
     repeat_password = fields.String(required=True)
     name = fields.String(required=True)
     lastname = fields.String(required=True)
@@ -15,3 +15,27 @@ class PersonSchema(PlainPersonSchema):
     phone = fields.Integer(required=True)
     address = fields.String(required=True)
     user_type = fields.Integer(required=True)
+
+
+class PersonGetterSchema(Schema):
+    id = fields.Integer(required=True)
+    name = fields.String(required=True)
+    lastname = fields.String(required=True)
+    phone = fields.String(required=True)
+    mail = fields.String(required=True)
+    address = fields.String(required=True)
+    created = fields.Date(required=True)
+    user_type = fields.Integer(required=True)
+    temporary_block = fields.Boolean(required=True)
+
+
+class PlainPersonUpdateSchema(Schema):
+    name = fields.String(required=True)
+    lastname = fields.String(required=True)
+    phone = fields.String(required=True)
+    address = fields.String(required=True)
+
+
+class PersonUpdateSchema(PlainPersonUpdateSchema):
+    user_type = fields.Integer(required=True)
+    confirmed = fields.Boolean(required=True)

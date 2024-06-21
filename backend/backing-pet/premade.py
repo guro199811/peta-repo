@@ -19,9 +19,7 @@ except Exception:
     logger.exception("Database URL is not specified in enviroment variables.")
 
 
-# This part of the code sets
-# pet_breeds to autoincrement, on some systems models.py
-# wont autoincrement, so we check if it is autoincremented correctly here
+# This part of the code sets petbreeds to autoincrement (it was a bug earlier)
 try:
 
     # Creating a sequence for breed_id

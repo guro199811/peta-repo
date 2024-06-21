@@ -11,9 +11,27 @@ class Visit(db.Model):
     vet = db.relationship("Vet")
     pet_id = db.Column(db.Integer, db.ForeignKey("pets.pet_id"))
     pet = db.relationship("Pet")
-    owner_id = db.Column(db.Integer, db.ForeignKey("owners.owner_id"))
-    owner = db.relationship("PetOwner")
+    owner_id = db.Column(db.Integer, db.ForeignKey("persons.id"))
+    pet_owner = db.relationship("Person")
     diagnosis = db.Column(db.String(100))
     treatment = db.Column(db.String(50))
     comment = db.Column(db.String(500))
     date = db.Column(db.Date)
+
+    def to_dict(self):
+        return {
+            self.visit_id: {
+                "clinic_id": self.clinic_id,
+                "vet_id": self.vet_id,
+                "pet_id": self.pet_id,
+                "owner_id": self.owner_id,
+                "diagnosis": self.diagnosis,
+                "treatment": self.treatment,
+                "comment": self.comment,
+                "date": self.date,
+                "clinic": self.clinic.to_dict(),
+                "vet": self.vet.to_dict(),
+                "pet": self.pet.to_dict(),
+                "pet_owner": self.pet_owner.to_dict()
+            }
+        }

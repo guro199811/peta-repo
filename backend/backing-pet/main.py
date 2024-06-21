@@ -10,7 +10,7 @@ import models  # noqa
 from routes.home.home_page import blp as HomeBlueprint
 from routes.auth.register import blp as RegisterBlueprint
 from routes.auth.login import blp as LoginBlueprint
-from routes.owner.owner import blp as OwnerBlueprint
+from routes.user.user_routes import blp as UserBlueprint
 
 
 def create_app(db_url=None):
@@ -59,6 +59,6 @@ def create_app(db_url=None):
     api.register_blueprint(HomeBlueprint)
     api.register_blueprint(RegisterBlueprint)
     api.register_blueprint(LoginBlueprint)
-    api.register_blueprint(OwnerBlueprint)
+    api.register_blueprint(UserBlueprint)
     #  -----------------------------------------------------
     return app

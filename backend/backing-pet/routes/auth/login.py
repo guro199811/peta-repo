@@ -29,6 +29,27 @@ class UserLogin(MethodView):
     @blp.arguments(PlainPersonSchema)
     @blp.response(200, TokenSchema)
     def post(self, user_data):
+        """
+        User Login Endpoint.
+
+        This method handles user login requests. It verifies the user's
+        credentials,
+        checks for temporary blocks, and generates access and refresh tokens.
+
+        Parameters:
+        user_data (Json): Json containing the user's email and
+        password.
+
+        Returns:
+        dict: A dictionary containing the login status,
+        access token, refresh token, and token type.
+
+        Raises:
+        abort: Raises an HTTP 401 error if the credentials
+        are invalid or the user is temporarily blocked.
+        abort: Raises an HTTP 500 error if there is a database
+        error while updating the user's block status.
+        """
         user = Person.query.filter_by(mail=user_data["mail"]).first()
 
         if not user or not pbkdf2_sha256.verify(

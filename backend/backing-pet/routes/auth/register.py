@@ -8,7 +8,7 @@ from models import Person, PhonePrefixes
 from db import db
 from sqlalchemy.exc import SQLAlchemyError
 
-from validators.person_schema import PersonSchema
+from validators.person_schema import PersonRegistrationSchema
 
 from logs import logger_config
 
@@ -26,6 +26,18 @@ blp = Blueprint(
 @blp.route("/register")
 class UserRegister(MethodView):
     def get(self):
+        """
+        User Registration endpoint.
+
+        This method retrieves all phone prefixes from the
+        database and returns them in a list of dictionaries.
+
+        Parameters:
+        None
+
+        Returns:
+        dict: A dictionary containing a list of phone prefixes.
+        """
         # Query Phone Prefixes
         prefixes = db.session.query(PhonePrefixes).all()
         if len(prefixes) == 0:
@@ -40,9 +52,20 @@ class UserRegister(MethodView):
             all_prefixes.append(p)
         return {"prefixes": all_prefixes}
 
-    @blp.arguments(PersonSchema)
+    @blp.arguments(PersonRegistrationSchema)
     def post(self, user_data):
-        # Query Phone Prefixes
+        """
+        Handles POST request for User Registration endpoint.
+
+        Validates user input, checks for existing email, and creates
+        a new user in the database.
+
+        Parameters:
+        user_data (Json): A Json containing user registration data.
+
+        Returns:
+        dict: A dictionary with a success message and HTTP status code 201.
+        """
         prefixes = db.session.query(PhonePrefixes).all()
         if len(prefixes) == 0:
             abort(500, message="Phone Prefixes not found")

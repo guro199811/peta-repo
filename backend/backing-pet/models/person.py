@@ -19,3 +19,16 @@ class Person(db.Model):
     confirmed_on = db.Column(db.Date, nullable=True)
     login_attempts = db.Column(db.Integer, default=0)
     temporary_block = db.Column(DateTime, nullable=True)
+
+    def to_dict(self):
+        return {self.id: {
+            "name": self.name,
+            "lastname": self.lastname,
+            "phone": self.phone,
+            "mail": self.mail,
+            "address": self.address,
+            "created": self.created,
+            "user_type": self.user_type,
+            "confirmed": self.confirmed,
+            "temporary_block": self.temporary_block,
+        }}
