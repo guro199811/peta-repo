@@ -52,24 +52,17 @@ class PetOperations(MethodView):
                 message="This pet is not registered on "
                 "this logged-in User.",
             )
-        # pet.pet_species = pet_data["pet_species"]
-        # pet.pet_breed = pet_data["pet_breed"]
-        # pet.gender = pet_data["gender"]
-        # pet.medical_condition = pet_data["medical_condition"]
-        # pet.current_treatment = pet_data["current_treatment"]
-        # pet.recent_vaccination = pet_data["recent_vaccination"]
-        # pet.name = pet_data["name"]
-        # pet.birth_date = pet_data["birth_date"]
-        pet.__dict__.update(pet_data)
-        logger.debug("Updated pet: %s", pet)
         pet.owner_id = current_user.id
+        for key, value in pet_data.items():
+            setattr(pet, key, value)
+
         try:
             db.session.commit()
         except SQLAlchemyError as e:
             logger.error(e)
             db.session.rollback()
             abort(500, message="Something went wrong")
-        return {"message": f"Pet {pet.pet_id} Updated succesfully"}, 200
+        return {"message": f"Pet {pet.name} Updated succesfully"}, 200
 
     @jwt_required()
     @blp.doc(security=[{"JWT Auth": []}])
