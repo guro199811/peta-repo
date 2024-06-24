@@ -1,5 +1,5 @@
 import os
-
+from datetime import timedelta
 from flask import Flask
 from flask_smorest import Api
 from flask_jwt_extended import JWTManager
@@ -7,6 +7,7 @@ from flask_jwt_extended import JWTManager
 from db import db
 import models  # noqa
 
+from routes.token_routes import blp as TokenBlueprint
 from routes.home.home_page import blp as HomeBlueprint
 from routes.auth.register import blp as RegisterBlueprint
 from routes.auth.login import blp as LoginBlueprint
@@ -32,6 +33,8 @@ def create_app(db_url=None):
     )
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY") or "JJSSGGDD"
+    app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)
+    app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(days=30)
     #  -------------Database Initialization-----------------
     db.init_app(app)
     #  -------------Flask_smorest (open-api)----------------
@@ -57,6 +60,7 @@ def create_app(db_url=None):
     with app.app_context():
         db.create_all()
     #  -----------------Blueprints--------------------------
+    api.register_blueprint(TokenBlueprint)
     api.register_blueprint(HomeBlueprint)
     api.register_blueprint(RegisterBlueprint)
     api.register_blueprint(LoginBlueprint)
