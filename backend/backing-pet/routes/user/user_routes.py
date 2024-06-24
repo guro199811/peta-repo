@@ -135,3 +135,8 @@ class UserVisitOperations(MethodView):
         if not visits:
             abort(404, message="No visits found")
         return jsonify([visit.to_dict() for visit in visits])
+
+    @jwt_required()
+    @blp.doc(security=[{"JWT Auth": []}])
+    def post(self, visit_data):
+        """NOT IMPLEMENTED"""

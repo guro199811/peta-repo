@@ -11,6 +11,7 @@ from routes.home.home_page import blp as HomeBlueprint
 from routes.auth.register import blp as RegisterBlueprint
 from routes.auth.login import blp as LoginBlueprint
 from routes.user.user_routes import blp as UserBlueprint
+from routes.pet.pet_routes import blp as PetBlueprint
 
 
 def create_app(db_url=None):
@@ -60,5 +61,6 @@ def create_app(db_url=None):
     api.register_blueprint(RegisterBlueprint)
     api.register_blueprint(LoginBlueprint)
     api.register_blueprint(UserBlueprint)
+    api.register_blueprint(PetBlueprint)
     #  -----------------------------------------------------
     return app
