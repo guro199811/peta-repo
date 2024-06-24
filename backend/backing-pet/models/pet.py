@@ -8,9 +8,7 @@ class Pet(db.Model):
     pet_species = db.Column(
         db.Integer, db.ForeignKey("pet_species.species_id")
     )
-    species = db.relationship("PetSpecies")
     pet_breed = db.Column(db.Integer, db.ForeignKey("pet_breeds.breed_id"))
-    breed = db.relationship("PetBreed")
     gender = db.Column(db.String(2))
     medical_condition = db.Column(db.String(50))
     current_treatment = db.Column(db.String(50))
@@ -18,7 +16,6 @@ class Pet(db.Model):
     name = db.Column(db.String(50))
     birth_date = db.Column(db.Date)
     owner_id = db.Column(db.Integer, db.ForeignKey("persons.id"))
-    pet_owner = db.relationship("Person")
 
     def to_dict(self):
         return {self.pet_id: {
@@ -30,6 +27,8 @@ class Pet(db.Model):
             "recent_vaccination": self.recent_vaccination,
             "name": self.name,
             "birth_date": self.birth_date,
-            "owner_id": self.owner_id,
-            "pet_owner": self.pet_owner.to_dict()
+            "owner_id": self.owner_id
         }}
+
+    def __repr__(self):
+        return f'{self.to_dict()}'

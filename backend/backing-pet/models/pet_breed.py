@@ -8,5 +8,4 @@ class PetBreed(db.Model):
     species_id = db.Column(
         db.Integer, db.ForeignKey("pet_species.species_id")
     )
-    species = db.relationship("PetSpecies")
     breed = db.Column(db.String(100))

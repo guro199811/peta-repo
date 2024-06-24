@@ -7,4 +7,3 @@ class Admin(db.Model):
     active = db.Column(db.Boolean, default=True)
     admin_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     person_id = db.Column(db.Integer, db.ForeignKey("persons.id"))
-    person = db.relationship("Person")
