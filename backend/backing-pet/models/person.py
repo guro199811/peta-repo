@@ -13,13 +13,12 @@ class Person(db.Model):
     address = db.Column(db.String(100))
     created = db.Column(db.Date)
     user_type = db.Column(db.Integer, db.ForeignKey("user_types.user_type"))
-    person_type = db.relationship("UserType")
+    person_type = db.relationship("UserType", lazy="joined")
     password = db.Column(db.String(), nullable=False)
     confirmed = db.Column(db.Boolean, nullable=False, default=False)
     confirmed_on = db.Column(db.Date, nullable=True)
     login_attempts = db.Column(db.Integer, default=0)
     temporary_block = db.Column(DateTime, nullable=True)
-    user_pets = db.relationship("Pet")
 
     def to_dict(self):
         return {self.id: {
@@ -33,6 +32,6 @@ class Person(db.Model):
             "confirmed": self.confirmed,
             "temporary_block": self.temporary_block,
         }}
-    
+
     def __repr__(self):
         return f'{self.to_dict()}'

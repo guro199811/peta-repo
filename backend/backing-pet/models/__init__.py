@@ -1,7 +1,5 @@
 from models.person import Person  # noqa: F401
 from models.vet import Vet  # noqa: F401
-from models.editor import Editor  # noqa: F401
-from models.admin import Admin  # noqa: F401
 
 from models.user_types import UserType  # noqa: F401
 

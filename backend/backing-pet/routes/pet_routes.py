@@ -54,6 +54,8 @@ class PetOperations(MethodView):
             )
         pet.owner_id = current_user.id
         for key, value in pet_data.items():
+            if value is None:
+                continue
             setattr(pet, key, value)
 
         try:
@@ -95,23 +97,3 @@ class RegisterPet(MethodView):
             logger.exception("Could not register pet")
             abort(500, message="Something went wrong")
         return jsonify(new_pet.to_dict())
-
-
-@blp.route("/pet_visits/<int:pet_id>")
-class PetVisitOperations(MethodView):
-    @jwt_required()
-    @blp.doc(security=[{"JWT Auth": []}])
-    @blp.response(200, PetSchema)
-    def get(self, pet_id):
-        """NOT IMPLEMENTED"""
-        abort(500, message="Not Implemented")
-
-
-@blp.route("/pet_history/<int:pet_id>")
-class PetHistoryOperations(MethodView):
-    @jwt_required()
-    @blp.doc(security=[{"JWT Auth": []}])
-    @blp.response(200, PetSchema)
-    def get(self, pet_id):
-        """NOT IMPLEMENTED"""
-        abort(500, message="Not Implemented")

@@ -37,5 +37,8 @@ class PlainPersonUpdateSchema(Schema):
 
 
 class PersonUpdateSchema(PlainPersonUpdateSchema):
-    user_type = fields.Integer(required=True)
     confirmed = fields.Boolean(required=True)
+
+
+class AdminSpecificUpdateSchema(Schema):
+    user_type = fields.Integer(required=True)

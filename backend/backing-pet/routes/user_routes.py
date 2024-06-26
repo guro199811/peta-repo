@@ -56,10 +56,10 @@ class UserRoutes(MethodView):
         JSON response containing the edited user's data."""
         if not current_user:
             abort(401, message="Invalid credentials")
-        current_user.name = user_data["name"]
-        current_user.lastname = user_data["lastname"]
-        current_user.phone = user_data["phone"]
-        current_user.address = user_data["address"]
+        for key, value in user_data.items():
+            if value is None:
+                continue
+            setattr(current_user, key, value)
         try:
             db.session.commit()
             return {"message": "successfully edited user data", **user_data}
@@ -135,8 +135,3 @@ class UserVisitOperations(MethodView):
         if not visits:
             abort(404, message="No visits found")
         return jsonify([visit.to_dict() for visit in visits])
-
-    @jwt_required()
-    @blp.doc(security=[{"JWT Auth": []}])
-    def post(self, visit_data):
-        """NOT IMPLEMENTED"""
