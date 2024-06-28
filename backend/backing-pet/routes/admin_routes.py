@@ -4,12 +4,13 @@ from flask import jsonify
 from flask_jwt_extended import jwt_required, current_user
 from db import db
 from sqlalchemy.exc import SQLAlchemyError
-from models import Person, Clinic, Visit, Vet
+from models import Person, Clinic, Visit, Vet, Pet
 from validators.person_schema import (
     PersonGetterSchema,
     PersonUpdateSchema,
     AdminSpecificUpdateSchema,
 )
+from validators.pet_schema import PetSchema
 from logs import logger_config
 
 logger = logger_config.logger
@@ -167,6 +168,19 @@ class AllEditors(MethodView):
                 ]
             )
         abort(404, "No editors found")
+
+
+@blp.route("/all/pets")
+class AllPets(MethodView):
+    @jwt_required()
+    @blp.doc(security=[{"JWT Auth": []}])
+    @blp.response(200, PetSchema)
+    def get(self):
+        all_pets = db.session.query(Pet).all()
+        if len(all_pets) > 0:
+            pet_list = [pet.to_dict() for pet in all_pets]
+            return jsonify(pet_list)
+        abort(404, "No Pets found in database")
 
 
 @blp.route("/all/clinics")

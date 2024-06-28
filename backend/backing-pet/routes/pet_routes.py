@@ -13,19 +13,25 @@ logger = logger_config.logger
 blp = Blueprint("Pets", __name__, description="Pet operations")
 
 
-# TODO: This endpoint is intended to be used by the admin
-# find way to enforce permissions
-@blp.route("/all_pets")
-class AllPets(MethodView):
+@blp.route("/register_pet")
+class RegisterPet(MethodView):
     @jwt_required()
     @blp.doc(security=[{"JWT Auth": []}])
+    @blp.arguments(PetSchema)
     @blp.response(200, PetSchema)
-    def get(self):
-        all_pets = db.session.query(Pet).all()
-        if len(all_pets) > 0:
-            pet_list = [pet.to_dict() for pet in all_pets]
-            return jsonify(pet_list)
-        abort(404, "No Pets found in database")
+    def post(self, pet_data):
+        if pet_data.get("owner_id"):
+            owner_id = pet_data.pop("owner_id")
+        else:
+            owner_id = current_user.id
+        new_pet = Pet(owner_id=owner_id, **pet_data)
+        try:
+            db.session.add(new_pet)
+            db.session.commit()
+        except SQLAlchemyError:
+            logger.exception("Could not register pet")
+            abort(500, message="Something went wrong")
+        return jsonify(new_pet.to_dict())
 
 
 @blp.route("/pet/<int:pet_id>")
@@ -72,6 +78,12 @@ class PetOperations(MethodView):
         pet = Pet.query.filter_by(id=pet_id).first()
         if not pet:
             abort(404, message="Pet not found")
+        if pet.owner_id != current_user.id or current_user.user_type != 2:
+            abort(
+                400,
+                message="This pet is not registered on "
+                "this logged-in User.",
+            )
         try:
             db.session.delete(pet)
             db.session.commit()
@@ -80,20 +92,3 @@ class PetOperations(MethodView):
             logger.error(e)
             db.session.rollback()
             abort(500, message="Something went wrong")
-
-
-@blp.route("/register_pet")
-class RegisterPet(MethodView):
-    @jwt_required()
-    @blp.doc(security=[{"JWT Auth": []}])
-    @blp.arguments(PetSchema)
-    @blp.response(200, PetSchema)
-    def post(self, pet_data):
-        new_pet = Pet(owner_id=current_user.id, **pet_data)
-        try:
-            db.session.add(new_pet)
-            db.session.commit()
-        except SQLAlchemyError:
-            logger.exception("Could not register pet")
-            abort(500, message="Something went wrong")
-        return jsonify(new_pet.to_dict())

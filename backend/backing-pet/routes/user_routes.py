@@ -4,7 +4,7 @@ from flask import jsonify
 from flask_jwt_extended import jwt_required, current_user
 from db import db
 from sqlalchemy.exc import SQLAlchemyError
-from models import Pet, Visit
+from models import Pet, Visit, PersonClinic
 from validators.person_schema import (
     PersonGetterSchema,
     PlainPersonUpdateSchema,
@@ -135,3 +135,17 @@ class UserVisitOperations(MethodView):
         if not visits:
             abort(404, message="No visits found")
         return jsonify([visit.to_dict() for visit in visits])
+
+
+@blp.route("/clinics_for_maps")
+class UserClinicOperations(MethodView):
+    @jwt_required()
+    @blp.doc(security=[{"JWT Auth": []}])
+    @blp.response(200, PetSchema)
+    def get(self):
+        clinics_detailed = PersonClinic.query.filter_by(
+            is_clinic_owner=True
+        ).all()
+        if not clinics_detailed:
+            abort(404, message="No clinics found")
+        return jsonify([clinic.to_dict() for clinic in clinics_detailed])

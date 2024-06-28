@@ -9,5 +9,5 @@ class UserType(db.Model):
     def to_dict(self):
         return {
             "user_type": self.user_type,
-            "desc": self.explanation,
+            "description": self.desc,
         }

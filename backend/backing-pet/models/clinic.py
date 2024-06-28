@@ -9,3 +9,12 @@ class Clinic(db.Model):
     desc = db.Column(db.String(201))
     coordinates = db.Column(db.String(75))
     visibility = db.Column(db.Boolean, default=True)
+
+    def to_dict(self):
+        return {
+            "clinic_id": self.clinic_id,
+            "clinic_name": self.clinic_name,
+            "desc": self.desc,
+            "coordinates": self.coordinates,
+            "visibility": self.visibility,
+        }
