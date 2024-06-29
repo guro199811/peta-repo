@@ -129,7 +129,8 @@ class AllAdmins(MethodView):
                 for admin in admins
                 if admin.id == current_user.id
             ]
-            spot_caller[0][current_user.id].update(caller=True)
+            if spot_caller:
+                spot_caller[0][current_user.id].update(caller=True)
             other_admins = [
                 admin.to_dict()
                 for admin in admins

@@ -17,6 +17,7 @@ from routes.user_routes import blp as UserBlueprint
 from routes.vet_routes import blp as VetBlueprint
 from routes.pet_routes import blp as PetBlueprint
 from routes.visit_routes import blp as VisitBlueprint
+from routes.request_routes import blp as RequestBlueprint
 
 
 def create_app(db_url=None):
@@ -77,6 +78,7 @@ def create_app(db_url=None):
     api.register_blueprint(VetBlueprint)
     api.register_blueprint(PetBlueprint)
     api.register_blueprint(VisitBlueprint)
+    api.register_blueprint(RequestBlueprint)
 
     #  -----------------------------------------------------
     return app
