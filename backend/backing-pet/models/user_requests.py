@@ -16,6 +16,8 @@ class UserRequests(db.Model):
 
     approved = db.Column(db.Boolean, default=False, nullable=True)
 
+    reference_id = db.Column(db.Integer, nullable=True)
+
     def to_dict(self):
         return {
             "request_id": self.request_id,
