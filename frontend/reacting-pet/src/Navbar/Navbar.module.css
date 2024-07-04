@@ -1,0 +1,100 @@
+.navbar{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    align-items: center;
+    height: 10vh;
+    backdrop-filter: blur(5px);
+    background-color: rgba(41, 41, 41, 0.5);
+    box-shadow:0px 0px 15px -5px #000000 inset;
+    border-radius: 10px;
+    z-index: 10;
+}
+
+.logo{
+    max-width: 124px;
+    max-height: 124px;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    box-shadow: none;
+    justify-content: center;
+}
+
+
+
+.logo img{
+    margin-top: 10px;
+    width: 100%;
+    height: 100%;
+}
+
+.links a{
+    color: rgb(255, 255, 255);
+    max-width: 100px;
+    margin: 10px 13px;
+    padding: 7px 15px 8px 15px;
+    border: 2px solid white;
+    box-shadow: 0px 0px 10px 2px white;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s, box-shadow 0.3s;
+}
+
+.links a:hover{
+    background-color: hsl(39, 100%, 5%);
+    box-shadow: 0px 0px 10px 2px hsl(39, 100%, 25%);
+    color: rgb(255, 255, 255);
+}
+
+.links a:active{
+    background-color: slategray;
+    color: white;
+}
+
+.loginBtn{
+    color: black !important;
+    background-color: white !important;
+    box-shadow: 0px 0px 10px 2px white !important;
+}
+
+.sidebarBtn{
+    color: black !important;
+    background-color: white !important;
+    box-shadow: 0px 0px 10px 2px white !important;
+    font-size: 20px;
+    padding-bottom: 6px !important;
+}
+
+.sidebar{
+    pointer-events: none !important;
+    top: 0;
+    width: 100vw;
+    height: 100vh;  
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    overflow: hidden;
+    transform: translateX(100%);
+    transition: 0.6s cubic-bezier(0, -0.16, 0.35, 1.16);
+}
+
+.sidebar.active{
+    transform: translateX(0)
+}
+
+.loginBtn:hover{
+    color: white!important;
+    background-color: transparent !important;
+    box-shadow: 0px 0px 10px 2px black!important;
+}
+
+.sidebarBtn:hover{
+    color: white!important;
+    background-color: transparent!important;
+    box-shadow: 0px 0px 10px 2px black!important;
+}

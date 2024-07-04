@@ -3,6 +3,7 @@ from datetime import timedelta
 from flask import Flask
 from flask_smorest import Api
 from flask_jwt_extended import JWTManager
+from flask_cors import CORS
 
 from db import db
 import models  # noqa
@@ -18,6 +19,10 @@ from routes.vet_routes import blp as VetBlueprint
 from routes.pet_routes import blp as PetBlueprint
 from routes.visit_routes import blp as VisitBlueprint
 from routes.request_routes import blp as RequestBlueprint
+
+from logs import logger_config
+
+logger = logger_config.logger
 
 
 def create_app(db_url=None):
@@ -40,6 +45,15 @@ def create_app(db_url=None):
     app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY") or "JJSSGGDD"
     app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)
     app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(days=30)
+    #  ---------------------CORS----------------------------
+    allowed_origins = os.getenv("ALLOWED_ORIGINS", "")
+    logger.debug(f"allowed origins: {allowed_origins}")
+    if allowed_origins:
+        cors_origins = allowed_origins.split(",")
+        logger.debug(f"cors origins: {cors_origins}")
+        CORS(app, origins=cors_origins)
+    else:
+        CORS(app, origins=["http://localhost"])
     #  -------------Database Initialization-----------------
     db.init_app(app)
     #  -------------Flask_smorest (open-api)----------------
