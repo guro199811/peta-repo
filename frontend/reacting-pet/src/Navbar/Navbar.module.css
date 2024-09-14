@@ -5,7 +5,7 @@
     align-items: center;
     height: 10vh;
     backdrop-filter: blur(5px);
-    background-color: rgba(41, 41, 41, 0.5);
+    background-color: rgba(255, 255, 255, 0.753);
     box-shadow:0px 0px 15px -5px #000000 inset;
     border-radius: 10px;
     z-index: 10;
@@ -33,12 +33,12 @@
 }
 
 .links a{
-    color: rgb(255, 255, 255);
+    color: rgb(0, 0, 0);
     max-width: 100px;
     margin: 10px 13px;
     padding: 7px 15px 8px 15px;
-    border: 2px solid white;
-    box-shadow: 0px 0px 10px 2px white;
+    border: 2px solid rgba(0, 0, 0, 0.397);
+    box-shadow: 0px 0px 10px 2px rgba(0, 0, 0, 0.342);
     border-radius: 10px;
     cursor: pointer;
     transition: background-color 0.3s, color 0.3s, box-shadow 0.3s;
@@ -46,19 +46,13 @@
 
 .links a:hover{
     background-color: hsl(39, 100%, 5%);
-    box-shadow: 0px 0px 10px 2px hsl(39, 100%, 25%);
+    box-shadow: 0px 0px 10px 2px hsl(39, 100%, 50%);
     color: rgb(255, 255, 255);
 }
 
 .links a:active{
     background-color: slategray;
     color: white;
-}
-
-.loginBtn{
-    color: black !important;
-    background-color: white !important;
-    box-shadow: 0px 0px 10px 2px white !important;
 }
 
 .sidebarBtn{
@@ -87,10 +81,27 @@
     transform: translateX(0)
 }
 
+.loginBtn{
+    color: rgb(0, 0, 0) !important;
+    border: 1px solid rgb(146, 255, 170) !important;
+    background-color: rgb(96, 255, 131) !important;
+    box-shadow: 0px 0px 10px 2px rgb(255, 235, 216) !important;
+    transition: background-color 0.3s, color 0.3s, box-shadow 0.3s,
+    border 0.3s !important;
+}
+
 .loginBtn:hover{
-    color: white!important;
-    background-color: transparent !important;
-    box-shadow: 0px 0px 10px 2px black!important;
+    color: rgb(0, 0, 0)!important;
+    background-color: rgb(0, 255, 42) !important;
+    border: 1px solid rgb(30, 255, 0) !important;
+    box-shadow: 0px 0px 10px 2px rgb(60, 255, 0) !important;
+}
+
+.loginBtn:active{
+    color: rgb(0, 0, 0)!important;
+    background-color: rgb(187, 255, 0)!important;
+    border: 1px solid rgb(187, 255, 0)!important;
+    box-shadow: 0px 0px 10px 2px rgb(187, 255, 0)!important;
 }
 
 .sidebarBtn:hover{

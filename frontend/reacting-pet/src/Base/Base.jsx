@@ -1,4 +1,4 @@
-import styles from './Base.module.css'
+import './Base.css'
 import Navbar from '../Navbar/Navbar.jsx'
 import Home from '../Home/Home.jsx'
 import Footer from '../Footer/Footer.jsx'
@@ -6,9 +6,9 @@ import Footer from '../Footer/Footer.jsx'
 function Base() {
 
   return (
-    <div className={styles.base}>
+    <div className="base">
       <Navbar />
-      <div className={styles.homeBg}>
+      <div className="homeBg">
       <Home />
       </div>
       <Footer />

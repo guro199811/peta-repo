@@ -1,0 +1,197 @@
+/* Getting rid of input[number] arrows */
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+.base {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.homeBg {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  background-size: cover;
+  background-image: url(../assets/main-bg.jpg);
+  z-index: 0;
+}
+
+/* Authentification Css */
+.loginWrapper {
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(5px);
+  position: fixed;
+  opacity: 0;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.loginWrapper.active {
+  opacity: 1;
+}
+
+.authBox {
+  display: flex;
+  flex-direction: column;
+  background-color: rgb(255, 255, 255);
+  padding: 40px;
+  margin: 0;
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  min-width: 320px;
+  max-width: 400px;
+  width: 100%;
+  z-index: 1001;
+  transform: scale(1);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.5s ease-in-out, transform 0.3s ease;
+}
+
+.authBox.close {
+  transform: scale(0);
+}
+
+@media(max-width: 1200px){
+  .authBox {
+    min-width: 100%;
+    max-width: 100%;
+    right: 40px;
+    scale: 0.9;
+  }
+
+  input, a, span {
+    width: auto;
+    margin: 5px;
+  }
+}
+
+.auth {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  opacity: 0;
+  transform: translateY(20px);
+  pointer-events: none;
+  color: black;
+  transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+}
+
+.auth.visible {
+  opacity: 1;
+  position: relative;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.auth.hidden {
+  opacity: 0;
+  min-width: 320px;
+  max-width: 400px;
+  transform: translateY(-20px);
+  pointer-events: none;
+}
+
+.login-form,
+.register-form {
+  display: flex;
+  flex-direction: column;
+}
+
+input {
+  background-color: whitesmoke;
+  box-shadow: 0px 0px 1px 1px rgba(0, 0, 0, 0.253);
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  color: black;
+  transition: border-color 0.3s ease;
+}
+
+input:focus {
+  border-color: #ff9100;
+}
+
+
+.submit-button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #ff9100;
+  color: rgb(0, 0, 0);
+  text-align: center;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.submit-button:hover {
+  background-color: #ffd000;
+  color: black;
+}
+
+.switch-link {
+  color: #ff7300;
+  cursor: pointer;
+  text-align: center;
+  margin-top: 20px;
+  font-size: 15px;
+  transition: color 0.3s ease, font-style 0.1s ease;
+}
+
+.switch-link:hover {
+  color: #522500;
+}
+
+.show-password-checkbox {
+  font-size: 14;
+  color: black;
+  margin-right: 10px;
+}
+
+.forgot-password{
+    margin-top: 20px;
+    color: #ff7300;
+    cursor: pointer;
+    font-size: 15px;
+    transition: color 0.3s ease, font-style 0.1s ease;
+}
+
+.forgot-password:hover{
+    color: #522500;
+}
+
+.phone-select {
+  width: auto;
+  background-color: whitesmoke;
+  box-shadow: 0px 0px 1px 1px rgba(0, 0, 0, 0.253);
+  margin: 10px 10px 10px 0px;
+  padding: 9px;
+  color: gray;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  cursor: pointer;
+}
