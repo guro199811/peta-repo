@@ -11,8 +11,10 @@ class UserRequests(db.Model):
     comment = db.Column(db.String(100), nullable=True)
     ban = db.Column(db.Integer, nullable=False, default=False)
 
-    requester = db.relationship("Person", lazy="joined")
-    reciever = db.relationship("Person", lazy="joined")
+    requester = db.relationship(
+        "Person", foreign_keys=[requester_id], lazy="joined")
+    reciever = db.relationship(
+        "Person", foreign_keys=[reciever_id], lazy="joined")
 
     approved = db.Column(db.Boolean, default=False, nullable=True)
 
