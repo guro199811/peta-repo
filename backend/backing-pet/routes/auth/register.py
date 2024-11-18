@@ -69,21 +69,18 @@ class UserRegister(MethodView):
         prefixes = db.session.query(PhonePrefixes).all()
         if len(prefixes) == 0:
             abort(500, message="Phone Prefixes not found")
-        phone_prefixes = []
         number_standards = {}
         for prefix in prefixes:
-            phone_prefixes.append(prefix.prefix)
             number_standards[prefix.prefix] = prefix.nums
-
         if Person.query.filter(Person.mail == user_data["mail"]).first():
             abort(409, message="User with that email already exists.")
         if user_data["password"] != user_data["repeat_password"]:
             abort(400, message="Password do not match")
-        if user_data["prefix"] not in phone_prefixes:
+        if user_data["prefix"] not in number_standards.keys():
             abort(400, message="Invalid phone prefix")
         if (
             len(str(user_data["phone"]))
-            != number_standards[user_data["prefix"]]
+            != int(number_standards[user_data["prefix"]])
         ):
             abort(400, message="Invalid number")
         try:
@@ -93,13 +90,13 @@ class UserRegister(MethodView):
                 name=user_data["name"],
                 lastname=user_data["lastname"],
                 phone=phone,
-                address=user_data["address"],
+                address=user_data.get("address", None),
                 created=dt.today(),
                 user_type=1,  # TODO: For now its hardcoded, Fix it later
                 password=pbkdf2_sha256.hash(user_data["password"]),
             )
         except KeyError as ex:
-            abort(400, f"{ex}")
+            abort(400, f"KeyError: {ex}")
         try:
             db.session.add(new_user)
             db.session.commit()

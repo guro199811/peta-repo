@@ -1,14 +1,17 @@
 import { useState, useEffect } from "react";
 import styles from "./Navbar.module.css";
-import logo from "../assets/logo.png";
-import Auth from "../Auth/Auth.jsx";
+import logo from "../../assets/logo.png";
+import Auth from "./Auth/Auth.jsx";
+import { useToken } from "../../Token/Token.jsx";
 
 function Navbar() {
+  const { userToken, setUserToken } = useToken();
+
   const [loginScreen, setLoginScreen] = useState(false);
   const [loginWrapper, setLoginWrapper] = useState(false);
   const [closingSignal, setClosingSignal] = useState(false);
 
-  const LoginNow = () => {
+  const openLogin = () => {
     setLoginScreen(true);
     setTimeout(() => {
       setLoginWrapper(true);
@@ -27,6 +30,12 @@ function Navbar() {
     }, 500);
   };
 
+  const logOut = () => {
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+    setUserToken(null);
+  };
+
   return (
     <>
       <div className={styles.navbar}>
@@ -36,9 +45,14 @@ function Navbar() {
         <div className={styles.links}>
           <a href="/">Home Page</a>
           <a href="/">Search</a>
-          <a className={styles.loginBtn} onClick={() => LoginNow()}>
-            Login
-          </a>
+          <a href="/">About</a>
+          {userToken ? (
+            <a className={styles.logoutBtn} onClick={() => logOut()}>Log-Out</a>
+          ) : (
+            <a className={styles.loginBtn} onClick={() => openLogin()}>
+              Login
+            </a>
+          )}
         </div>
       </div>
       {loginScreen && (
