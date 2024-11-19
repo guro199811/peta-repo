@@ -60,15 +60,6 @@ input[type="number"] {
   flex-direction: column;
 }
 
-.homeBg {
-  position: absolute;
-  width: 100vw;
-  height: 100vh;
-  background-size: cover;
-  background-image: url(../../public/assets/main-bg.jpg);
-  z-index: 0;
-}
-
 /* Authentification Css */
 .loginWrapper {
   width: 100vw;

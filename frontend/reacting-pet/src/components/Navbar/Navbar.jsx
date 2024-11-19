@@ -5,6 +5,8 @@ import styles from "./Navbar.module.css";
 import logo from "../../../public/assets/logo.png";
 import Auth from "./Auth/Auth.jsx";
 import { useToken } from "../Token/Token.jsx";
+import Link from "next/link"
+
 
 function Navbar() {
   const { userToken, setUserToken } = useToken();
@@ -41,13 +43,13 @@ function Navbar() {
   return (
     <>
       <div className={styles.navbar}>
-        <a href="/" className={styles.logo}>
+        <Link href="/" className={styles.logo}>
           <img src={logo.src} />
-        </a>
+        </Link>
         <div className={styles.links}>
-          <a href="/">Home Page</a>
-          <a href="/">Search</a>
-          <a href="/about">About</a>
+          <Link href="/">Home Page</Link>
+          <Link href="/">Search</Link>
+          <Link href="/about">About</Link>
           {userToken ? ( 
             <a className={styles.logoutBtn} onClick={() => logOut()}>Log-Out</a>
           ) : (

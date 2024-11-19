@@ -129,9 +129,9 @@ export function TokenProvider({ children }) { // eslint-disable-line
 
   // Shows a loading placeholder until token initialization is complete (its optional)
   // TODO: revisit this (maybe add some animations?)
-  // if (isLoading) {
-  //   return <div className="token-loading">Loading...</div>;
-  // }
+  if (isLoading) {
+    return <div className="token-loading">Loading...</div>;
+  }
 
   return (
     <TokenContext.Provider value={{ userToken, setUserToken }}>

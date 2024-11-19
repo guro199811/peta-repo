@@ -17,4 +17,4 @@ WORKDIR /app/reacting-pet
 EXPOSE 3000
 
 # lauching
-CMD ["npm", "run", "dev"]
+CMD ["npm", "run", "dev", "--turbopack"]
