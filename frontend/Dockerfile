@@ -1,10 +1,10 @@
-FROM node:21.6.2
+FROM node:21.6.2-alpine
 
-# Settingh Working directory
+# Setting Working directory
 WORKDIR /app
 
 
-COPY ./frontend/reacting-pet/package*.json .
+COPY ./frontend/reacting-pet/package*.json ./
 
 # installing npm dependencies
 RUN npm install
@@ -14,7 +14,7 @@ COPY ./frontend/ .
 
 WORKDIR /app/reacting-pet
 # Expose the port the app runs on
-EXPOSE 5173
+EXPOSE 3000
 
 # lauching
 CMD ["npm", "run", "dev"]

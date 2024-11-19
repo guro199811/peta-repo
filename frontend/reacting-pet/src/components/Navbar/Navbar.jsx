@@ -1,8 +1,10 @@
-import { useState, useEffect } from "react";
+"use client"
+
+import { useState } from "react";
 import styles from "./Navbar.module.css";
-import logo from "../../assets/logo.png";
+import logo from "../../../public/assets/logo.png";
 import Auth from "./Auth/Auth.jsx";
-import { useToken } from "../../Token/Token.jsx";
+import { useToken } from "../Token/Token.jsx";
 
 function Navbar() {
   const { userToken, setUserToken } = useToken();
@@ -40,13 +42,13 @@ function Navbar() {
     <>
       <div className={styles.navbar}>
         <a href="/" className={styles.logo}>
-          <img src={logo} />
+          <img src={logo.src} />
         </a>
         <div className={styles.links}>
           <a href="/">Home Page</a>
           <a href="/">Search</a>
-          <a href="/">About</a>
-          {userToken ? (
+          <a href="/about">About</a>
+          {userToken ? ( 
             <a className={styles.logoutBtn} onClick={() => logOut()}>Log-Out</a>
           ) : (
             <a className={styles.loginBtn} onClick={() => openLogin()}>

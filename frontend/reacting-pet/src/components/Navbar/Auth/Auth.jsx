@@ -1,6 +1,9 @@
+"use client";
+
 import { useState, useEffect } from "react";
-import { API_BASE_URL } from "../../../config/config.js";
-import { useToken } from "../../../Token/Token.jsx";
+import { API_BASE_URL } from "@/constants/config/config.js";
+import { useToken } from "../../Token/Token.jsx";
+import styles from "./Auth.module.css";
 
 const Auth = (props) => {
   const { setUserToken } = useToken();
@@ -16,7 +19,7 @@ const Auth = (props) => {
   const [phonePrefixes, setPhonePrefixes] = useState({
     prefixes: [
       {
-        prefix: "",
+        prefix: "+995",
         nums: 9,
         icon: "🇬🇪",
       },
@@ -100,7 +103,7 @@ const Auth = (props) => {
   const handleRegistration = (event) => {
     event.preventDefault(); // Prevents default refreshing behavior
     console.log(JSON.stringify(registerData));
-    alert("Stop")
+    alert("Stop");
     fetch(`${API_BASE_URL}/auth/register`, {
       method: "POST",
       headers: {
@@ -116,9 +119,11 @@ const Auth = (props) => {
   };
 
   return (
-    <div className={props.closingSignal ? "authBox close" : "authBox"}>
-      <div className={`auth login ${isLogin ? "visible" : "hidden"}`}>
-        <form className="login-form" onSubmit={handleLogin}>
+    <div className={`${styles.authBox} ${props.closingSignal ?  styles.close : ""}`}>
+      <div
+        className={`${styles.auth} ${isLogin ? styles.login : styles.register}`}
+      >
+        <form className={styles.login_form} onSubmit={handleLogin}>
           <h1>Sign in</h1>
           <input
             type="email"
@@ -141,15 +146,14 @@ const Auth = (props) => {
             <input
               type="checkbox"
               id="show-password-login"
-              className="show-password-checkbox"
+              className={styles.show_password_checkbox}
               onClick={() => {
                 showPassword();
               }}
             />
             <label htmlFor="show-password-login">Show Password</label>
             <a
-              href="#"
-              className="forgot-password"
+              className={styles.forgot_password}
               style={{
                 float: "right",
                 margin: "6px",
@@ -158,17 +162,19 @@ const Auth = (props) => {
               Forgot password?
             </a>
           </div>
-          <button type="submit" className="submit-button">
+          <button type="submit" className={styles.submit_button}>
             Login
           </button>
         </form>
-        <span className="switch-link" onClick={toggleForm}>
+        <span className={styles.switch_link} onClick={toggleForm}>
           Don't have an account? Register now!
         </span>
       </div>
 
-      <div className={`auth register ${isLogin ? "hidden" : "visible"}`}>
-        <form className="register-form" onSubmit={handleRegistration}>
+      <div
+        className={`${styles.auth} ${isLogin ? styles.register : styles.login}`}
+      >
+        <form className={styles.register_form} onSubmit={handleRegistration}>
           <h1>Create Account</h1>
           <input
             type="text"
@@ -215,17 +221,17 @@ const Auth = (props) => {
             <input
               type="checkbox"
               id="show-password-register"
-              className="show-password-checkbox"
+              className={styles.show_password_checkbox}
               onClick={() => {
                 showRegisterPassword();
               }}
             />
             <label htmlFor="show-password-register">Show Password</label>
           </div>
-          <div className="phone-input">
+          <div className={styles.phone_input}>
             <select
               id="countryCode"
-              className="phone-select"
+              className={styles.phone_select}
               name="prefix"
               value={registerData.prefix}
               onChange={handleRegisterData}
@@ -249,11 +255,11 @@ const Auth = (props) => {
               required
             />
           </div>
-          <button type="submit" className="submit-button">
+          <button type="submit" className={styles.submit_button}>
             Register
           </button>
         </form>
-        <span className="switch-link" onClick={toggleForm}>
+        <span className={styles.switch_link} onClick={toggleForm}>
           Already have an account? Sign in
         </span>
       </div>

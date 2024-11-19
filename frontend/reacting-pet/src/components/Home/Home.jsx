@@ -1,11 +1,14 @@
+"use client"
+
 import React, { useState, useEffect } from "react";
+import { API_BASE_URL } from "@/constants/config/config";
 import styles from "./Home.module.css";
 
 function Home() {
   const [data, setData] = useState(null);
 
   useEffect(() => {
-    fetch("http://localhost:5000/")
+    fetch(API_BASE_URL)
       .then((response) =>  response.json())
       .then((data) => setData(data))
       .catch((error) => console.error("Error:", error));

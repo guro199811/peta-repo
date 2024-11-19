@@ -16,4 +16,4 @@ class HomePage(MethodView):
         return {
             "welcome": "Welcome to our website!",
             "home_text": "Our website is created for your lovely" +
-            " pet and they're veterinary care needs."}
+            " pets and they're veterinary care needs."}

@@ -1,4 +1,8 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+"use client"
+
+import { createContext, useContext, useState, useEffect } from "react";
+import { API_BASE_URL } from "@/constants/config/config.js";
+
 
 /* 
 Expected Token structure is as follows:
@@ -34,7 +38,7 @@ function isTokenExpired(token) {
 // TODO: might not work as expected
 const refreshAuthToken = async (refreshToken) => {
   try {
-    const response = await fetch("/refresh", {
+    const response = await fetch(`${API_BASE_URL}/auth/refresh`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ refresh_token: refreshToken }),
@@ -48,7 +52,7 @@ const refreshAuthToken = async (refreshToken) => {
   }
 };
 
-export function TokenProvider({ children }) {
+export function TokenProvider({ children }) { // eslint-disable-line
   const [userToken, setUserToken] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -125,9 +129,9 @@ export function TokenProvider({ children }) {
 
   // Shows a loading placeholder until token initialization is complete (its optional)
   // TODO: revisit this (maybe add some animations?)
-  if (isLoading) {
-    return <div className="token-loading">Loading...</div>;
-  }
+  // if (isLoading) {
+  //   return <div className="token-loading">Loading...</div>;
+  // }
 
   return (
     <TokenContext.Provider value={{ userToken, setUserToken }}>

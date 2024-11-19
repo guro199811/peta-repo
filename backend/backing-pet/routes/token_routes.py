@@ -7,7 +7,9 @@ from flask_jwt_extended import (
 )
 
 
-blp = Blueprint("Token", __name__, description="Token operations")
+blp = Blueprint(
+    "Token", __name__, description="Token operations", url_prefix="/auth"
+)
 
 
 @blp.route("/refresh", methods=["POST"])
