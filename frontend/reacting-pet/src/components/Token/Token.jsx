@@ -1,8 +1,7 @@
-"use client"
+"use client";
 
 import { createContext, useContext, useState, useEffect } from "react";
 import { API_BASE_URL } from "@/constants/config/config.js";
-
 
 /* 
 Expected Token structure is as follows:
@@ -17,8 +16,6 @@ Expected Token structure is as follows:
 Provides access to tokens in all child components
 with virtual DOM capabilities
 */
-
-
 
 const TokenContext = createContext();
 
@@ -37,22 +34,33 @@ function isTokenExpired(token) {
 // Hypothetical function to refresh tokens using the refresh token
 // TODO: might not work as expected
 const refreshAuthToken = async (refreshToken) => {
+  if (!refreshToken) {
+    console.error("No refresh token available.");
+    return null;
+  }
+
   try {
     const response = await fetch(`${API_BASE_URL}/auth/refresh`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ refresh_token: refreshToken }),
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${refreshToken}`,
+      },
     });
 
-    if (!response.ok) throw new Error("Failed to refresh token");
+    if (!response.ok) {
+      throw new Error(`Failed to refresh token: ${response.statusText}`);
+    }
+
     return await response.json();
   } catch (error) {
-    console.error("Error refreshing token:", error);
-    return null;
+    console.error(`Error refreshing token: `, error);
+    return null; // Ensure a fallback if token refresh fails
   }
 };
 
-export function TokenProvider({ children }) { // eslint-disable-line
+export function TokenProvider({ children }) {
+  // eslint-disable-line
   const [userToken, setUserToken] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -100,7 +108,7 @@ export function TokenProvider({ children }) { // eslint-disable-line
     const timeUntilExpiration = exp * 1000 - Date.now() - 60000;
 
     const timeoutId = setTimeout(async () => {
-      console.log("Refreshing")
+      console.log(`Refreshing with ${userToken.refresh_token}`);
       const newTokens = await refreshAuthToken(userToken.refresh_token);
       if (newTokens) {
         setUserToken(newTokens);

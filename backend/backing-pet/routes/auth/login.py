@@ -75,8 +75,8 @@ class UserLogin(MethodView):
                 )
                 abort(500, message=f"Database Error: {ex}")
 
-        access_token = create_access_token(identity=user.id, fresh=True)
-        refresh_token = create_refresh_token(identity=user.id)
+        access_token = create_access_token(identity=str(user.id), fresh=True)
+        refresh_token = create_refresh_token(identity=str(user.id))
         # TODO: Integrate Mailing confirmation
         return {
             "message": "Login successful",

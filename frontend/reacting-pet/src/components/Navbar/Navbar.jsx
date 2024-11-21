@@ -39,6 +39,10 @@ function Navbar() {
     setUserToken(null);
   };
 
+  // if (userToken) {
+  //   CloseLogin();
+  // }
+
   return (
     <>
       <div
