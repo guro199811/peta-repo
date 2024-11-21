@@ -1,6 +1,5 @@
 import styles from "./Home.module.css";
 import Image from "next/image";
-// import Image from "../../public/assets/main-bg.jpg"
 
 function Home() {
   return (
@@ -18,8 +17,8 @@ function Home() {
       <div
         className={`${styles.home} relative flex flex-col 
       items-center justify-center h-auto
-       text-black font-serif border border-black 
-       bg-white/75 rounded-2xl backdrop-blur-sm z-50`}
+      text-black font-serif bg-slate-50 bg-opacity-80 backdrop-blur-sm drop-shadow-2xl
+        shadow-current rounded-xl z-30`}
       >
         <h1>Welcome to our website!</h1>
         <p>

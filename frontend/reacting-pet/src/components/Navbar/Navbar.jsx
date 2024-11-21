@@ -1,12 +1,11 @@
-"use client"
+"use client";
 
 import { useState } from "react";
 import styles from "./Navbar.module.css";
 import logo from "../../../public/assets/logo.png";
 import Auth from "./Auth/Auth.jsx";
 import { useToken } from "../Token/Token.jsx";
-import Link from "next/link"
-
+import Link from "next/link";
 
 function Navbar() {
   const { userToken, setUserToken } = useToken();
@@ -42,16 +41,24 @@ function Navbar() {
 
   return (
     <>
-      <div className={styles.navbar}>
-        <Link href="/" className={styles.logo}>
-          <img src={logo.src} />
+      <div
+        className={`${styles.navbar} flex justify-between w-full items-center
+        h-16 bg-slate-100 bg-opacity-75 backdrop-blur-sm drop-shadow-2xl
+        shadow-current rounded-xl z-40`}
+      >
+        <Link href="/" className="
+        flex items-center justify-center max-w-24 max-h-24 ml-1 mt-3"
+        >
+          <img draggable="false" src={logo.src} />
         </Link>
-        <div className={styles.links}>
+        <div className={`${styles.links} mb-1`}>
           <Link href="/">Home Page</Link>
           <Link href="/">Search</Link>
           <Link href="/about">About</Link>
-          {userToken ? ( 
-            <a className={styles.logoutBtn} onClick={() => logOut()}>Log-Out</a>
+          {userToken ? (
+            <a className={styles.logoutBtn} onClick={() => logOut()}>
+              Log-Out
+            </a>
           ) : (
             <a className={styles.loginBtn} onClick={() => openLogin()}>
               Login

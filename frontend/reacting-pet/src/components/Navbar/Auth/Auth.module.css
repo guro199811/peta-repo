@@ -13,13 +13,13 @@
   background-color: rgb(255, 255, 255);
   padding: 40px;
   margin: 0;
-  border-radius: 15px;
+  border-radius: 24px;
   box-shadow: 0px 0px 50px 20px rgba(0, 0, 0, 0.61);
   width: 100%;
   height: 100%;
   z-index: 1001;
   transform: scale(1);
-  position: relative;
+  overflow: hidden;
   transition: all 0.5s ease-in-out, transform 0.3s ease;
 }
 
@@ -28,11 +28,9 @@
 }
 
 .auth {
-  width: 100%;
-  height: 100%;
+  width: 350px;
   position: absolute;
-  /* opacity: 0; */
-  transform: translateY(20px);
+  transform: translateX(150px);
   pointer-events: none;
   color: black;
   transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
@@ -41,13 +39,14 @@
 .auth.login {
   opacity: 1;
   position: relative;
-  transform: translateY(0);
+  transform: translateX(0);
   pointer-events: auto;
 }
 
 .auth.register {
+  max-width: 75%;
   opacity: 0;
-  transform: translateY(-20px);
+  transform: translateX(-150px) !important;
   pointer-events: none;
 }
 
@@ -93,6 +92,7 @@
   font-size: 14;
   color: black;
   margin-right: 10px;
+  margin-left: 1px
 }
 
 .forgot_password {

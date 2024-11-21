@@ -114,17 +114,22 @@ const Auth = (props) => {
       .then((response) => response.json())
       .then((data) => {
         console.log("Registration response => ", data);
+        alert("Registration Successful");
+        window.location.reload();
       })
-      .catch((error) => console.error("Error:", error));
+      .catch((error) => alert(error.message));
   };
 
   return (
-    <div className={`${styles.authBox} ${props.closingSignal ?  styles.close : ""}`}>
+    <div
+      className={`${styles.authBox} ${props.closingSignal ? styles.close : ""}`}
+    >
       <div
         className={`${styles.auth} ${isLogin ? styles.login : styles.register}`}
       >
         <form className={styles.login_form} onSubmit={handleLogin}>
-          <h1>Sign in</h1>
+          <h1 className="text-center mb-6 text-2xl 
+          font-serif font-bold">Sign in</h1>
           <input
             type="email"
             placeholder="Email"
@@ -175,7 +180,8 @@ const Auth = (props) => {
         className={`${styles.auth} ${isLogin ? styles.register : styles.login}`}
       >
         <form className={styles.register_form} onSubmit={handleRegistration}>
-          <h1>Create Account</h1>
+          <h1 className="text-center mb-6 text-2xl 
+          font-serif font-bold">Create Account</h1>
           <input
             type="text"
             placeholder="First Name"
