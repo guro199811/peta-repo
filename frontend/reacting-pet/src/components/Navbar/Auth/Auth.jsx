@@ -94,8 +94,12 @@ const Auth = (props) => {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log("Login response => ", data);
-        setUserToken(data);
+        // console.log("Login response => ", data)
+        if (data.access_token){
+          setUserToken(data);
+        } else {
+          alert(data.message)
+        }
         // Force clicks element to close login
         document.querySelector(".loginWrapper").click();
       }) // Show error message
