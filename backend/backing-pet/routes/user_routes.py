@@ -71,6 +71,10 @@ class UserRoutes(MethodView):
                 message="While editing user data, "
                 + "unexpected error occured",
             )
+        except Exception as e:
+            logger.error(
+                f"An unexpected error occurred while editing user data {e}"
+            )
 
 
 @blp.route("/user_pets")

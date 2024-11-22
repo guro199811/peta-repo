@@ -78,18 +78,17 @@ class UserRegister(MethodView):
             abort(400, message="Password do not match")
         if user_data["prefix"] not in number_standards.keys():
             abort(400, message="Invalid phone prefix")
-        if (
-            len(str(user_data["phone"]))
-            != int(number_standards[user_data["prefix"]])
+        if len(str(user_data["phone"])) != int(
+            number_standards[user_data["prefix"]]
         ):
             abort(400, message="Invalid number")
         try:
-            phone = user_data["prefix"] + str(user_data["phone"])
             new_user = Person(
                 mail=user_data["mail"],
                 name=user_data["name"],
                 lastname=user_data["lastname"],
-                phone=phone,
+                phone_prefix=user_data["prefix"],
+                phone=str(user_data["phone"]),
                 address=user_data.get("address", None),
                 created=dt.today(),
                 user_type=1,  # TODO: For now its hardcoded, Fix it later

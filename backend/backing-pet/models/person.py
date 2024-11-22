@@ -8,6 +8,7 @@ class Person(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(50), nullable=False)
     lastname = db.Column(db.String(50), nullable=False)
+    phone_prefix = db.Column(db.String(50), nullable=False)
     phone = db.Column(db.String(50), nullable=False)
     mail = db.Column(db.String(100), unique=True)
     address = db.Column(db.String(100))

@@ -21,6 +21,7 @@ class PersonGetterSchema(Schema):
     id = fields.Integer(required=True)
     name = fields.String(required=True)
     lastname = fields.String(required=True)
+    prefix = fields.String(required=True)
     phone = fields.String(required=True)
     mail = fields.String(required=True)
     address = fields.String()
@@ -32,6 +33,7 @@ class PersonGetterSchema(Schema):
 class PlainPersonUpdateSchema(Schema):
     name = fields.String()
     lastname = fields.String()
+    prefix = fields.String()
     phone = fields.String()
     address = fields.String()
 
