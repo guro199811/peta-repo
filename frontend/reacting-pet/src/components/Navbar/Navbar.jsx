@@ -48,20 +48,27 @@ function Navbar() {
       <div
         className={`${styles.navbar} flex justify-between w-full items-center
         h-16 bg-slate-100 bg-opacity-75 backdrop-blur-sm drop-shadow-2xl
-        shadow-current rounded-xl z-40`}
+        shadow-current rounded-xl z-40
+        max-md:h-12`}
       >
-        <Link href="/" className="
-        flex items-center justify-center max-w-24 max-h-24 ml-1 mt-3"
+        <Link
+          href="/"
+          className="
+        flex float-left items-center justify-center max-w-24 max-h-24 ml-1 mt-3
+        max-md:ml-4 max-md:scale-75"
         >
           <img draggable="false" src={logo.src} />
         </Link>
-        <div className={`${styles.links} mb-1`}>
-          <Link href="/">Home Page</Link>
-          <Link href="/">Search</Link>
+        <div
+          className={`${styles.links} mb-1 float-right 
+          max-sm:mb-1 max-sm:scale-50 max-sm:grid max-sm:grid-cols-2
+          max-sm:min-w-48 text-center`}
+        >
+          {userToken && <Link href="/home">My Page</Link>}
           <Link href="/about">About</Link>
           {userToken ? (
             <a className={styles.logoutBtn} onClick={() => logOut()}>
-              Log-Out
+              Logout
             </a>
           ) : (
             <a className={styles.loginBtn} onClick={() => openLogin()}>

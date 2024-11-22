@@ -1,7 +1,7 @@
-import styles from "./Home.module.css";
+import styles from "./MainPage.module.css";
 import Image from "next/image";
 
-function Home() {
+function MainPage() {
   return (
     <div
       className="absolute w-full h-full bg-cover 
@@ -15,13 +15,13 @@ function Home() {
         priority
       />
       <div
-        className={`${styles.home} relative flex flex-col 
+        className={`${styles.main} relative flex flex-col 
       items-center justify-center h-auto
       text-black font-serif bg-slate-50 bg-opacity-80 backdrop-blur-sm drop-shadow-2xl
         shadow-current rounded-xl z-30`}
       >
         <h1>Welcome to our website!</h1>
-        <p>
+        <p className="pl-2 pr-2 text-center text-balance">
           Our website is created for your lovely pets and they're veterinary
           care needs.
         </p>
@@ -31,4 +31,4 @@ function Home() {
   );
 }
 
-export default Home;
+export default MainPage;

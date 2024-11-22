@@ -38,7 +38,7 @@ const refreshAuthToken = async (refreshToken) => {
     console.error("No refresh token available.");
     return null;
   }
-
+  
   try {
     const response = await fetch(`${API_BASE_URL}/auth/refresh`, {
       method: "POST",

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { API_BASE_URL } from "@/constants/config/config.js";
 import { useToken } from "../../Token/Token.jsx";
 import styles from "./Auth.module.css";
+import Link from "next/link";
 
 const Auth = (props) => {
   const { setUserToken } = useToken();
@@ -102,6 +103,7 @@ const Auth = (props) => {
         }
         // Force clicks element to close login
         document.querySelector(".loginWrapper").click();
+        document.getElementById("homePageLink").click();
       }) // Show error message
       .catch((error) => console.error("Error:", error));
   };
@@ -130,6 +132,7 @@ const Auth = (props) => {
     <div
       className={`${styles.authBox} ${props.closingSignal ? styles.close : ""}`}
     >
+      <Link href="/home" id="homePageLink" className="hidden"></Link>
       <div
         className={`${styles.auth} ${isLogin ? styles.login : styles.register}`}
       >
