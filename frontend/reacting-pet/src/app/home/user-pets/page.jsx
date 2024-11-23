@@ -1,7 +1,7 @@
 function UserPets() {
   return (
   <div>
-    
+    pets here
   </div>
 );
 }

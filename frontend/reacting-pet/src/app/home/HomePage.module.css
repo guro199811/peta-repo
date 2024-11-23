@@ -40,9 +40,8 @@
 
 .box_menu {
   width: 100% !important;
-  padding: 20px;
   display: block;
-  background-color:rgba(248,248,248,0.56);
+  background-color:rgb(255, 255, 255);
   border-radius: 10px;
   border: 1px solid #ccc;
   text-align: center;

@@ -17,7 +17,7 @@ function MainPage() {
       <div
         className={`${styles.main} relative flex flex-col 
       items-center justify-center h-auto
-      text-black font-serif bg-slate-50 bg-opacity-80 backdrop-blur-sm drop-shadow-2xl
+      text-black font-serif bg-white backdrop-blur-sm drop-shadow-2xl
         shadow-current rounded-xl z-30`}
       >
         <h1>Welcome to our website!</h1>

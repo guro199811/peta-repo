@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import styles from "./Navbar.module.css";
 import logo from "../../../public/assets/logo.png";
 import Auth from "./Auth/Auth.jsx";
@@ -8,8 +9,9 @@ import { useToken } from "../Token/Token.jsx";
 import Link from "next/link";
 
 function Navbar() {
-  const { userToken, setUserToken } = useToken();
+  const router = useRouter();
 
+  const { userToken, setUserToken } = useToken();
   const [loginScreen, setLoginScreen] = useState(false);
   const [loginWrapper, setLoginWrapper] = useState(false);
   const [closingSignal, setClosingSignal] = useState(false);
@@ -36,18 +38,17 @@ function Navbar() {
   const logOut = () => {
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
-    setUserToken(null);
-  };
-
-  // if (userToken) {
-  //   CloseLogin();
-  // }
+    router.push("/"); // Navigate to the home page
+    setTimeout(() => {
+      setUserToken(null);
+    }, 150); // 150ms because router takes some time
+  }; //         to call on SSR componentrs
 
   return (
     <>
       <div
         className={`${styles.navbar} flex justify-between w-full items-center
-        h-16 bg-slate-100 bg-opacity-75 backdrop-blur-sm drop-shadow-2xl
+        h-16 bg-white backdrop-blur-sm drop-shadow-2xl
         shadow-current rounded-xl z-40
         max-md:h-12`}
       >

@@ -8,7 +8,7 @@ class Person(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(50), nullable=False)
     lastname = db.Column(db.String(50), nullable=False)
-    phone_prefix = db.Column(db.String(50), nullable=False)
+    phone_prefix = db.Column(db.String(10), nullable=False)
     phone = db.Column(db.String(50), nullable=False)
     mail = db.Column(db.String(100), unique=True)
     address = db.Column(db.String(100))
@@ -22,7 +22,7 @@ class Person(db.Model):
     temporary_block = db.Column(DateTime, nullable=True)
 
     def to_dict(self):
-        return {self.id: {
+        return {
             "name": self.name,
             "lastname": self.lastname,
             "phone": self.phone,
@@ -32,7 +32,7 @@ class Person(db.Model):
             "user_type": self.user_type,
             "confirmed": self.confirmed,
             "temporary_block": self.temporary_block,
-        }}
+        }
 
     def __repr__(self):
         return f'{self.to_dict()}'
