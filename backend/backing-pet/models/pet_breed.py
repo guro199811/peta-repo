@@ -9,3 +9,10 @@ class PetBreed(db.Model):
         db.Integer, db.ForeignKey("pet_species.species_id")
     )
     breed = db.Column(db.String(100))
+    species = db.relationship("PetSpecies", back_populates="breeds")
+
+    def to_dict(self):
+        return {
+            "breed_id": self.breed_id,
+            "breed": self.breed,
+        }

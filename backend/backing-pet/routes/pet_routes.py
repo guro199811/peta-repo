@@ -4,13 +4,33 @@ from flask import jsonify
 from flask_jwt_extended import jwt_required, current_user
 from db import db
 from sqlalchemy.exc import SQLAlchemyError
-from models import Pet
+from models import Pet, PetSpecies
 from validators.pet_schema import PetSchema
 from logs import logger_config
 
 logger = logger_config.logger
 
 blp = Blueprint("Pets", __name__, description="Pet operations")
+
+
+@blp.route("/pet_types")
+class PetTypes(MethodView):
+    def get(self):
+        """
+        Retrieve all pet species from the database.
+
+        This function queries the database to retrieve all pet species and
+        associated breeds.
+
+        Parameters:
+        None
+
+        Returns:
+        list: A list of dictionaries, where each dictionary represents a pet
+        species and associated breeds as nested dictionaries.
+        """
+        species = PetSpecies.query.all()
+        return [specie.to_dict() for specie in species]
 
 
 @blp.route("/register_pet")
