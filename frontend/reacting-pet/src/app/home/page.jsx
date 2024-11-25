@@ -24,11 +24,6 @@ function HomePage() {
 
   // if user is not logged in throw 404
   useEffect(() => {
-    if (!userToken) {
-      // Redirect to login if no token
-      router.push("/usernotfound");
-    }
-
     const cachedCurrentUser = localStorage.getItem("currentUser");
 
     if (cachedCurrentUser) {
@@ -104,16 +99,7 @@ function HomePage() {
       });
   };
 
-  if (!userToken) {
-    return (
-      <div
-        className="flex w-full h-full text-center justify-center
-      items-center text-black font-medium font-serif"
-      >
-        Redirecting...
-      </div>
-    );
-  }
+
   return (
     <>
       <h1 className={editMode ? "hidden" : ""}>Hello {userData.name}</h1>

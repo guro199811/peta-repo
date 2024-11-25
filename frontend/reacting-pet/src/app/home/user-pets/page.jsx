@@ -31,10 +31,53 @@ function UserPets() {
   return (
     <div>
       {userPets ? (
-        <ul>
-          {userPets.map((userPet) => (
-            <li key={userPet.id}>{userPet.name}</li>
+        <ul key="outer">
+          {userPets.map((pet) => (
+            <li key={pet.id}>
+              <div className="pet-info">
+                <form>
+                  <label htmlFor="name">
+                    Name:{" "}
+                    <input type="text" value={pet.name} required disabled />
+                  </label>
+
+                  <label htmlFor="species">
+                    Species:{" "}
+                    <input type="text" value={pet.pet_species} readOnly />
+                  </label>
+
+                  <label htmlFor="breed">
+                    Breed:{" "}
+                    <input type="text" value={pet.pet_breed} readOnly />
+                  </label>
+
+                  <label htmlFor="birth_date">
+                    Birth Date:{" "}
+                    <input
+                      type="text"
+                      value={pet.birth_date}
+                      required
+                      disabled
+                    />
+                  </label>
+
+                  <label htmlFor="recent_vaccination">
+                    Recent vaccination:{" "}
+                    <input
+                      type="date"
+                      value={pet.recent_vaccination}
+                      disabled
+                    />
+                  </label>
+                </form>
+              </div>
+            </li>
           ))}
+          <li>
+            <a onClick={() => router.push("/home/user-pets/new-pet")}>
+              Add New Pet
+            </a>
+          </li>
         </ul>
       ) : (
         <div>

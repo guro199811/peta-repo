@@ -11,7 +11,7 @@ class Pet(db.Model):
     species = db.relationship("PetSpecies", lazy="joined")
     pet_breed = db.Column(db.Integer, db.ForeignKey("pet_breeds.breed_id"))
     breed = db.relationship("PetBreed", lazy="joined")
-    gender = db.Column(db.String(2))
+    gender = db.Column(db.String(10))
     medical_condition = db.Column(db.String(50))
     current_treatment = db.Column(db.String(50))
     recent_vaccination = db.Column(db.Date)
@@ -21,7 +21,8 @@ class Pet(db.Model):
     owner = db.relationship("Person", lazy="joined")
 
     def to_dict(self):
-        return {self.pet_id: {
+        return {
+            "pet_id": self.pet_id,
             "pet_species": self.species.species,
             "pet_breed": self.breed.breed,
             "gender": self.gender,
@@ -31,7 +32,7 @@ class Pet(db.Model):
             "name": self.name,
             "birth_date": self.birth_date,
             "owner": self.owner.to_dict()
-        }}
+        }
 
     def __repr__(self):
         return f'{self.to_dict()}'

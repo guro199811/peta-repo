@@ -1,8 +1,33 @@
+"use client"
+
 import styles from "./HomePage.module.css";
 import Image from "next/image";
 import Link from "next/link";
+import { useToken } from "@/components/Token/Token.jsx"
+import { useEffect } from "react"
 
 function HomePageLayout({ children}) {
+  const { userToken } = useToken()
+
+  useEffect(() => {
+    if (!userToken) {
+      // Redirect to login if no token
+      router.push("/usernotfound");
+    }  
+  }, [])
+
+  if (!userToken) {
+    return (
+      <div
+        className="flex w-full h-full text-center justify-center
+      items-center text-black font-medium font-serif"
+      >
+        Redirecting...
+      </div>
+    );
+  }
+  
+
   return (
     <>
       <Image
