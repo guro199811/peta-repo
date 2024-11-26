@@ -23,16 +23,22 @@ class Pet(db.Model):
     def to_dict(self):
         return {
             "pet_id": self.pet_id,
-            "pet_species": self.species.species,
-            "pet_breed": self.breed.breed,
+            "pet_species": {
+                "species": self.species.species,
+                "species_id": self.species.species_id,
+            },
+            "pet_breed": {
+                "breed": self.breed.breed,
+                "breed_id": self.breed.breed_id
+            },
             "gender": self.gender,
             "medical_condition": self.medical_condition,
             "current_treatment": self.current_treatment,
             "recent_vaccination": self.recent_vaccination,
             "name": self.name,
             "birth_date": self.birth_date,
-            "owner": self.owner.to_dict()
+            "owner": self.owner.to_dict(),
         }
 
     def __repr__(self):
-        return f'{self.to_dict()}'
+        return f"{self.to_dict()}"

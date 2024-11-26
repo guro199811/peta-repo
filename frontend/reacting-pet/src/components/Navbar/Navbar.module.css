@@ -26,10 +26,10 @@
 }
 
 .links a:hover{
-    background-color: hsl(39, 100%, 50%);
-    box-shadow: 0px 0px 10px 2px hsl(39, 100%, 50%);
-    color: hsl(0, 0%, 0%);
-    border: 1px solid hsl(39, 100%, 50%);
+    background-color: hsl(27, 100%, 50%);
+    color: white;
+    border: 1px solid hsl(27, 100%, 50%);
+    box-shadow: 0px 0px 5px 2px hsl(27, 100%, 50%);
 }
 
 .links a:active{
@@ -86,8 +86,19 @@
     box-shadow: 0px 0px 10px 2px rgb(187, 255, 0)!important;
 }
 
-.sidebarBtn:hover{
-    color: white!important;
-    background-color: transparent!important;
-    box-shadow: 0px 0px 10px 2px black!important;
+.logoutBtn{
+    color: hsl(17, 100%, 45%) !important;
+    box-shadow: 0px 0px 10px 2px hsl(17, 100%, 69%) !important;
+}
+
+.logoutBtn:hover{
+    color: hsl(17, 100%, 90%) !important;
+    background-color: hsl(17, 100%, 45%) !important;
+    box-shadow: 0px 0px 10px 2px hsl(17, 100%, 60%) !important;
+}
+
+.logoutBtn:active{
+    color: hsl(0, 0%, 100%) !important;
+    background-color: hsl(24, 100%, 50%) !important;
+    box-shadow: 0px 0px 10px 2px hsl(17, 100%, 59%) !important;
 }

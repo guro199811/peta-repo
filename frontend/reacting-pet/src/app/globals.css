@@ -107,3 +107,29 @@ input:focus {
 }
 
 
+/* Scrollbar */
+::-webkit-scrollbar {
+  background-color: hsla(0, 0%, 90%, 0.1);
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  margin-block: 0.1em;
+  background-color: hsla(0, 0%, 90%, 0.6);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, hsla(0, 0%, 70%, 1), hsla(0, 0%, 60%, 1));
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, hsla(0, 0%, 60%, 1), hsla(0, 0%, 50%, 1));
+  box-shadow: 0 0 5px hsla(0, 0%, 50%, 0.8);
+}
+
+::-webkit-scrollbar-corner {
+  background-color: hsla(0, 0%, 90%, 0.6);
+}

@@ -3,8 +3,11 @@
 import { useState, useEffect } from "react";
 import { useToken } from "@/components/Token/Token.jsx";
 import { API_BASE_URL } from "@/constants/config/config.js";
+import { useRouter } from "next/navigation";
 
 const NewPet = () => {
+  const router = useRouter();
+
   const [speciesData, setSpeciesData] = useState([]);
   const [selectedSpecies, setSelectedSpecies] = useState(null);
   const { userToken } = useToken();
@@ -47,18 +50,18 @@ const NewPet = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Submitted Pet Data:", petData);
-    fetch(`${API_BASE_URL}/register_pet`,{
+    fetch(`${API_BASE_URL}/register_pet`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${userToken.access_token}`
+        Authorization: `Bearer ${userToken.access_token}`,
       },
-      body: JSON.stringify(petData)
+      body: JSON.stringify(petData),
     })
-     .then((response) => response.json())
-     .then((data) => {
+      .then((response) => response.json())
+      .then((data) => {
         console.log("Pet registration response:", data);
-        // Handle success or error
+        router.push("/home/user-pets")
       })
       .catch((error) => console.error("Error:", error));
   };
@@ -111,7 +114,7 @@ const NewPet = () => {
             <option value="Female">Female</option>
             <option value="Other">Other</option>
           </select>
-        </div>        
+        </div>
         <div>
           <label htmlFor="pet_species" className="block text-gray-600 mb-1">
             Select a Type
@@ -154,12 +157,23 @@ const NewPet = () => {
         <div className="text-center">
           <button
             type="submit"
-            className="bg-white border border-amber-900 shadow-sm shadow-amber-950
-             text-amber-950 px-4 py-2 rounded-md hover:border-amber-400 hover:shadow-amber-400
-             hover:text-amber-950 hover:bg-amber-400 focus:outline-none focus:ring-2
-             focus:ring-amber-500 focus:ring-offset-2 transition-all"
+            className="bg-white border border-green-900 shadow-sm shadow-green-950
+             text-green-950 px-4 py-2 rounded-md hover:border-green-500 hover:shadow-green-500
+             hover:text-white hover:bg-green-500 focus:outline-none focus:ring-2
+             focus:ring-green-500 focus:ring-offset-2 transition-all"
           >
             Submit
+          </button>
+          <button
+            type="button"
+            className="bg-white border border-orange-950 shadow-sm shadow-orange-950
+          text-orange-950 px-4 py-2 rounded-md hover:border-orange-500 hover:shadow-orange-500
+          hover:text-white hover:bg-orange-500 focus:outline-none focus:ring-2
+             focus:ring-orange-500 focus:ring-offset-2 transition-all
+             ml-4"
+            onClick={() => router.push("/home/user-pets")}
+          >
+            Cancel
           </button>
         </div>
       </form>

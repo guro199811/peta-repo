@@ -68,6 +68,7 @@ class PetOperations(MethodView):
     @jwt_required()
     @blp.doc(security=[{"JWT Auth": []}])
     @blp.arguments(PetSchema)
+    @blp.response(200)
     def put(self, pet_data, pet_id):
         pet = Pet.query.filter_by(pet_id=pet_id).first()
         if not pet:
@@ -78,7 +79,6 @@ class PetOperations(MethodView):
                 message="This pet is not registered on "
                 "this logged-in User.",
             )
-        pet.owner_id = current_user.id
         for key, value in pet_data.items():
             if value is None:
                 continue
@@ -90,15 +90,15 @@ class PetOperations(MethodView):
             logger.error(e)
             db.session.rollback()
             abort(500, message="Something went wrong")
-        return {"message": f"Pet {pet.name} Updated succesfully"}, 200
+        return {"code": 200, "message": f"Pet {pet.name} Updated succesfully"}
 
     @jwt_required()
     @blp.doc(security=[{"JWT Auth": []}])
     def delete(self, pet_id):
-        pet = Pet.query.filter_by(id=pet_id).first()
+        pet = Pet.query.filter_by(pet_id=pet_id).first()
         if not pet:
             abort(404, message="Pet not found")
-        if pet.owner_id != current_user.id or current_user.user_type != 2:
+        if pet.owner_id != current_user.id and current_user.user_type != 2:
             abort(
                 400,
                 message="This pet is not registered on "
@@ -107,7 +107,7 @@ class PetOperations(MethodView):
         try:
             db.session.delete(pet)
             db.session.commit()
-            return jsonify(pet.to_dict())
+            return {"code": 200, "message": "pet deleted successfully"}
         except SQLAlchemyError as e:
             logger.error(e)
             db.session.rollback()
