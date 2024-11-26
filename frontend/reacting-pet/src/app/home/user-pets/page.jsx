@@ -29,6 +29,7 @@ function UserPets() {
           return setUserPets([]);
         }
         setUserPets(data);
+        return data
       })
       .catch((error) => console.error("Error fetching user pets:", error));
   }, []);
@@ -56,8 +57,8 @@ function UserPets() {
       gender: updatingPet.gender,
       medical_condition: updatingPet.medical_condition,
       current_treatment: updatingPet.current_treatment,
-      recent_vaccination: f_dOfBirth,
-      birth_date: f_dOfVaccination,
+      recent_vaccination: f_dOfVaccination,
+      birth_date: f_dOfBirth,
       owner_id: updatingPet.owner.id
     }
     fetch(`${API_BASE_URL}/pet/${petId}`, {
@@ -114,7 +115,7 @@ function UserPets() {
         <div>
           <ul key="outer" className="pet-grid">
             {userPets.map((pet) => {
-              const isPetEditing = isEditing === pet.pet_id; // Changed: Isolates the editing mode to the specific pet
+              const isPetEditing = isEditing === pet.pet_id;
               return (
                 <li key={pet.pet_id} className="pet-card">
                   <div className="pet-info">
@@ -126,9 +127,9 @@ function UserPets() {
                           value={
                             isPetEditing
                               ? pet.name
-                              : capitalizeFirstLetter(pet.name) // Changed: Display static value for non-editing pets
+                              : capitalizeFirstLetter(pet.name)
                           }
-                          disabled={!isPetEditing} // Changed: Input is only editable in edit mode
+                          disabled={!isPetEditing}
                           onChange={(e) =>
                             setUserPets((prev) =>
                               prev.map((p) =>
@@ -167,9 +168,9 @@ function UserPets() {
                       <label htmlFor="birth_date" className="block mb-2">
                         Birth Date
                         <input
-                          type="text"
-                          value={pet.birth_date}
-                          disabled={!isPetEditing} // Changed: Input is only editable in edit mode
+                          type="date"
+                          value={convertToISO8601(pet.birth_date)}
+                          disabled={!isPetEditing}
                           onChange={(e) =>
                             setUserPets((prev) =>
                               prev.map((p) =>
@@ -190,8 +191,8 @@ function UserPets() {
                         Recent Vaccination
                         <input
                           type="date"
-                          value={pet.recent_vaccination || ""} // Changed: Default empty value for non-editing mode
-                          disabled={!isPetEditing} // Changed: Input is only editable in edit mode
+                          value={pet.recent_vaccination || ""}
+                          disabled={!isPetEditing}
                           onChange={(e) =>
                             setUserPets((prev) =>
                               prev.map((p) =>
