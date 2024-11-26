@@ -29,7 +29,7 @@ function UserPets() {
           return setUserPets([]);
         }
         setUserPets(data);
-        return data
+        return data;
       })
       .catch((error) => console.error("Error fetching user pets:", error));
   }, []);
@@ -48,10 +48,11 @@ function UserPets() {
       console.error("Pet not found for editing");
       return;
     }
+    console.log(updatingPet);
     // f_d stands for formatted date
-    const f_dOfBirth= convertToISO8601(updatingPet.birth_date)
-    const f_dOfVaccination = convertToISO8601(updatingPet.recent_vaccination)
-    const updatedPet = {
+    const f_dOfBirth = convertToISO8601(updatingPet.birth_date);
+    const f_dOfVaccination = convertToISO8601(updatingPet.recent_vaccination);
+    const formattedPet = {
       pet_species: updatingPet.pet_species.species_id,
       pet_breed: updatingPet.pet_breed.breed_id,
       gender: updatingPet.gender,
@@ -59,8 +60,8 @@ function UserPets() {
       current_treatment: updatingPet.current_treatment,
       recent_vaccination: f_dOfVaccination,
       birth_date: f_dOfBirth,
-      owner_id: updatingPet.owner.id
-    }
+      owner_id: updatingPet.owner.id,
+    };
     fetch(`${API_BASE_URL}/pet/${petId}`, {
       method: "PUT",
       headers: {
@@ -68,9 +69,7 @@ function UserPets() {
         "Content-Type": "application/json",
         Authorization: `Bearer ${userToken.access_token}`,
       },
-      body: JSON.stringify({
-        ...updatedPet
-      }),
+      body: JSON.stringify(formattedPet),
     })
       .then((response) => response.json())
       .then((data) => {
@@ -116,6 +115,10 @@ function UserPets() {
           <ul key="outer" className="pet-grid">
             {userPets.map((pet) => {
               const isPetEditing = isEditing === pet.pet_id;
+              const formattedBdate = convertToISO8601(pet.birth_date);
+              const formattedVac = convertToISO8601(
+                pet.recent_vaccination
+              );
               return (
                 <li key={pet.pet_id} className="pet-card">
                   <div className="pet-info">
@@ -169,7 +172,7 @@ function UserPets() {
                         Birth Date
                         <input
                           type="date"
-                          value={convertToISO8601(pet.birth_date)}
+                          value={formattedBdate}
                           disabled={!isPetEditing}
                           onChange={(e) =>
                             setUserPets((prev) =>
@@ -191,7 +194,7 @@ function UserPets() {
                         Recent Vaccination
                         <input
                           type="date"
-                          value={pet.recent_vaccination || ""}
+                          value={formattedVac || ""}
                           disabled={!isPetEditing}
                           onChange={(e) =>
                             setUserPets((prev) =>
