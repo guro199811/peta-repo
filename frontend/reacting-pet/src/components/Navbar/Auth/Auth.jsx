@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { API_BASE_URL } from "@/constants/config/config.js";
 import { useToken } from "../../Token/Token.jsx";
+import clearCache from "@/utils/cache_cleaner.js";
 import styles from "./Auth.module.css";
 import Link from "next/link";
 
@@ -54,6 +55,7 @@ const Auth = (props) => {
   };
 
   useEffect(() => {
+    clearCache();
     // Fetch Phone prefixes from API
     fetch(`${API_BASE_URL}/auth/register`)
       .then((response) => response.json()) // Return parsed JSON

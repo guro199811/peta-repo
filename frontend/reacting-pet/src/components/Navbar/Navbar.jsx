@@ -7,6 +7,7 @@ import logo from "../../../public/assets/logo.png";
 import Auth from "./Auth/Auth.jsx";
 import { useToken } from "../Token/Token.jsx";
 import Link from "next/link";
+import clearCache from "@/utils/cache_cleaner.js"
 
 function Navbar() {
   const router = useRouter();
@@ -38,11 +39,19 @@ function Navbar() {
   const logOut = () => {
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
-    router.push("/"); // Navigate to the home page
+    clearCache();
     setTimeout(() => {
       setUserToken(null);
-    }, 150); // 150ms because router takes some time
+    }, 10);
+    setTimeout(() => {
+      router.push("/"); // Navigate to the home page
+    }, 100) // 150ms because router takes some time
   }; //         to call on SSR componentrs
+
+  // clears local storage
+  setInterval(() => {
+    clearCache(); // Clean cache every 1/2 hour
+  }, 1800000);
 
   return (
     <>

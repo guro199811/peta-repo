@@ -99,6 +99,8 @@ try:
         (1, "Yorkshire Terrier"),
         (1, "Boxer"),
         (1, "Dachshund"),
+        (1, "Pitbull"),
+        (1, "Other"),
         # Cats
         (2, "Persian"),
         (2, "Maine Coon"),
@@ -110,6 +112,7 @@ try:
         (2, "Scottish Fold"),
         (2, "Russian Blue"),
         (2, "Abyssinian"),
+        (2, "Other"),
         # Birds
         (3, "Parakeet"),
         (3, "Canary"),
@@ -121,24 +124,28 @@ try:
         (3, "Finch"),
         (3, "Macaw"),
         (3, "Conure"),
+        (3, "Other"),
         # Fish
         (4, "Goldfish"),
         (4, "Betta Fish"),
         (4, "Guppy"),
         (4, "Angelfish"),
         (4, "Molly"),
+        (4, "Other"),
         # Reptile
         (5, "Green Iguana"),
         (5, "Red-Eared Slider Turtle"),
         (5, "Corn Snake"),
         (5, "Leopard Gecko"),
         (5, "Ball Python"),
+        (5, "Other"),
         # Small Mammals
         (6, "Hamster"),
         (6, "Guinea Pig"),
         (6, "Rabbit"),
         (6, "Ferret"),
         (6, "Chinchilla"),
+        (6, "Other"),
     ]
 
     if not session.query(PetBreed).first():

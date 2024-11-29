@@ -9,11 +9,12 @@ import { useRouter } from "next/navigation";
 
 function HomePageLayout({ children}) {
   const { userToken } = useToken()
+  const router = useRouter();
 
   useEffect(() => {
     if (!userToken) {
       // Redirect to login if no token
-      router.push("/usernotfound");
+      router.push("/");
     }  
   }, [])
 

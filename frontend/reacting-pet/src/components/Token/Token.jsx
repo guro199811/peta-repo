@@ -2,6 +2,12 @@
 
 import { createContext, useContext, useState, useEffect } from "react";
 import { API_BASE_URL } from "@/constants/config/config.js";
+import "bootstrap/dist/css/bootstrap.min.css"; 
+
+if (typeof window !== "undefined") {
+  // Import Bootstrap Js
+  require("bootstrap/dist/js/bootstrap.bundle.min.js"); 
+}
 
 /* 
 Expected Token structure is as follows:
@@ -32,13 +38,12 @@ function isTokenExpired(token) {
 }
 
 // Hypothetical function to refresh tokens using the refresh token
-// TODO: might not work as expected
 const refreshAuthToken = async (refreshToken) => {
   if (!refreshToken) {
     console.error("No refresh token available.");
     return null;
   }
-  
+
   try {
     const response = await fetch(`${API_BASE_URL}/auth/refresh`, {
       method: "POST",
@@ -60,7 +65,6 @@ const refreshAuthToken = async (refreshToken) => {
 };
 
 export function TokenProvider({ children }) {
-  // eslint-disable-line
   const [userToken, setUserToken] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
