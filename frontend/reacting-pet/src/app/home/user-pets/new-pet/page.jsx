@@ -61,7 +61,7 @@ const NewPet = () => {
       .then((response) => response.json())
       .then((data) => {
         console.log("Pet registration response:", data);
-        router.push("/home/user-pets")
+        router.push("/home/user-pets");
       })
       .catch((error) => console.error("Error:", error));
   };
@@ -157,9 +157,9 @@ const NewPet = () => {
         <div className="text-center">
           <button
             type="submit"
-            className="bg-white border border-green-900 shadow-sm shadow-green-950
+            className="bg-neutral-100 border border-green-900 shadow-sm shadow-green-950
              text-green-950 px-4 py-2 rounded-md hover:border-green-500 hover:shadow-green-500
-             hover:text-white hover:bg-green-500 focus:outline-none focus:ring-2
+             hover:text-neutral-100 hover:bg-green-500 focus:outline-none focus:ring-2
              focus:ring-green-500 focus:ring-offset-2 transition-all"
           >
             Submit

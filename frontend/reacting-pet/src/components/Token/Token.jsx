@@ -2,7 +2,6 @@
 
 import { createContext, useContext, useState, useEffect } from "react";
 import { API_BASE_URL } from "@/constants/config/config.js";
-import "bootstrap/dist/css/bootstrap.min.css"; 
 
 if (typeof window !== "undefined") {
   // Import Bootstrap Js

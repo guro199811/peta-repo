@@ -1,5 +1,6 @@
 import Navbar from "@/components/Navbar/Navbar";
-import { TokenProvider } from "@/components/Token/Token.jsx"
+import { TokenProvider } from "@/components/Token/Token.jsx";
+// import "bootstrap/dist/css/bootstrap.min.css"; 
 import "./globals.css";
 
 export const metadata = {
