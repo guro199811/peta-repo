@@ -1,10 +1,18 @@
-from db import db
+from sqlalchemy.orm import (
+    Mapped, mapped_column
+)
+from sqlalchemy import (
+    Integer, String, DateTime, ForeignKey
+)
+from datetime import datetime
+
+from db import Base
 
 
-class Note(db.Model):
+class Note(Base):
     __tablename__ = "notes"
 
-    note_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    person_id = db.Column(db.Integer, db.ForeignKey("persons.id"))
-    created = db.Column(db.Date)
-    content = db.Column(db.String(500))
+    note_id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    person_id: Mapped[int]  = mapped_column(Integer, ForeignKey("persons.id"))
+    created: Mapped[datetime] = mapped_column(DateTime)
+    content: Mapped[str] = mapped_column(String(500))

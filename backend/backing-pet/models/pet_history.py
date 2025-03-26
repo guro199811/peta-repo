@@ -1,14 +1,20 @@
-from db import db
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy import Integer, String, Date, ForeignKey
+from datetime import datetime
+
+from db import Base
 
 
-class PetHistory(db.Model):
+class PetHistory(Base):
     __tablename__ = "pet_history"
 
-    history_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    clinic_id = db.Column(
-        db.Integer, db.ForeignKey("clinics.clinic_id"), nullable=True
+    history_id: Mapped[int] = mapped_column(
+        Integer, primary_key=True, autoincrement=True
     )
-    pet_id = db.Column(db.Integer, db.ForeignKey("pets.pet_id"))
-    treatment = db.Column(db.String(50))
-    date = db.Column(db.Date)
-    comment = db.Column(db.String(500))
+    clinic_id: Mapped[int | None] = mapped_column(
+        Integer, ForeignKey("clinics.clinic_id"), nullable=True
+    )
+    pet_id: Mapped[int] = mapped_column(Integer, ForeignKey("pets.pet_id"))
+    treatment: Mapped[str] = mapped_column(String(50))
+    date: Mapped[datetime] = mapped_column(Date)
+    comment: Mapped[str] = mapped_column(String(500))

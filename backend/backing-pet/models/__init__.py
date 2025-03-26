@@ -1,19 +1,19 @@
-from models.person import Person  # noqa: F401
-from models.vet import Vet  # noqa: F401
+from models.person import Person
+from models.vet import Vet
 
-from models.user_types import UserType  # noqa: F401
+from models.user_types import UserType
 
-from models.pet import Pet  # noqa: F401
-from models.pet_breed import PetBreed  # noqa: F401
-from models.pet_species import PetSpecies  # noqa: F401
-from models.pet_history import PetHistory  # noqa: F401
+from models.pet import Pet
+from models.pet_breed import PetBreed
+from models.pet_species import PetSpecies
+from models.pet_history import PetHistory
 
-from models.clinic import Clinic  # noqa: F401
-from models.person_to_clinic import PersonClinic  # noqa: F401
-from models.visit import Visit  # noqa: F401
+from models.clinic import Clinic
+from models.person_to_clinic import PersonClinic
+from models.visit import Visit
 
-from models.phone_prefixes import PhonePrefixes  # noqa: F401
-from models.user_requests import UserRequests  # noqa: F401
+from models.phone_prefixes import PhonePrefixes
+from models.user_requests import UserRequests
 
-from models.post import Post  # noqa: F401
-from models.note import Note  # noqa: F401
+from models.post import Post
+from models.note import Note

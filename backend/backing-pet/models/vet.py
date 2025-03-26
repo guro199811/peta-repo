@@ -1,15 +1,18 @@
-from db import db
+from sqlalchemy.orm import mapped_column, Mapped, relationship
+from sqlalchemy import Integer, Boolean, ForeignKey
+
+from db import Base
 
 
-class Vet(db.Model):
+class Vet(Base):
     __tablename__ = "vets"
 
-    active = db.Column(db.Boolean, default=True)
-    vet_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    person_id = db.Column(db.Integer, db.ForeignKey("persons.id"))
-    person_data = db.relationship("Person", lazy="joined")
-    has_license = db.Column(db.Boolean, default=False)
-    temporary_license = db.Column(db.Boolean, default=True)
+    active: Mapped[bool] = mapped_column(Boolean, default=True)
+    vet_id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    person_id: Mapped[int] = mapped_column(Integer, ForeignKey("persons.id"))
+    person_data = relationship("Person", lazy="joined")
+    has_license: Mapped[bool] = mapped_column(Boolean, default=False)
+    temporary_license: Mapped[bool] = mapped_column(Boolean, default=True)
 
     def to_dict(self):
         return {

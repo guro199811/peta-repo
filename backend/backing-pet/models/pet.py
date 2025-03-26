@@ -1,24 +1,27 @@
-from db import db
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy import Integer, String, Date, ForeignKey
+from datetime import date
+from typing import Optional
+
+from db import Base
 
 
-class Pet(db.Model):
+class Pet(Base):
     __tablename__ = "pets"
 
-    pet_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    pet_species = db.Column(
-        db.Integer, db.ForeignKey("pet_species.species_id")
-    )
-    species = db.relationship("PetSpecies", lazy="joined")
-    pet_breed = db.Column(db.Integer, db.ForeignKey("pet_breeds.breed_id"))
-    breed = db.relationship("PetBreed", lazy="joined")
-    gender = db.Column(db.String(10))
-    medical_condition = db.Column(db.String(50))
-    current_treatment = db.Column(db.String(50))
-    recent_vaccination = db.Column(db.Date)
-    name = db.Column(db.String(50))
-    birth_date = db.Column(db.Date)
-    owner_id = db.Column(db.Integer, db.ForeignKey("persons.id"))
-    owner = db.relationship("Person", lazy="joined")
+    pet_id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    pet_species: Mapped[int] = mapped_column(ForeignKey("pet_species.species_id"))
+    species = relationship("PetSpecies", lazy="joined")
+    pet_breed: Mapped[int] = mapped_column(ForeignKey("pet_breeds.breed_id"))
+    breed = relationship("PetBreed", lazy="joined")
+    gender: Mapped[str] = mapped_column(String(10))
+    medical_condition: Mapped[str] = mapped_column(String(50))
+    current_treatment: Mapped[str] = mapped_column(String(50))
+    recent_vaccination: Mapped[Optional[date]] = mapped_column(Date)
+    name: Mapped[str] = mapped_column(String(50))
+    birth_date: Mapped[Optional[date]] = mapped_column(Date)
+    owner_id: Mapped[int] = mapped_column(Integer, ForeignKey("persons.id"))
+    owner = relationship("Person", lazy="joined")
 
     def to_dict(self):
         return {
@@ -27,10 +30,7 @@ class Pet(db.Model):
                 "species": self.species.species,
                 "species_id": self.species.species_id,
             },
-            "pet_breed": {
-                "breed": self.breed.breed,
-                "breed_id": self.breed.breed_id
-            },
+            "pet_breed": {"breed": self.breed.breed, "breed_id": self.breed.breed_id},
             "gender": self.gender,
             "medical_condition": self.medical_condition,
             "current_treatment": self.current_treatment,

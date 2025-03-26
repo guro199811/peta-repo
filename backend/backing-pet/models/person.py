@@ -1,25 +1,28 @@
-from db import db
-from sqlalchemy import DateTime
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy import Integer, Boolean, ForeignKey, DateTime, String
+from datetime import datetime
+
+from db import Base
 
 
-class Person(db.Model):
+class Person(Base):
     __tablename__ = "persons"
 
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    name = db.Column(db.String(50), nullable=False)
-    lastname = db.Column(db.String(50), nullable=False)
-    phone_prefix = db.Column(db.String(10), nullable=False)
-    phone = db.Column(db.String(50), nullable=False)
-    mail = db.Column(db.String(100), unique=True)
-    address = db.Column(db.String(100))
-    created = db.Column(db.Date)
-    user_type = db.Column(db.Integer, db.ForeignKey("user_types.user_type"))
-    person_type = db.relationship("UserType", lazy="joined")
-    password = db.Column(db.String(), nullable=False)
-    confirmed = db.Column(db.Boolean, nullable=False, default=False)
-    confirmed_on = db.Column(db.Date, nullable=True)
-    login_attempts = db.Column(db.Integer, default=0)
-    temporary_block = db.Column(DateTime, nullable=True)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    name: Mapped[str] = mapped_column(String(50), nullable=False)
+    lastname: Mapped[str] = mapped_column(String(50), nullable=False)
+    phone_prefix: Mapped[str] = mapped_column(String(10), nullable=False)
+    phone: Mapped[str] = mapped_column(String(50), nullable=False)
+    mail: Mapped[str] = mapped_column(String(100), unique=True)
+    address: Mapped[str] = mapped_column(String(100))
+    created: Mapped[str] = mapped_column(DateTime)
+    user_type: Mapped[int] = mapped_column(Integer, ForeignKey("user_types.user_type"))
+    person_type = relationship("UserType", lazy="joined")
+    password: Mapped[str] = mapped_column(String, nullable=False)
+    confirmed: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    confirmed_on: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    login_attempts: Mapped[int] = mapped_column(Integer, default=0)
+    temporary_block: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
 
     def to_dict(self):
         return {
@@ -36,4 +39,4 @@ class Person(db.Model):
         }
 
     def __repr__(self):
-        return f'{self.to_dict()}'
+        return f"{self.to_dict()}"

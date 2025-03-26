@@ -1,9 +1,15 @@
-from db import db
+from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy import Integer, String
+
+from db import Base
 
 
-class PhonePrefixes(db.Model):
+class PhonePrefixes(Base):
     __tablename__ = "phone_prefixes"
-    prefix_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    prefix = db.Column(db.String(10), unique=True)
-    nums = db.Column(db.Integer)
-    icon = db.Column(db.String(10), nullable=False, default="&#127987")
+
+    prefix_id: Mapped[int] = mapped_column(
+        Integer, primary_key=True, autoincrement=True
+    )
+    prefix: Mapped[str] = mapped_column(String(10), unique=True)
+    nums: Mapped[int] = mapped_column(Integer)
+    icon: Mapped[str] = mapped_column(String(10), nullable=False, default="&#127987")

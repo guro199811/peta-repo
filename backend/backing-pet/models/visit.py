@@ -1,21 +1,25 @@
-from db import db
+from sqlalchemy.orm import mapped_column, Mapped, relationship
+from sqlalchemy import Integer, String, ForeignKey, DateTime
+from datetime import datetime
+
+from db import Base
 
 
-class Visit(db.Model):
+class Visit(Base):
     __tablename__ = "visits"
 
-    visit_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    clinic_id = db.Column(db.Integer, db.ForeignKey("clinics.clinic_id"))
-    vet_id = db.Column(db.Integer, db.ForeignKey("vets.vet_id"))
-    pet_id = db.Column(db.Integer, db.ForeignKey("pets.pet_id"))
-    diagnosis = db.Column(db.String(100))
-    treatment = db.Column(db.String(50))
-    comment = db.Column(db.String(500))
-    date = db.Column(db.Date)
+    visit_id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    clinic_id: Mapped[int] = mapped_column(Integer, ForeignKey("clinics.clinic_id"))
+    vet_id: Mapped[int] = mapped_column(Integer, ForeignKey("vets.vet_id"))
+    pet_id: Mapped[int] = mapped_column(Integer, ForeignKey("pets.pet_id"))
+    diagnosis: Mapped[str] = mapped_column(String(100))
+    treatment: Mapped[str] = mapped_column(String(50))
+    comment: Mapped[str] = mapped_column(String(500))
+    date: Mapped[datetime] = mapped_column(DateTime)
 
-    clinic = db.relationship("Clinic", backref="visits", lazy="joined")
-    vet = db.relationship("Vet", backref="visits", lazy="joined")
-    pet = db.relationship("Pet", backref="visits", lazy="joined")
+    clinic = relationship("Clinic", backref="visits", lazy="joined")
+    vet = relationship("Vet", backref="visits", lazy="joined")
+    pet = relationship("Pet", backref="visits", lazy="joined")
 
     def to_dict(self):
         return {

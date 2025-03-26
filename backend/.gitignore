@@ -1,5 +1,7 @@
 .env
+backing-pet/.env
 postgres-data
 postgres-database
 **/__pycache__
 backing-pet/logs/errors.log
+instance

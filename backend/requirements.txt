@@ -13,5 +13,5 @@ flask-jwt-extended
 passlib
 flask-migrate
 gunicorn
-psycopg2
+psycopg2-binary
 flask_cors==4.0.1
