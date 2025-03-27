@@ -14,3 +14,11 @@ class PetBreed(Base):
     breed: Mapped[str] = mapped_column(String(100))
 
     species = relationship("PetSpecies", back_populates="breeds")
+
+    def to_dict(self):
+        return {
+            "breed_id": self.breed_id,
+            "species_id": self.species_id,
+            "species": self.species.species,
+            "breed": self.breed,
+        }

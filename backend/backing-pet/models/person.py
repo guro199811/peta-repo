@@ -14,7 +14,7 @@ class Person(Base):
     phone_prefix: Mapped[str] = mapped_column(String(10), nullable=False)
     phone: Mapped[str] = mapped_column(String(50), nullable=False)
     mail: Mapped[str] = mapped_column(String(100), unique=True)
-    address: Mapped[str] = mapped_column(String(100))
+    address: Mapped[str | None] = mapped_column(String(100), nullable=True)
     created: Mapped[str] = mapped_column(DateTime)
     user_type: Mapped[int] = mapped_column(Integer, ForeignKey("user_types.user_type"))
     person_type = relationship("UserType", lazy="joined")

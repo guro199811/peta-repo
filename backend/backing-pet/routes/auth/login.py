@@ -12,6 +12,8 @@ from sqlalchemy.exc import SQLAlchemyError
 from validators.person_schema import PlainPersonSchema
 from validators.token_schema import TokenSchema
 
+from db_cruds.person_crud import get_person_by_mail
+
 from logs import logger_config
 
 logger = logger_config.logger
@@ -50,7 +52,10 @@ class UserLogin(MethodView):
         abort: Raises an HTTP 500 error if there is a database
         error while updating the user's block status.
         """
-        user = Person.query.filter_by(mail=user_data["mail"]).first()
+        # user = db.session.execute(
+        #     db.select(Person).where(Person.mail == user_data["mail"])
+        # ).scalar()
+        user = get_person_by_mail(user_data["mail"])
 
         if not user or not pbkdf2_sha256.verify(
             user_data["password"], user.password

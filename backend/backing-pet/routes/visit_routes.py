@@ -3,6 +3,9 @@ from flask import jsonify
 from flask_jwt_extended import jwt_required
 from models import Visit
 from validators.visit_schema import VisitSchema
+
+from db_cruds.visit_crud import get_visits_by_pet_id, get_visits_by_vet_id, get_visits_by_clinic_id
+
 from logs import logger_config
 
 logger = logger_config.logger
@@ -17,7 +20,7 @@ blp = Blueprint(
 @blp.doc(security=[{"JWT Auth": []}])
 @blp.response(200, VisitSchema)
 def pet_visit(pet_id):
-    visits = Visit.query.filter_by(pet_id=pet_id).all()
+    visits = get_visits_by_pet_id(pet_id)
     if not visits:
         abort(404, message="No visits found")
     return jsonify([visit.to_dict() for visit in visits])
@@ -28,7 +31,7 @@ def pet_visit(pet_id):
 @blp.doc(security=[{"JWT Auth": []}])
 @blp.response(200, VisitSchema)
 def vet_visit(vet_id):
-    visits = Visit.query.filter_by(vet_id=vet_id).all()
+    visits = get_visits_by_vet_id(vet_id)
     if not visits:
         abort(404, message="No visits found")
     return jsonify([visit.to_dict() for visit in visits])
@@ -39,7 +42,7 @@ def vet_visit(vet_id):
 @blp.doc(security=[{"JWT Auth": []}])
 @blp.response(200, VisitSchema)
 def clinic_visit(clinic_id):
-    visits = Visit.query.filter_by(clinic_id=clinic_id).all()
+    visits = get_visits_by_clinic_id(clinic_id)
     if not visits:
         abort(404, message="No visits found")
     return jsonify([visit.to_dict() for visit in visits])

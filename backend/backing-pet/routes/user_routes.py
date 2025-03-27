@@ -4,12 +4,16 @@ from flask import jsonify
 from flask_jwt_extended import jwt_required, current_user
 from db import db
 from sqlalchemy.exc import SQLAlchemyError
-from models import Pet, Visit, PersonClinic
 from validators.person_schema import (
     PersonGetterSchema,
     PlainPersonUpdateSchema,
 )
 from validators.pet_schema import PetSchema
+
+from db_cruds.pet_crud import get_pets_by_owner_id
+from db_cruds.visit_crud import get_all_user_visits
+from db_cruds.clinic_crud import get_all_clinics_and_owners
+
 from logs import logger_config
 
 logger = logger_config.logger
@@ -103,7 +107,7 @@ class UserPetOperations(MethodView):
 
         If no pets are found, it Returns -> No pets found.
         """
-        pets = Pet.query.filter_by(owner_id=current_user.id).all()
+        pets = get_pets_by_owner_id(current_user.id)
         if not pets:
             abort(404, message="No pets found")
         return jsonify([pet.to_dict() for pet in pets])
@@ -135,7 +139,7 @@ class UserVisitOperations(MethodView):
 
         If no visits are found, it Returns -> No visits found.
         """
-        visits = Visit.query.filter_by(owner_id=current_user.id).all()
+        visits = get_all_user_visits(current_user.id)
         if not visits:
             abort(404, message="No visits found")
         return jsonify([visit.to_dict() for visit in visits])
@@ -147,9 +151,7 @@ class UserClinicOperations(MethodView):
     @blp.doc(security=[{"JWT Auth": []}])
     @blp.response(200, PetSchema)
     def get(self):
-        clinics_detailed = PersonClinic.query.filter_by(
-            is_clinic_owner=True
-        ).all()
+        clinics_detailed = get_all_clinics_and_owners()
         if not clinics_detailed:
             abort(404, message="No clinics found")
         return jsonify([clinic.to_dict() for clinic in clinics_detailed])

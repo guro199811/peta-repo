@@ -4,8 +4,11 @@ from flask import jsonify
 from flask_jwt_extended import jwt_required, current_user
 from db import db
 from sqlalchemy.exc import SQLAlchemyError
-from models import Pet, PetSpecies
 from validators.pet_schema import PetSchema
+
+from db_cruds.pet_crud import register_pet, get_pet_by_id
+from db_cruds.species_crud import get_all_species
+
 from logs import logger_config
 
 logger = logger_config.logger
@@ -29,7 +32,7 @@ class PetTypes(MethodView):
         list: A list of dictionaries, where each dictionary represents a pet
         species and associated breeds as nested dictionaries.
         """
-        species = PetSpecies.query.all()
+        species = get_all_species()
         return [specie.to_dict() for specie in species]
 
 
@@ -40,14 +43,8 @@ class RegisterPet(MethodView):
     @blp.arguments(PetSchema)
     @blp.response(200, PetSchema)
     def post(self, pet_data):
-        if pet_data.get("owner_id"):
-            owner_id = pet_data.pop("owner_id")
-        else:
-            owner_id = current_user.id
-        new_pet = Pet(owner_id=owner_id, **pet_data)
         try:
-            db.session.add(new_pet)
-            db.session.commit()
+            new_pet = register_pet(current_user.id, pet_data)
         except SQLAlchemyError:
             logger.exception("Could not register pet")
             abort(500, message="Something went wrong")
@@ -60,7 +57,7 @@ class PetOperations(MethodView):
     @blp.doc(security=[{"JWT Auth": []}])
     @blp.response(200, PetSchema)
     def get(self, pet_id):
-        pet = Pet.query.filter_by(pet_id=pet_id).first()
+        pet = get_pet_by_id(pet_id)
         if not pet:
             abort(404, message="Pet not found")
         return jsonify(pet.to_dict())
@@ -70,7 +67,7 @@ class PetOperations(MethodView):
     @blp.arguments(PetSchema)
     @blp.response(200)
     def put(self, pet_data, pet_id):
-        pet = Pet.query.filter_by(pet_id=pet_id).first()
+        pet = get_pet_by_id(pet_id)
         if not pet:
             abort(404, message="Pet not found")
         if pet.owner_id != current_user.id:
@@ -95,7 +92,7 @@ class PetOperations(MethodView):
     @jwt_required()
     @blp.doc(security=[{"JWT Auth": []}])
     def delete(self, pet_id):
-        pet = Pet.query.filter_by(pet_id=pet_id).first()
+        pet = get_pet_by_id(pet_id)
         if not pet:
             abort(404, message="Pet not found")
         if pet.owner_id != current_user.id and current_user.user_type != 2:

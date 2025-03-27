@@ -1,3 +1,5 @@
+# TODO: Move crud to a separate folder, and fix runtime errors for this new approach
+
 from flask.views import MethodView
 from flask_smorest import Blueprint, abort
 from flask import jsonify

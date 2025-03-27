@@ -6,7 +6,7 @@ from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 
 from db import db
-import models  # noqa
+import models
 
 from routes.token_routes import blp as TokenBlueprint
 from routes.user_type_routes import blp as UserTypesBlueprint
@@ -72,11 +72,13 @@ def create_app(db_url=None):
         },
     )
     #  --------------Flask_jwt_extended---------------------
-    jwt = JWTManager(app)  # noqa
+    jwt = JWTManager(app)
 
     @jwt.user_lookup_loader
     def user_lookup_callback(_jwt_header, jwt_data):
-        return models.Person.query.filter_by(id=jwt_data["sub"]).one_or_none()
+        return db.session.execute(
+            db.select(models.Person).where(models.Person.id == int(jwt_data["sub"]))
+        ).scalar()
 
     #  ---------------Managing Context----------------------
     with app.app_context():

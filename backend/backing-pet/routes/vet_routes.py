@@ -7,13 +7,24 @@ from sqlalchemy.exc import SQLAlchemyError
 from models import Vet, Visit, Clinic, PersonClinic
 from validators.visit_schema import VisitSchema, VisitAddSchema
 from validators.clinic_schema import ClinicSchema, PersonToClinicSchema
+
+from db_cruds.vet_crud import get_vet_by_person_id
+from db_cruds.visit_crud import (
+    get_visits_by_vet_id,
+    get_all_visits_by_vet_and_person,
+    get_visit_by_id,
+)
+from db_cruds.clinic_crud import (
+    get_clinic_by_user_id,
+    get_clinic_by_id,
+    get_clinic_owner_by_user_and_clinic_id,
+)
+
 from logs import logger_config
 
 logger = logger_config.logger
 
-blp = Blueprint(
-    "Vet", __name__, description="Vet operations", url_prefix="/vet"
-)
+blp = Blueprint("Vet", __name__, description="Vet operations", url_prefix="/vet")
 
 
 @blp.route("/visit")
@@ -22,8 +33,8 @@ class AddVisit(MethodView):
     @blp.doc(security=[{"JWT Auth": []}])
     @blp.response(200, VisitSchema)
     def get(self):
-        vet_data = Vet.query.filter_by(person_id=current_user.id).first()
-        visits = Visit.query.filter_by(vet_id=vet_data.vet_id).all()
+        vet_data = get_vet_by_person_id(current_user.id)
+        visits = get_visits_by_vet_id(vet_id=vet_data.vet_id)
         if not visits:
             abort(404, message="No visits found")
         return jsonify([visit.to_dict() for visit in visits])
@@ -33,7 +44,7 @@ class AddVisit(MethodView):
     @blp.arguments(VisitAddSchema)
     @blp.response(200, VisitSchema)
     def post(self, visit_data):
-        vet_data = Vet.query.filter_by(person_id=current_user.id).first()
+        vet_data = get_vet_by_person_id(current_user.id)
         new_visit = Visit(vet_id=vet_data.vet_id, **visit_data)
         try:
             db.session.add(new_visit)
@@ -51,16 +62,12 @@ class VetVisitsByPerson(MethodView):
     @blp.doc(security=[{"JWT Auth": []}])
     @blp.response(200, VisitSchema)
     def get(self, person_id):
-        vet_data = Vet.query.filter_by(person_id=current_user.id).first()
+        vet_data = get_vet_by_person_id(current_user.id)
         if not vet_data:
             abort(404, message="Caller is not Veterinarian")
-        visits = Visit.query.filter_by(
-            vet_id=vet_data.vet_id, person_id=person_id
-        ).all()
+        visits = get_all_visits_by_vet_and_person(vet_data.vet_id, person_id)
         if not visits:
-            abort(
-                404, message=f"No visits found for person with id {person_id}"
-            )
+            abort(404, message=f"No visits found for person with id {person_id}")
         return jsonify([visit.to_dict() for visit in visits])
 
 
@@ -70,14 +77,13 @@ class VisitEditRoute(MethodView):
     @blp.doc(security=[{"JWT Auth": []}])
     @blp.response(200, VisitSchema)
     def get(self, visit_id):
-        visit = Visit.query.filter_by(visit_id=visit_id).first()
+        visit = get_visit_by_id(visit_id=visit_id)
         if not visit:
             abort(404, message="Visit not found")
         if visit.vet_id != current_user.id or current_user.user_type != 2:
             abort(
                 400,
-                message="This visit is not registered on "
-                "this logged-in User.",
+                message="This visit is not registered on " "this logged-in User.",
             )
         return jsonify(visit.to_dict())
 
@@ -86,14 +92,13 @@ class VisitEditRoute(MethodView):
     @blp.arguments(VisitSchema)
     @blp.response(200, VisitSchema)
     def put(self, visit_data, visit_id):
-        visit = Visit.query.filter_by(visit_id=visit_id).first()
+        visit = get_visit_by_id(visit_id=visit_id)
         if not visit:
             abort(404, message="Visit not found")
         if visit.vet_id != current_user.id or current_user.user_type != 2:
             abort(
                 400,
-                message="This visit is not registered on "
-                "this logged-in User.",
+                message="This visit is not registered on " "this logged-in User.",
             )
         for key, value in visit_data.items():
             if value is None:
@@ -110,14 +115,13 @@ class VisitEditRoute(MethodView):
     @jwt_required()
     @blp.doc(security=[{"JWT Auth": []}])
     def delete(self, visit_id):
-        visit = Visit.query.filter_by(visit_id=visit_id).first()
+        visit = get_visit_by_id(visit_id)
         if not visit:
             abort(404, message="Visit not found")
         if visit.vet_id != current_user.id or current_user.user_type != 2:
             abort(
                 400,
-                message="This visit is not registered on "
-                "this logged-in User.",
+                message="This visit is not registered on " "this logged-in User.",
             )
         try:
             db.session.delete(visit)
@@ -135,7 +139,7 @@ class ClinicRoutes(MethodView):
     @blp.doc(security=[{"JWT Auth": []}])
     @blp.response(200, PersonToClinicSchema)
     def get(self):
-        clinic = PersonClinic.query.filter_by(person_id=current_user.id).all()
+        clinic = get_clinic_by_user_id(current_user.id)
         if not clinic:
             abort(404, message="No clinics found for logged in user")
         return jsonify([clinic_data.to_dict() for clinic_data in clinic])
@@ -145,7 +149,7 @@ class ClinicRoutes(MethodView):
     @blp.arguments(ClinicSchema)
     @blp.response(200, ClinicSchema)
     def post(self, clinic_data):
-        vet_data = Vet.query.filter_by(person_id=current_user.id).first()
+        vet_data = get_vet_by_person_id(current_user.id)
         if not vet_data:
             abort(404, message="Caller is not Veterinarian")
         if (
@@ -184,7 +188,7 @@ class ClinicDetails(MethodView):
     @blp.doc(security=[{"JWT Auth": []}])
     @blp.response(200, ClinicSchema)
     def get(self, clinic_id):
-        clinic = Clinic.query.filter_by(clinic_id=clinic_id).first()
+        clinic = get_clinic_by_id()
         if not clinic:
             abort(404, message="Clinic not found")
         return jsonify(clinic.to_dict())
@@ -194,17 +198,15 @@ class ClinicDetails(MethodView):
     @blp.arguments(ClinicSchema)
     @blp.response(200, ClinicSchema)
     def put(self, clinic_data, clinic_id):
-        vet_data = Vet.query.filter_by(person_id=current_user.id).first()
+        vet_data = get_vet_by_person_id(current_user.id)
         if not vet_data or current_user.user_type != 2:
             abort(404, message="Caller is not a Vet nor an Admin")
-        clinic = Clinic.query.filter_by(clinic_id=clinic_id).first()
+        clinic = get_clinic_by_id(clinic_id)
         if not clinic:
             abort(404, message="Clinic not found")
-        person_clinic = PersonClinic.query.filter_by(
-            person_id=current_user.id,
-            clinic_id=clinic.clinic_id,
-            is_clinic_owner=True,
-        ).first()
+        person_clinic = get_clinic_owner_by_user_and_clinic_id(
+            current_user.id, clinic.clinic_id
+        )
         if not person_clinic or current_user.user_type != 2:
             abort(
                 400,
@@ -231,11 +233,9 @@ class ClinicDetails(MethodView):
         clinic = Clinic.query.filter_by(clinic_id=clinic_id).first()
         if not clinic:
             abort(404, message="Clinic not found")
-        person_clinic = PersonClinic.query.filter_by(
-            person_id=current_user.id,
-            clinic_id=clinic.clinic_id,
-            is_clinic_owner=True,
-        ).first()
+        person_clinic = get_clinic_owner_by_user_and_clinic_id(
+            current_user.id, clinic.clinic_id
+        )
         if not person_clinic or current_user.user_type != 2:
             abort(400, message="User is not an clinic owner.")
         try:

@@ -10,8 +10,6 @@ blp = Blueprint("Home page", __name__,
 
 @blp.route("/")
 class HomePage(MethodView):
-    # @jwt_required()
-    # @blp.doc(security=[{"jwtAuth": []}])
     def get(self):
         return {
             "welcome": "Welcome to our website!",

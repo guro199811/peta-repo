@@ -4,7 +4,6 @@ from flask import jsonify
 from flask_jwt_extended import jwt_required, current_user
 from db import db
 from sqlalchemy.exc import SQLAlchemyError
-from models import Person, Clinic, Visit, Vet, Pet
 from validators.person_schema import (
     PersonGetterSchema,
     PersonUpdateSchema,
@@ -13,11 +12,18 @@ from validators.person_schema import (
 from validators.pet_schema import PetSchema
 from logs import logger_config
 
+from models import Vet
+
+from db_cruds.person_crud import get_person_by_id, get_all_people, get_all_admins
+from db_cruds.vet_crud import get_vet_by_person_id, get_all_vets
+from db_cruds.editor_crud import get_all_editors
+from db_cruds.pet_crud import get_all_pets
+from db_cruds.clinic_crud import get_all_clinics
+from db_cruds.visit_crud import get_all_visits
+
 logger = logger_config.logger
 
-blp = Blueprint(
-    "Admin", __name__, description="Admin operations", url_prefix="/admin"
-)
+blp = Blueprint("Admin", __name__, description="Admin operations", url_prefix="/admin")
 
 
 @blp.route("/person/<int:person_id>")
@@ -26,7 +32,7 @@ class PersonExtendedRoutes(MethodView):
     @blp.doc(security=[{"JWT Auth": []}])
     @blp.response(200, PersonGetterSchema)
     def get(self, person_id):
-        person = Person.query.filter_by(id=person_id).first()
+        person = get_person_by_id(person_id)
         if not person:
             abort(404, message="Person not found")
         return jsonify(person.to_dict())
@@ -36,7 +42,7 @@ class PersonExtendedRoutes(MethodView):
     @blp.arguments(PersonUpdateSchema)
     @blp.response(200, PersonGetterSchema)
     def put(self, user_data, person_id):
-        person = Person.query.filter_by(id=person_id).first()
+        person = get_person_by_id(person_id)
         if not person:
             abort(404, message="Person not found")
         for key, value in user_data.items():
@@ -51,8 +57,7 @@ class PersonExtendedRoutes(MethodView):
             logger.error(e)
             abort(
                 500,
-                message="While editing user data, "
-                + "unexpected error occured",
+                message="While editing user data, " + "unexpected error occured",
             )
 
 
@@ -61,14 +66,14 @@ class ChangeUserType(MethodView):
     @jwt_required()
     @blp.doc(security=[{"JWT Auth": []}])
     def get(self, person_id):
-        person = Person.query.get_or_404(person_id)
+        person = get_person_by_id(person_id)
         return {f"person {person.id}": person.user_type}
 
     @jwt_required()
     @blp.doc(security=[{"JWT Auth": []}])
     @blp.arguments(AdminSpecificUpdateSchema)
     def put(self, request, person_id):
-        person = Person.query.filter_by(id=person_id).first()
+        person = get_person_by_id(person_id)
         if not person:
             abort(404, message="Person not found")
         if person.user_type == request["user_type"]:
@@ -82,7 +87,7 @@ class ChangeUserType(MethodView):
             new_vet = Vet(person_id=person.id)
             db.session.add(new_vet)
         if person.user_type == 3 and request["user_type"] != 3:
-            vet = Vet.query.get_or_404(person_id=person.id)
+            vet = get_vet_by_person_id(person.id)
             vet.active = False
         try:
             db.session.commit()
@@ -92,8 +97,7 @@ class ChangeUserType(MethodView):
             logger.error(e)
             abort(
                 500,
-                message="While changing user type, "
-                + "unexpected error occured",
+                message="While changing user type, " + "unexpected error occured",
             )
 
 
@@ -103,16 +107,14 @@ class AllUsers(MethodView):
     @blp.doc(security=[{"JWT Auth": []}])
     @blp.response(200, PersonGetterSchema)
     def get(self):
-        users = Person.query.all()
+        users = get_all_people()
         if bool(users) is False:
             abort(404, "No users found")
         spot_caller = [
             admin.to_dict() for admin in users if admin.id == current_user.id
         ]
         spot_caller.append("Caller")
-        other_users = [
-            user.to_dict() for user in users if user.id != current_user.id
-        ]
+        other_users = [user.to_dict() for user in users if user.id != current_user.id]
         return jsonify(spot_caller + other_users)
 
 
@@ -122,19 +124,15 @@ class AllAdmins(MethodView):
     @blp.doc(security=[{"JWT Auth": []}])
     @blp.response(200, PersonGetterSchema)
     def get(self):
-        admins = Person.query.filter_by(user_type=2).all()
+        admins = get_all_admins()
         if bool(admins) is False:
             spot_caller = [
-                admin.to_dict()
-                for admin in admins
-                if admin.id == current_user.id
+                admin.to_dict() for admin in admins if admin.id == current_user.id
             ]
             if spot_caller:
                 spot_caller[0][current_user.id].update(caller=True)
             other_admins = [
-                admin.to_dict()
-                for admin in admins
-                if admin.id != current_user.id
+                admin.to_dict() for admin in admins if admin.id != current_user.id
             ]
             return jsonify(spot_caller + other_admins)
 
@@ -147,7 +145,7 @@ class AllVets(MethodView):
     @blp.doc(security=[{"JWT Auth": []}])
     @blp.response(200, PersonGetterSchema)
     def get(self):
-        vets = Vet.query.all()
+        vets = get_all_vets()
         if bool(vets) is False:
             abort(404, "No vets found")
         return jsonify([vet.to_dict() for vet in vets])
@@ -159,14 +157,10 @@ class AllEditors(MethodView):
     @blp.doc(security=[{"JWT Auth": []}])
     @blp.response(200, PersonGetterSchema)
     def get(self):
-        editors = Person.query.all()
+        editors = get_all_editors()
         if bool(editors) is False:
             return jsonify(
-                [
-                    editor.to_dict()
-                    for editor in editors
-                    if editor.user_type == 4
-                ]
+                [editor.to_dict() for editor in editors if editor.user_type == 4]
             )
         abort(404, "No editors found")
 
@@ -177,7 +171,7 @@ class AllPets(MethodView):
     @blp.doc(security=[{"JWT Auth": []}])
     @blp.response(200, PetSchema)
     def get(self):
-        all_pets = db.session.query(Pet).all()
+        all_pets = get_all_pets()
         if len(all_pets) > 0:
             pet_list = [pet.to_dict() for pet in all_pets]
             return jsonify(pet_list)
@@ -190,11 +184,9 @@ class AllClinics(MethodView):
     @blp.doc(security=[{"JWT Auth": []}])
     @blp.response(200, PersonGetterSchema)
     def get(self):
-        clinics = Clinic.query.all()
+        clinics = get_all_clinics()
         if bool(clinics) is False:
-            return jsonify(
-                [clinic.to_dict() for clinic in clinics if clinic.visiblity]
-            )
+            return jsonify([clinic.to_dict() for clinic in clinics if clinic.visiblity])
         abort(404, "No clinics found")
 
 
@@ -204,7 +196,7 @@ class AllVisits(MethodView):
     @blp.doc(security=[{"JWT Auth": []}])
     @blp.response(200, PersonGetterSchema)
     def get(self):
-        visits = Visit.query.all()
+        visits = get_all_visits()
         if bool(visits) is False:
             return jsonify([visit.to_dict() for visit in visits])
         abort(404, "No visits found")

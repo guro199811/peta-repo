@@ -10,6 +10,9 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from validators.person_schema import PersonRegistrationSchema
 
+from db_cruds.phone_crud import get_phone_prefixes
+from db_cruds.person_crud import get_person_by_mail
+
 from logs import logger_config
 
 logger = logger_config.logger
@@ -39,7 +42,7 @@ class UserRegister(MethodView):
         dict: A dictionary containing a list of phone prefixes.
         """
         # Query Phone Prefixes
-        prefixes = db.session.query(PhonePrefixes).all()
+        prefixes = get_phone_prefixes()
         if len(prefixes) == 0:
             abort(500, message="Phone Prefixes not found")
         all_prefixes = []
@@ -66,13 +69,13 @@ class UserRegister(MethodView):
         Returns:
         dict: A dictionary with a success message and HTTP status code 201.
         """
-        prefixes = db.session.query(PhonePrefixes).all()
+        prefixes = get_phone_prefixes()
         if len(prefixes) == 0:
             abort(500, message="Phone Prefixes not found")
         number_standards = {}
         for prefix in prefixes:
             number_standards[prefix.prefix] = prefix.nums
-        if Person.query.filter(Person.mail == user_data["mail"]).first():
+        if get_person_by_mail(user_data["mail"]):
             abort(409, message="User with that email already exists.")
         if user_data["password"] != user_data["repeat_password"]:
             abort(400, message="Password do not match")
@@ -89,7 +92,7 @@ class UserRegister(MethodView):
                 lastname=user_data["lastname"],
                 phone_prefix=user_data["prefix"],
                 phone=str(user_data["phone"]),
-                address=user_data.get("address", None),
+                address=user_data.get("address", "Null"),
                 created=dt.today(),
                 user_type=1,  # TODO: For now its hardcoded, Fix it later
                 password=pbkdf2_sha256.hash(user_data["password"]),
